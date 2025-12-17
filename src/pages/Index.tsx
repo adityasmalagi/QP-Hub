@@ -250,7 +250,7 @@ export default function Index() {
                 ))}
               </div>
               
-              <Link to="/upload">
+              <Link to={user ? "/upload" : "/auth?redirect=/upload"}>
                 <Button size="lg" className="gradient-primary glow-purple">
                   <Upload className="mr-2 h-5 w-5" />
                   Start Uploading
