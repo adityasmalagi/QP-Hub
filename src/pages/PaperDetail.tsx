@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,10 +23,13 @@ interface Paper {
   views_count: number;
   downloads_count: number;
   created_at: string;
+  semester: number | null;
+  internal_number: number | null;
 }
 
 export default function PaperDetail() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [paper, setPaper] = useState<Paper | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -75,12 +79,39 @@ export default function PaperDetail() {
         .from('question_papers')
         .update({ downloads_count: paper.downloads_count + 1 })
         .eq('id', paper.id);
+
+      // Track download for logged-in users
+      if (user) {
+        await supabase
+          .from('user_downloads')
+          .upsert({
+            user_id: user.id,
+            paper_id: paper.id,
+            downloaded_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id,paper_id'
+          });
+      }
       
       // Open file in new tab
       window.open(paper.file_url, '_blank');
     } catch (error) {
       console.error('Download error:', error);
     }
+  };
+
+  const getExamTypeDisplay = () => {
+    if (!paper) return '';
+    
+    let display = paper.exam_type.replace('_', ' ');
+    
+    if (paper.exam_type === 'sem_paper' && paper.semester) {
+      display = `SEM ${paper.semester} Paper`;
+    } else if (paper.exam_type === 'internals' && paper.semester && paper.internal_number) {
+      display = `SEM ${paper.semester} - Internal ${paper.internal_number}`;
+    }
+    
+    return display;
   };
 
   if (loading) {
@@ -137,7 +168,7 @@ export default function PaperDetail() {
               <Badge variant="outline">{paper.subject}</Badge>
               <Badge variant="outline">{paper.year}</Badge>
               <Badge variant="outline" className="capitalize">
-                {paper.exam_type.replace('_', ' ')}
+                {getExamTypeDisplay()}
               </Badge>
             </div>
 

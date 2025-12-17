@@ -15,7 +15,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS } from '@/lib/constants';
+import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
 import { Upload as UploadIcon, FileText, X, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -32,6 +32,8 @@ export default function Upload() {
     subject: '',
     year: '',
     examType: '',
+    semester: '',
+    internalNumber: '',
   });
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -95,6 +97,9 @@ export default function Upload() {
     }
   };
 
+  const requiresSemester = formData.examType === 'sem_paper' || formData.examType === 'internals';
+  const requiresInternalNumber = formData.examType === 'internals';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -106,6 +111,26 @@ export default function Upload() {
       toast({
         title: 'Missing fields',
         description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate semester for SEM/Internals papers
+    if (requiresSemester && !formData.semester) {
+      toast({
+        title: 'Missing semester',
+        description: 'Please select a semester for this exam type',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate internal number for Internals papers
+    if (requiresInternalNumber && !formData.internalNumber) {
+      toast({
+        title: 'Missing internal number',
+        description: 'Please select the internal number (1, 2, or 3)',
         variant: 'destructive',
       });
       return;
@@ -143,7 +168,9 @@ export default function Upload() {
           exam_type: formData.examType,
           file_url: urlData.publicUrl,
           file_name: file.name,
-          status: 'approved', // Auto-approve for now
+          status: 'approved',
+          semester: requiresSemester ? parseInt(formData.semester) : null,
+          internal_number: requiresInternalNumber ? parseInt(formData.internalNumber) : null,
         });
 
       if (insertError) throw insertError;
@@ -354,7 +381,12 @@ export default function Upload() {
                   <Label>Exam Type *</Label>
                   <Select
                     value={formData.examType}
-                    onValueChange={(v) => setFormData(f => ({ ...f, examType: v }))}
+                    onValueChange={(v) => setFormData(f => ({ 
+                      ...f, 
+                      examType: v,
+                      semester: '',
+                      internalNumber: ''
+                    }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select exam type" />
@@ -368,6 +400,50 @@ export default function Upload() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* Conditional Semester Field */}
+                {requiresSemester && (
+                  <div className="space-y-2">
+                    <Label>Semester *</Label>
+                    <Select
+                      value={formData.semester}
+                      onValueChange={(v) => setFormData(f => ({ ...f, semester: v }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select semester" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SEMESTERS.map((sem) => (
+                          <SelectItem key={sem.value} value={sem.value}>
+                            {sem.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Conditional Internal Number Field */}
+                {requiresInternalNumber && (
+                  <div className="space-y-2">
+                    <Label>Internal Number *</Label>
+                    <Select
+                      value={formData.internalNumber}
+                      onValueChange={(v) => setFormData(f => ({ ...f, internalNumber: v }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select internal" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INTERNAL_NUMBERS.map((num) => (
+                          <SelectItem key={num.value} value={num.value}>
+                            {num.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
 
               <Button

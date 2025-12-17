@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          age: number | null
           avatar_url: string | null
           bio: string | null
           board: string | null
@@ -29,6 +30,7 @@ export type Database = {
           year: number | null
         }
         Insert: {
+          age?: number | null
           avatar_url?: string | null
           bio?: string | null
           board?: string | null
@@ -42,6 +44,7 @@ export type Database = {
           year?: number | null
         }
         Update: {
+          age?: number | null
           avatar_url?: string | null
           bio?: string | null
           board?: string | null
@@ -67,6 +70,8 @@ export type Database = {
           file_name: string
           file_url: string
           id: string
+          internal_number: number | null
+          semester: number | null
           status: string | null
           subject: string
           tags: string[] | null
@@ -86,6 +91,8 @@ export type Database = {
           file_name: string
           file_url: string
           id?: string
+          internal_number?: number | null
+          semester?: number | null
           status?: string | null
           subject: string
           tags?: string[] | null
@@ -105,6 +112,8 @@ export type Database = {
           file_name?: string
           file_url?: string
           id?: string
+          internal_number?: number | null
+          semester?: number | null
           status?: string | null
           subject?: string
           tags?: string[] | null
@@ -115,6 +124,35 @@ export type Database = {
           year?: number
         }
         Relationships: []
+      }
+      user_downloads: {
+        Row: {
+          downloaded_at: string | null
+          id: string
+          paper_id: string
+          user_id: string
+        }
+        Insert: {
+          downloaded_at?: string | null
+          id?: string
+          paper_id: string
+          user_id: string
+        }
+        Update: {
+          downloaded_at?: string | null
+          id?: string
+          paper_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_downloads_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

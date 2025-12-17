@@ -59,6 +59,25 @@ export const EXAM_TYPES = [
   { value: 'practice', label: 'Practice Paper' },
   { value: 'entrance', label: 'Entrance Exam' },
   { value: 'competitive', label: 'Competitive Exam' },
+  { value: 'sem_paper', label: 'SEM Paper' },
+  { value: 'internals', label: 'Internals Paper' },
+] as const;
+
+export const SEMESTERS = [
+  { value: '1', label: 'Semester 1' },
+  { value: '2', label: 'Semester 2' },
+  { value: '3', label: 'Semester 3' },
+  { value: '4', label: 'Semester 4' },
+  { value: '5', label: 'Semester 5' },
+  { value: '6', label: 'Semester 6' },
+  { value: '7', label: 'Semester 7' },
+  { value: '8', label: 'Semester 8' },
+] as const;
+
+export const INTERNAL_NUMBERS = [
+  { value: '1', label: 'Internal 1' },
+  { value: '2', label: 'Internal 2' },
+  { value: '3', label: 'Internal 3' },
 ] as const;
 
 export const YEARS = Array.from({ length: 15 }, (_, i) => {

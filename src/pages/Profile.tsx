@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, FileText, Download, Eye, Save, Loader2 } from 'lucide-react';
+import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES } from '@/lib/constants';
 
@@ -25,6 +25,7 @@ interface Profile {
   year: number | null;
   course: string | null;
   semester: number | null;
+  age: number | null;
 }
 
 interface Paper {
@@ -38,6 +39,20 @@ interface Paper {
   views_count: number;
   downloads_count: number;
   created_at: string;
+}
+
+interface DownloadedPaper {
+  id: string;
+  paper_id: string;
+  downloaded_at: string;
+  paper: {
+    id: string;
+    title: string;
+    subject: string;
+    board: string;
+    class_level: string;
+    year: number;
+  } | null;
 }
 
 interface ValidationErrors {
@@ -63,6 +78,9 @@ const YEARS = Array.from({ length: 10 }, (_, i) => currentYear - i);
 export default function Profile() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'profile';
+  
   const [profile, setProfile] = useState<Profile>({ 
     full_name: '', 
     bio: '', 
@@ -71,12 +89,17 @@ export default function Profile() {
     board: '',
     year: null,
     course: '',
-    semester: null
+    semester: null,
+    age: null
   });
   const [myPapers, setMyPapers] = useState<Paper[]>([]);
+  const [downloads, setDownloads] = useState<DownloadedPaper[]>([]);
   const [saving, setSaving] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [loadingDownloads, setLoadingDownloads] = useState(true);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [settingsAge, setSettingsAge] = useState<number | null>(null);
 
   const isEngineeringBranch = ENGINEERING_BRANCHES.includes(profile.class_level || '');
 
@@ -90,6 +113,7 @@ export default function Profile() {
     if (user) {
       fetchProfile();
       fetchMyPapers();
+      fetchDownloads();
     }
   }, [user]);
 
@@ -98,7 +122,7 @@ export default function Profile() {
     
     const { data, error } = await supabase
       .from('profiles')
-      .select('full_name, bio, avatar_url, class_level, board, year, course, semester')
+      .select('full_name, bio, avatar_url, class_level, board, year, course, semester, age')
       .eq('id', user.id)
       .maybeSingle();
 
@@ -111,8 +135,10 @@ export default function Profile() {
         board: data.board || '',
         year: data.year || null,
         course: data.course || '',
-        semester: data.semester || null
+        semester: data.semester || null,
+        age: data.age || null
       });
+      setSettingsAge(data.age || null);
     }
     setLoadingProfile(false);
   };
@@ -129,6 +155,26 @@ export default function Profile() {
     if (data) {
       setMyPapers(data);
     }
+  };
+
+  const fetchDownloads = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('user_downloads')
+      .select(`
+        id,
+        paper_id,
+        downloaded_at,
+        paper:question_papers(id, title, subject, board, class_level, year)
+      `)
+      .eq('user_id', user.id)
+      .order('downloaded_at', { ascending: false });
+
+    if (data) {
+      setDownloads(data as DownloadedPaper[]);
+    }
+    setLoadingDownloads(false);
   };
 
   const validateForm = (): boolean => {
@@ -180,6 +226,26 @@ export default function Profile() {
     setSaving(false);
   };
 
+  const handleSaveSettings = async () => {
+    if (!user) return;
+    
+    setSavingSettings(true);
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        age: settingsAge
+      })
+      .eq('id', user.id);
+
+    if (error) {
+      toast.error('Failed to update settings');
+    } else {
+      toast.success('Settings updated successfully');
+      setProfile(prev => ({ ...prev, age: settingsAge }));
+    }
+    setSavingSettings(false);
+  };
+
   const deletePaper = async (paperId: string) => {
     const { error } = await supabase
       .from('question_papers')
@@ -191,6 +257,20 @@ export default function Profile() {
     } else {
       toast.success('Paper deleted');
       fetchMyPapers();
+    }
+  };
+
+  const removeDownload = async (downloadId: string) => {
+    const { error } = await supabase
+      .from('user_downloads')
+      .delete()
+      .eq('id', downloadId);
+
+    if (error) {
+      toast.error('Failed to remove from downloads');
+    } else {
+      toast.success('Removed from downloads');
+      fetchDownloads();
     }
   };
 
@@ -215,8 +295,8 @@ export default function Profile() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="mb-8 text-3xl font-bold text-foreground">My Profile</h1>
 
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="mb-6">
+        <Tabs defaultValue={defaultTab} className="w-full">
+          <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
               Profile
@@ -224,6 +304,14 @@ export default function Profile() {
             <TabsTrigger value="papers" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               My Papers ({myPapers.length})
+            </TabsTrigger>
+            <TabsTrigger value="downloads" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Downloads ({downloads.length})
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
             </TabsTrigger>
           </TabsList>
 
@@ -447,6 +535,123 @@ export default function Profile() {
                     ))}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="downloads">
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <CardTitle>My Downloads</CardTitle>
+                <CardDescription>
+                  Papers you have downloaded
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingDownloads ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                ) : downloads.length === 0 ? (
+                  <div className="py-8 text-center">
+                    <Download className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                    <p className="text-muted-foreground">You haven't downloaded any papers yet</p>
+                    <Link to="/browse">
+                      <Button className="mt-4 gradient-primary">Browse Papers</Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {downloads.map((download) => (
+                      <div key={download.id} className="flex items-center justify-between rounded-lg border border-border p-4">
+                        <div className="space-y-1">
+                          {download.paper ? (
+                            <>
+                              <Link to={`/paper/${download.paper.id}`} className="font-medium text-foreground hover:text-primary">
+                                {download.paper.title}
+                              </Link>
+                              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                                <Badge variant="outline">{download.paper.subject}</Badge>
+                                <Badge variant="outline">{download.paper.board}</Badge>
+                                <Badge variant="outline">Class {download.paper.class_level}</Badge>
+                                <span>Downloaded: {new Date(download.downloaded_at).toLocaleDateString()}</span>
+                              </div>
+                            </>
+                          ) : (
+                            <p className="text-muted-foreground">Paper no longer available</p>
+                          )}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => removeDownload(download.id)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <Card className="max-w-2xl border-border bg-card">
+              <CardHeader>
+                <CardTitle>Account Settings</CardTitle>
+                <CardDescription>
+                  Manage your account information
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      value={user.email || ''}
+                      disabled
+                      className="bg-muted"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Email cannot be changed
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="age">Age</Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    min={10}
+                    max={100}
+                    value={settingsAge || ''}
+                    onChange={(e) => setSettingsAge(e.target.value ? parseInt(e.target.value) : null)}
+                    placeholder="Enter your age"
+                    className="w-full sm:w-48"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handleSaveSettings} 
+                  disabled={savingSettings} 
+                  className="gradient-primary"
+                >
+                  {savingSettings ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Settings
+                    </>
+                  )}
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
