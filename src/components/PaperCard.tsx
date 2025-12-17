@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Eye, Download, FileText, User } from 'lucide-react';
@@ -15,6 +15,7 @@ interface PaperCardProps {
   viewsCount: number;
   downloadsCount: number;
   uploaderName?: string | null;
+  uploaderId?: string | null;
 }
 
 export function PaperCard({
@@ -28,7 +29,17 @@ export function PaperCard({
   viewsCount,
   downloadsCount,
   uploaderName,
+  uploaderId,
 }: PaperCardProps) {
+  const navigate = useNavigate();
+
+  const handleUploaderClick = (e: React.MouseEvent) => {
+    if (uploaderId) {
+      e.preventDefault();
+      e.stopPropagation();
+      navigate(`/user/${uploaderId}`);
+    }
+  };
   return (
     <Link to={`/paper/${id}`}>
       <Card className="group relative h-full transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border-border/50 bg-card">
@@ -76,7 +87,10 @@ export function PaperCard({
               <span className="capitalize">{examType.replace('_', ' ')}</span>
             </div>
             {uploaderName && (
-              <div className="flex items-center gap-1 text-muted-foreground">
+              <div 
+                className={`flex items-center gap-1 text-muted-foreground ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : ''}`}
+                onClick={uploaderId ? handleUploaderClick : undefined}
+              >
                 <User className="h-3.5 w-3.5" />
                 <span className="truncate">Uploaded by {uploaderName}</span>
               </div>

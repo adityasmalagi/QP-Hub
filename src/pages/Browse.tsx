@@ -327,6 +327,7 @@ export default function Browse() {
                   viewsCount={paper.views_count}
                   downloadsCount={paper.downloads_count}
                   uploaderName={paper.uploaderName}
+                  uploaderId={paper.user_id}
                 />
               ))}
             </div>

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2 } from 'lucide-react';
+import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { PDFViewer } from '@/components/PDFViewer';
@@ -27,12 +27,14 @@ interface Paper {
   created_at: string;
   semester: number | null;
   internal_number: number | null;
+  user_id: string;
 }
 
 export default function PaperDetail() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const [paper, setPaper] = useState<Paper | null>(null);
+  const [uploaderName, setUploaderName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -46,7 +48,7 @@ export default function PaperDetail() {
     try {
       const { data, error } = await supabase
         .from('question_papers')
-        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number')
+        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, user_id')
         .eq('id', id)
         .maybeSingle();
 
@@ -56,6 +58,19 @@ export default function PaperDetail() {
         setPaper(data);
         // Increment view count atomically
         await supabase.rpc('increment_views', { _paper_id: id });
+        
+        // Fetch uploader name
+        if (data.user_id) {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('id', data.user_id)
+            .maybeSingle();
+          
+          if (profileData) {
+            setUploaderName(profileData.full_name);
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching paper:', error);
@@ -189,6 +204,15 @@ export default function PaperDetail() {
                 <Calendar className="h-4 w-4" />
                 {new Date(paper.created_at).toLocaleDateString()}
               </span>
+              {uploaderName && (
+                <Link 
+                  to={`/user/${paper.user_id}`}
+                  className="flex items-center gap-1 hover:text-primary transition-colors"
+                >
+                  <User className="h-4 w-4" />
+                  Uploaded by {uploaderName}
+                </Link>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-3">
