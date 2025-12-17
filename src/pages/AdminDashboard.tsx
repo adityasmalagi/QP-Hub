@@ -40,6 +40,7 @@ interface Paper {
   created_at: string;
   views_count: number;
   downloads_count: number;
+  institute_name: string | null;
 }
 
 interface UserWithRole {
@@ -353,6 +354,9 @@ export default function AdminDashboard() {
                             <Badge variant="outline">{paper.board}</Badge>
                             <Badge variant="outline">Class {paper.class_level}</Badge>
                             <Badge variant="outline">{paper.year}</Badge>
+                            {paper.institute_name && (
+                              <Badge variant="outline" className="text-xs">{paper.institute_name}</Badge>
+                            )}
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -407,6 +411,9 @@ export default function AdminDashboard() {
                           <div className="flex flex-wrap gap-2">
                             <Badge variant="outline">{paper.subject}</Badge>
                             <Badge variant="outline">{paper.board}</Badge>
+                            {paper.institute_name && (
+                              <Badge variant="outline" className="text-xs">{paper.institute_name}</Badge>
+                            )}
                             <span className="text-xs text-muted-foreground">
                               {paper.views_count} views • {paper.downloads_count} downloads
                             </span>
