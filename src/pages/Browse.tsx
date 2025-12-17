@@ -20,7 +20,8 @@ interface QuestionPaper {
   exam_type: string;
   views_count: number;
   downloads_count: number;
-  uploader: { full_name: string | null } | null;
+  user_id: string;
+  uploaderName?: string | null;
 }
 
 export default function Browse() {
@@ -45,7 +46,7 @@ export default function Browse() {
     try {
       let query = supabase
         .from('question_papers')
-        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, uploader:profiles!question_papers_user_id_fkey(full_name)')
+        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, user_id')
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
 
@@ -80,7 +81,24 @@ export default function Browse() {
       const { data, error } = await query.limit(50);
 
       if (error) throw error;
-      setPapers(data || []);
+      
+      // Fetch uploader names for all papers
+      if (data && data.length > 0) {
+        const userIds = [...new Set(data.map(p => p.user_id))];
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', userIds);
+        
+        const profileMap = new Map(profiles?.map(p => [p.id, p.full_name]) || []);
+        const papersWithUploaders = data.map(paper => ({
+          ...paper,
+          uploaderName: profileMap.get(paper.user_id) || null
+        }));
+        setPapers(papersWithUploaders);
+      } else {
+        setPapers([]);
+      }
     } catch (error) {
       console.error('Error fetching papers:', error);
       toast({
@@ -308,7 +326,7 @@ export default function Browse() {
                   examType={paper.exam_type}
                   viewsCount={paper.views_count}
                   downloadsCount={paper.downloads_count}
-                  uploaderName={paper.uploader?.full_name || null}
+                  uploaderName={paper.uploaderName}
                 />
               ))}
             </div>
