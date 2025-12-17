@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,7 +19,8 @@ import {
   X, 
   Clock,
   Shield,
-  ShieldOff
+  ShieldOff,
+  Search
 } from 'lucide-react';
 
 interface Paper {
@@ -64,6 +67,8 @@ export default function AdminDashboard() {
   });
   const [loadingPapers, setLoadingPapers] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [userSearch, setUserSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all');
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) {
@@ -232,6 +237,17 @@ export default function AdminDashboard() {
 
   const pendingPapers = papers.filter(p => p.status === 'pending');
   const allPapers = papers;
+  
+  const filteredUsers = useMemo(() => {
+    return users.filter(u => {
+      const matchesSearch = !userSearch || 
+        (u.full_name?.toLowerCase().includes(userSearch.toLowerCase()));
+      const matchesRole = roleFilter === 'all' || 
+        (roleFilter === 'admin' && u.isAdmin) || 
+        (roleFilter === 'user' && !u.isAdmin);
+      return matchesSearch && matchesRole;
+    });
+  }, [users, userSearch, roleFilter]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -415,15 +431,36 @@ export default function AdminDashboard() {
             <Card className="border-border bg-card">
               <CardHeader>
                 <CardTitle>User Management</CardTitle>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder="Search users by name..."
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
+                  <Select value={roleFilter} onValueChange={(value: 'all' | 'admin' | 'user') => setRoleFilter(value)}>
+                    <SelectTrigger className="w-full sm:w-40">
+                      <SelectValue placeholder="Filter by role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Users</SelectItem>
+                      <SelectItem value="admin">Admins Only</SelectItem>
+                      <SelectItem value="user">Non-Admins</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent>
                 {loadingUsers ? (
                   <p className="text-muted-foreground">Loading...</p>
-                ) : users.length === 0 ? (
+                ) : filteredUsers.length === 0 ? (
                   <p className="text-muted-foreground">No users found</p>
                 ) : (
                   <div className="space-y-4">
-                    {users.map((u) => (
+                    {filteredUsers.map((u) => (
                       <div key={u.id} className="flex items-center justify-between rounded-lg border border-border p-4">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
