@@ -4,12 +4,10 @@ export const BOARDS = [
   { value: 'icse', label: 'ICSE', category: 'Indian' },
   { value: 'isc', label: 'ISC', category: 'Indian' },
   { value: 'state', label: 'State Board', category: 'Indian' },
-  { value: 'nios', label: 'NIOS', category: 'Indian' },
-  // International Boards
-  { value: 'ib', label: 'IB (International Baccalaureate)', category: 'International' },
-  { value: 'cambridge', label: 'Cambridge (IGCSE/A-Level)', category: 'International' },
-  { value: 'edexcel', label: 'Edexcel', category: 'International' },
-  { value: 'ap', label: 'AP (Advanced Placement)', category: 'International' },
+  { value: 'pu-board', label: 'PU Board', category: 'Indian' },
+  // University
+  { value: 'university-autonomous', label: 'University (Autonomous)', category: 'University' },
+  { value: 'university-vtu', label: 'University (VTU)', category: 'University' },
 ] as const;
 
 export const CLASS_LEVELS = [
@@ -20,9 +18,18 @@ export const CLASS_LEVELS = [
   { value: '10', label: 'Class 10' },
   { value: '11', label: 'Class 11' },
   { value: '12', label: 'Class 12' },
-  { value: 'undergraduate', label: 'Undergraduate' },
-  { value: 'postgraduate', label: 'Postgraduate' },
+  // Engineering Branches
+  { value: 'cse-aiml', label: 'CSE - AI/ML' },
+  { value: 'cse-ds', label: 'CSE - Data Science' },
+  { value: 'it', label: 'Information Technology (IT)' },
+  { value: 'ece', label: 'Electronics & Communication (ECE)' },
+  { value: 'eee', label: 'Electrical & Electronics (EEE)' },
+  { value: 'civil', label: 'Civil Engineering' },
+  { value: 'mechanical', label: 'Mechanical Engineering' },
 ] as const;
+
+// Engineering branches that should show semester field
+export const ENGINEERING_BRANCHES = ['cse-aiml', 'cse-ds', 'it', 'ece', 'eee', 'civil', 'mechanical'];
 
 export const SUBJECTS = [
   { value: 'mathematics', label: 'Mathematics' },
