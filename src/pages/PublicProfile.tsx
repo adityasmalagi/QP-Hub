@@ -3,8 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { User, FileText, Loader2, ArrowLeft } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useFollow } from '@/hooks/useFollow';
+import { User, FileText, Loader2, ArrowLeft, Users, Download, Eye, UserPlus, UserMinus } from 'lucide-react';
 import { PaperCard } from '@/components/PaperCard';
 
 interface PublicProfileData {
@@ -28,10 +31,19 @@ interface UploadedPaper {
   downloads_count: number;
 }
 
+interface UploaderStats {
+  paperCount: number;
+  totalDownloads: number;
+  totalViews: number;
+}
+
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>();
+  const { user } = useAuth();
+  const { isFollowing, followerCount, loading: followLoading, toggleFollow } = useFollow(userId);
   const [profile, setProfile] = useState<PublicProfileData | null>(null);
   const [papers, setPapers] = useState<UploadedPaper[]>([]);
+  const [stats, setStats] = useState<UploaderStats>({ paperCount: 0, totalDownloads: 0, totalViews: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -62,6 +74,12 @@ export default function PublicProfile() {
 
       if (papersError) throw papersError;
       setPapers(papersData || []);
+
+      // Calculate stats
+      const paperCount = papersData?.length || 0;
+      const totalDownloads = papersData?.reduce((sum, p) => sum + p.downloads_count, 0) || 0;
+      const totalViews = papersData?.reduce((sum, p) => sum + p.views_count, 0) || 0;
+      setStats({ paperCount, totalDownloads, totalViews });
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {
@@ -114,14 +132,37 @@ export default function PublicProfile() {
         {/* Profile Card */}
         <Card className="mb-8">
           <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 shrink-0">
                 <User className="h-8 w-8 text-primary" />
               </div>
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold text-foreground">
-                  {profile.full_name || 'Anonymous User'}
-                </h1>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <h1 className="text-2xl font-bold text-foreground">
+                    {profile.full_name || 'Anonymous User'}
+                  </h1>
+                  {user && user.id !== userId && (
+                    <Button
+                      variant={isFollowing ? "outline" : "default"}
+                      size="sm"
+                      onClick={toggleFollow}
+                      disabled={followLoading}
+                      className={isFollowing ? "" : "gradient-primary"}
+                    >
+                      {isFollowing ? (
+                        <>
+                          <UserMinus className="mr-2 h-4 w-4" />
+                          Unfollow
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus className="mr-2 h-4 w-4" />
+                          Follow
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
                 
                 {(profile.class_level || profile.board || profile.course) && (
                   <div className="mt-2 flex flex-wrap gap-2">
@@ -140,6 +181,30 @@ export default function PublicProfile() {
                 {profile.bio && (
                   <p className="mt-4 text-muted-foreground">{profile.bio}</p>
                 )}
+
+                {/* Stats Section */}
+                <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Users className="h-4 w-4" />
+                    <span className="font-medium text-foreground">{followerCount}</span>
+                    <span>followers</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <FileText className="h-4 w-4" />
+                    <span className="font-medium text-foreground">{stats.paperCount}</span>
+                    <span>papers</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Download className="h-4 w-4" />
+                    <span className="font-medium text-foreground">{stats.totalDownloads}</span>
+                    <span>downloads</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Eye className="h-4 w-4" />
+                    <span className="font-medium text-foreground">{stats.totalViews}</span>
+                    <span>views</span>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>

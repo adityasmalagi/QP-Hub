@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { FileText, Upload, LogOut, User, Shield, Settings, Sun, Moon, Monitor, Menu, X, Download, Mail, Calendar, Heart } from 'lucide-react';
+import { NotificationsDropdown } from '@/components/NotificationsDropdown';
 import { useTheme } from 'next-themes';
 import {
   DropdownMenu,
@@ -109,6 +110,7 @@ export function Navbar() {
 
           {user ? (
             <>
+              <NotificationsDropdown />
               <Link to="/profile?tab=downloads" className="hidden md:block">
                 <Button variant="outline" size="sm">
                   <Download className="mr-2 h-4 w-4" />
