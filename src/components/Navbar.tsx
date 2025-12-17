@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { FileText, Upload, LogOut, User, Shield, Settings, Sun, Moon, Monitor, Menu, X, Download, Mail, Calendar } from 'lucide-react';
+import { FileText, Upload, LogOut, User, Shield, Settings, Sun, Moon, Monitor, Menu, X, Download, Mail, Calendar, Heart } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import {
   DropdownMenu,
@@ -109,6 +109,12 @@ export function Navbar() {
 
           {user ? (
             <>
+              <Link to="/profile?tab=bookmarks" className="hidden md:block">
+                <Button variant="outline" size="sm">
+                  <Heart className="mr-2 h-4 w-4" />
+                  My Bookmarks
+                </Button>
+              </Link>
               <Link to="/profile?tab=downloads" className="hidden md:block">
                 <Button variant="outline" size="sm">
                   <Download className="mr-2 h-4 w-4" />
@@ -166,6 +172,10 @@ export function Navbar() {
                       </DropdownMenuItem>
                     </DropdownMenuSubContent>
                   </DropdownMenuSub>
+                  <DropdownMenuItem onClick={() => navigate('/profile?tab=bookmarks')}>
+                    <Heart className="mr-2 h-4 w-4" />
+                    Bookmarks
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/profile?tab=downloads')}>
                     <Download className="mr-2 h-4 w-4" />
                     Downloads
@@ -227,6 +237,14 @@ export function Navbar() {
                           <Button variant="ghost" className="w-full justify-start">
                             <User className="mr-2 h-4 w-4" />
                             Profile
+                          </Button>
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/profile?tab=bookmarks">
+                          <Button variant="ghost" className="w-full justify-start">
+                            <Heart className="mr-2 h-4 w-4" />
+                            Bookmarks
                           </Button>
                         </Link>
                       </SheetClose>
