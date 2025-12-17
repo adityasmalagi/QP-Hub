@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus } from 'lucide-react';
+import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES } from '@/lib/constants';
 import { PaperCard } from '@/components/PaperCard';
@@ -86,6 +86,24 @@ interface FollowedUser {
   } | null;
 }
 
+interface Follower {
+  id: string;
+  follower_id: string;
+  created_at: string;
+  profile?: {
+    id: string;
+    full_name: string | null;
+    bio: string | null;
+    class_level: string | null;
+    board: string | null;
+  } | null;
+  stats?: {
+    paperCount: number;
+    totalDownloads: number;
+    totalViews: number;
+  };
+}
+
 interface ValidationErrors {
   full_name?: string;
   class_level?: string;
@@ -127,17 +145,20 @@ export default function Profile() {
   const [downloads, setDownloads] = useState<DownloadedPaper[]>([]);
   const [bookmarks, setBookmarks] = useState<BookmarkedPaper[]>([]);
   const [following, setFollowing] = useState<FollowedUser[]>([]);
+  const [followers, setFollowers] = useState<Follower[]>([]);
   const [saving, setSaving] = useState(false);
   const [savingSettings, setSavingSettings] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadingDownloads, setLoadingDownloads] = useState(true);
   const [loadingBookmarks, setLoadingBookmarks] = useState(true);
   const [loadingFollowing, setLoadingFollowing] = useState(true);
+  const [loadingFollowers, setLoadingFollowers] = useState(true);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [settingsAge, setSettingsAge] = useState<number | null>(null);
   const [downloadSearch, setDownloadSearch] = useState('');
   const [bookmarkSearch, setBookmarkSearch] = useState('');
   const [followingSearch, setFollowingSearch] = useState('');
+  const [followersSearch, setFollowersSearch] = useState('');
 
   const isEngineeringBranch = ENGINEERING_BRANCHES.includes(profile.class_level || '');
 
@@ -154,6 +175,7 @@ export default function Profile() {
       fetchDownloads();
       fetchBookmarks();
       fetchFollowing();
+      fetchFollowers();
     }
   }, [user]);
 
@@ -269,6 +291,59 @@ export default function Profile() {
 
     setFollowing(followingWithProfiles);
     setLoadingFollowing(false);
+  };
+
+  const fetchFollowers = async () => {
+    if (!user) return;
+    
+    // First fetch followers
+    const { data: followersData, error: followersError } = await supabase
+      .from('user_follows')
+      .select('id, follower_id, created_at')
+      .eq('following_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (followersError || !followersData || followersData.length === 0) {
+      setFollowers([]);
+      setLoadingFollowers(false);
+      return;
+    }
+
+    // Fetch profiles for all followers
+    const followerIds = followersData.map(f => f.follower_id);
+    const { data: profilesData } = await supabase
+      .from('profiles')
+      .select('id, full_name, bio, class_level, board')
+      .in('id', followerIds);
+
+    // Fetch paper stats for each follower
+    const { data: papersData } = await supabase
+      .from('question_papers')
+      .select('user_id, views_count, downloads_count')
+      .in('user_id', followerIds)
+      .eq('status', 'approved');
+
+    // Calculate stats per user
+    const statsMap = new Map<string, { paperCount: number; totalDownloads: number; totalViews: number }>();
+    papersData?.forEach(paper => {
+      const current = statsMap.get(paper.user_id) || { paperCount: 0, totalDownloads: 0, totalViews: 0 };
+      statsMap.set(paper.user_id, {
+        paperCount: current.paperCount + 1,
+        totalDownloads: current.totalDownloads + paper.downloads_count,
+        totalViews: current.totalViews + paper.views_count
+      });
+    });
+
+    const profileMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+    
+    const followersWithProfiles: Follower[] = followersData.map(follower => ({
+      ...follower,
+      profile: profileMap.get(follower.follower_id) || null,
+      stats: statsMap.get(follower.follower_id) || { paperCount: 0, totalDownloads: 0, totalViews: 0 }
+    }));
+
+    setFollowers(followersWithProfiles);
+    setLoadingFollowers(false);
   };
 
   const removeBookmark = async (bookmarkId: string) => {
@@ -458,6 +533,16 @@ export default function Profile() {
     );
   });
 
+  const filteredFollowers = followers.filter((f) => {
+    if (!followersSearch.trim()) return true;
+    const search = followersSearch.toLowerCase();
+    return (
+      f.profile?.full_name?.toLowerCase().includes(search) ||
+      f.profile?.class_level?.toLowerCase().includes(search) ||
+      f.profile?.board?.toLowerCase().includes(search)
+    );
+  });
+
   if (loading || loadingProfile) {
     return (
       <div className="min-h-screen bg-background">
@@ -498,6 +583,10 @@ export default function Profile() {
             <TabsTrigger value="following" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Following ({following.length})
+            </TabsTrigger>
+            <TabsTrigger value="followers" className="flex items-center gap-2">
+              <UserPlus className="h-4 w-4" />
+              Followers ({followers.length})
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
@@ -1008,6 +1097,110 @@ export default function Profile() {
                           >
                             Remove
                           </Button>
+                        </Card>
+                      )
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="followers">
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <CardTitle>Followers</CardTitle>
+                    <CardDescription>
+                      People who follow you to get notified about your uploads.
+                    </CardDescription>
+                  </div>
+                </div>
+                {followers.length > 0 && (
+                  <div className="relative mt-4">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder="Search by name, class, or board..."
+                      value={followersSearch}
+                      onChange={(e) => setFollowersSearch(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
+                )}
+              </CardHeader>
+              <CardContent>
+                {loadingFollowers ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : followers.length === 0 ? (
+                  <div className="text-center py-8">
+                    <UserPlus className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No followers yet</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Upload quality papers to attract followers!
+                    </p>
+                  </div>
+                ) : filteredFollowers.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No followers found matching your search</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredFollowers.map((follower) => (
+                      follower.profile ? (
+                        <Card key={follower.id} className="relative overflow-hidden">
+                          <CardContent className="p-4">
+                            <Link 
+                              to={`/user/${follower.follower_id}`}
+                              className="flex items-start gap-3 group"
+                            >
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                                <User className="h-6 w-6 text-primary" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                                  {follower.profile.full_name || 'Anonymous User'}
+                                </h3>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {follower.profile.class_level && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {follower.profile.class_level}
+                                    </Badge>
+                                  )}
+                                  {follower.profile.board && (
+                                    <Badge variant="outline" className="text-xs">
+                                      {follower.profile.board}
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            </Link>
+                            {follower.stats && (
+                              <div className="mt-3 pt-3 border-t border-border">
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                  <span className="flex items-center gap-1">
+                                    <FileText className="h-3 w-3" />
+                                    {follower.stats.paperCount} papers
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Download className="h-3 w-3" />
+                                    {follower.stats.totalDownloads}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Eye className="h-3 w-3" />
+                                    {follower.stats.totalViews}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ) : (
+                        <Card key={follower.id} className="flex items-center justify-between p-4">
+                          <p className="text-muted-foreground">User no longer available</p>
                         </Card>
                       )
                     ))}

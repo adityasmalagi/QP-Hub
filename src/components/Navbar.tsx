@@ -180,6 +180,10 @@ export function Navbar() {
                     <Users className="mr-2 h-4 w-4" />
                     Following
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/profile?tab=followers')}>
+                    <Users className="mr-2 h-4 w-4" />
+                    Followers
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <DropdownMenuItem onClick={() => navigate('/admin')}>
                       <Shield className="mr-2 h-4 w-4" />
