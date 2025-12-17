@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Eye, Download, FileText } from 'lucide-react';
+import { Eye, Download, FileText, User } from 'lucide-react';
 import { BookmarkButton } from '@/components/BookmarkButton';
 
 interface PaperCardProps {
@@ -14,6 +14,7 @@ interface PaperCardProps {
   examType: string;
   viewsCount: number;
   downloadsCount: number;
+  uploaderName?: string | null;
 }
 
 export function PaperCard({
@@ -26,6 +27,7 @@ export function PaperCard({
   examType,
   viewsCount,
   downloadsCount,
+  uploaderName,
 }: PaperCardProps) {
   return (
     <Link to={`/paper/${id}`}>
@@ -59,18 +61,26 @@ export function PaperCard({
             </Badge>
           </div>
           
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1">
-                <Eye className="h-3.5 w-3.5" />
-                {viewsCount}
-              </span>
-              <span className="flex items-center gap-1">
-                <Download className="h-3.5 w-3.5" />
-                {downloadsCount}
-              </span>
+          <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1">
+                  <Eye className="h-3.5 w-3.5" />
+                  {viewsCount}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Download className="h-3.5 w-3.5" />
+                  {downloadsCount}
+                </span>
+              </div>
+              <span className="capitalize">{examType.replace('_', ' ')}</span>
             </div>
-            <span className="capitalize">{examType.replace('_', ' ')}</span>
+            {uploaderName && (
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <User className="h-3.5 w-3.5" />
+                <span className="truncate">Uploaded by {uploaderName}</span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

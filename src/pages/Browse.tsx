@@ -20,6 +20,7 @@ interface QuestionPaper {
   exam_type: string;
   views_count: number;
   downloads_count: number;
+  uploader: { full_name: string | null } | null;
 }
 
 export default function Browse() {
@@ -44,7 +45,7 @@ export default function Browse() {
     try {
       let query = supabase
         .from('question_papers')
-        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number')
+        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, uploader:profiles!question_papers_user_id_fkey(full_name)')
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
 
@@ -307,6 +308,7 @@ export default function Browse() {
                   examType={paper.exam_type}
                   viewsCount={paper.views_count}
                   downloadsCount={paper.downloads_count}
+                  uploaderName={paper.uploader?.full_name || null}
                 />
               ))}
             </div>
