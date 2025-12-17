@@ -175,7 +175,7 @@ export default function Upload() {
           exam_type: formData.examType,
           file_url: publicUrl,
           file_name: file.name,
-          status: 'pending',
+          status: 'approved',
           semester: requiresSemester ? parseInt(formData.semester) : null,
           internal_number: requiresInternalNumber ? parseInt(formData.internalNumber) : null,
           institute_name: formData.instituteName.trim() || null,
@@ -185,7 +185,7 @@ export default function Upload() {
 
       toast({
         title: 'Upload successful!',
-        description: 'Your question paper has been submitted for review. It will be visible once approved by an admin.',
+        description: 'Your question paper is now live and visible to everyone!',
       });
       
       navigate('/browse');
