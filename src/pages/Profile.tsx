@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -166,6 +167,7 @@ export default function Profile() {
   const [followingSearch, setFollowingSearch] = useState('');
   const [followersSearch, setFollowersSearch] = useState('');
   const [editingPaper, setEditingPaper] = useState<Paper | null>(null);
+  const [paperToDelete, setPaperToDelete] = useState<Paper | null>(null);
   const [editFormData, setEditFormData] = useState({
     title: '',
     subject: '',
@@ -463,11 +465,13 @@ export default function Profile() {
     setSavingSettings(false);
   };
 
-  const deletePaper = async (paperId: string) => {
+  const deletePaper = async () => {
+    if (!paperToDelete) return;
+    
     const { error } = await supabase
       .from('question_papers')
       .delete()
-      .eq('id', paperId);
+      .eq('id', paperToDelete.id);
 
     if (error) {
       toast.error('Failed to delete paper');
@@ -475,6 +479,7 @@ export default function Profile() {
       toast.success('Paper deleted');
       fetchMyPapers();
     }
+    setPaperToDelete(null);
   };
 
   const openEditDialog = (paper: Paper) => {
@@ -865,8 +870,8 @@ export default function Profile() {
                 ) : (
                   <div className="space-y-4">
                     {myPapers.map((paper) => (
-                      <div key={paper.id} className="flex items-center justify-between rounded-lg border border-border p-4">
-                        <div className="space-y-1">
+                      <div key={paper.id} className="rounded-lg border border-border p-4">
+                        <div className="space-y-3">
                           <div className="flex items-center gap-2">
                             <Link to={`/paper/${paper.id}`} className="font-medium text-foreground hover:text-primary">
                               {paper.title}
@@ -888,24 +893,24 @@ export default function Profile() {
                               <Download className="h-3 w-3" /> {paper.downloads_count}
                             </span>
                           </div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => openEditDialog(paper)}
-                          >
-                            <Pencil className="mr-1 h-3 w-3" />
-                            Edit
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deletePaper(paper.id)}
-                          >
-                            <Trash2 className="mr-1 h-3 w-3" />
-                            Delete
-                          </Button>
+                          <div className="flex gap-2 pt-2 border-t border-border">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openEditDialog(paper)}
+                            >
+                              <Pencil className="mr-1 h-3 w-3" />
+                              Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => setPaperToDelete(paper)}
+                            >
+                              <Trash2 className="mr-1 h-3 w-3" />
+                              Delete
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1536,6 +1541,23 @@ export default function Profile() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!paperToDelete} onOpenChange={(open) => !open && setPaperToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Paper</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{paperToDelete?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={deletePaper} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
