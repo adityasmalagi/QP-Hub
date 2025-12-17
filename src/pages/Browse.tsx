@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
-import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS } from '@/lib/constants';
+import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
 import { Search, Filter, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -38,6 +38,8 @@ export default function Browse() {
     subject: '',
     year: '',
     examType: '',
+    semester: '',
+    internalNumber: '',
   });
   const [showFilters, setShowFilters] = useState(false);
   const { toast } = useToast();
@@ -68,6 +70,12 @@ export default function Browse() {
       }
       if (filters.examType) {
         query = query.eq('exam_type', filters.examType);
+      }
+      if (filters.semester) {
+        query = query.eq('semester', parseInt(filters.semester));
+      }
+      if (filters.internalNumber) {
+        query = query.eq('internal_number', parseInt(filters.internalNumber));
       }
 
       const { data, error } = await query.limit(50);
@@ -102,9 +110,14 @@ export default function Browse() {
       subject: '',
       year: '',
       examType: '',
+      semester: '',
+      internalNumber: '',
     });
     setSearchQuery('');
   };
+
+  const showSemesterFilter = filters.examType === 'sem_paper' || filters.examType === 'internals';
+  const showInternalFilter = filters.examType === 'internals';
 
   const hasActiveFilters = Object.values(filters).some(v => v) || searchQuery;
 
@@ -159,7 +172,7 @@ export default function Browse() {
                 )}
               </div>
               
-              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
                 <div className="space-y-2">
                   <Label>Board</Label>
                   <Select
@@ -240,7 +253,7 @@ export default function Browse() {
                   <Label>Exam Type</Label>
                   <Select
                     value={filters.examType}
-                    onValueChange={(v) => setFilters(f => ({ ...f, examType: v }))}
+                    onValueChange={(v) => setFilters(f => ({ ...f, examType: v, semester: '', internalNumber: '' }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="All types" />
@@ -254,6 +267,48 @@ export default function Browse() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {showSemesterFilter && (
+                  <div className="space-y-2">
+                    <Label>Semester</Label>
+                    <Select
+                      value={filters.semester}
+                      onValueChange={(v) => setFilters(f => ({ ...f, semester: v }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All semesters" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SEMESTERS.map((sem) => (
+                          <SelectItem key={sem.value} value={sem.value}>
+                            {sem.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {showInternalFilter && (
+                  <div className="space-y-2">
+                    <Label>Internal Number</Label>
+                    <Select
+                      value={filters.internalNumber}
+                      onValueChange={(v) => setFilters(f => ({ ...f, internalNumber: v }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All internals" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INTERNAL_NUMBERS.map((int) => (
+                          <SelectItem key={int.value} value={int.value}>
+                            {int.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             </div>
           )}

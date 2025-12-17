@@ -1,8 +1,12 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, Upload, BookOpen, Users, FileText, ArrowRight, CheckCircle, Sparkles, Filter } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { PaperCard } from '@/components/PaperCard';
 
 const stats = [
   { value: '10K+', label: 'Question Papers' },
@@ -30,7 +34,66 @@ const filterTips = [
   { title: 'Select Year', description: 'Access papers from 2015 to present year' },
 ];
 
+interface RecommendedPaper {
+  id: string;
+  title: string;
+  subject: string;
+  board: string;
+  class_level: string;
+  year: number;
+  exam_type: string;
+  views_count: number;
+  downloads_count: number;
+}
+
 export default function Index() {
+  const { user } = useAuth();
+  const [recommendations, setRecommendations] = useState<RecommendedPaper[]>([]);
+  const [loadingRecs, setLoadingRecs] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      fetchRecommendations();
+    }
+  }, [user]);
+
+  const fetchRecommendations = async () => {
+    if (!user) return;
+    setLoadingRecs(true);
+    
+    try {
+      // Get user's profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('class_level, board')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profile?.class_level || profile?.board) {
+        let query = supabase
+          .from('question_papers')
+          .select('*')
+          .eq('status', 'approved')
+          .order('downloads_count', { ascending: false })
+          .limit(4);
+
+        if (profile.class_level) {
+          query = query.eq('class_level', profile.class_level);
+        }
+        if (profile.board) {
+          query = query.eq('board', profile.board);
+        }
+
+        const { data } = await query;
+        setRecommendations(data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+    } finally {
+      setLoadingRecs(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -88,6 +151,46 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Recommended Papers Section - Only for logged in users */}
+      {user && recommendations.length > 0 && (
+        <section className="border-t border-border bg-card/30 py-12">
+          <div className="container mx-auto px-4">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                  Recommended For You
+                </h2>
+                <p className="mt-1 text-muted-foreground">
+                  Based on your profile preferences
+                </p>
+              </div>
+              <Link to="/browse">
+                <Button variant="outline" size="sm">
+                  View All
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {recommendations.map((paper) => (
+                <PaperCard
+                  key={paper.id}
+                  id={paper.id}
+                  title={paper.title}
+                  subject={paper.subject}
+                  board={paper.board}
+                  classLevel={paper.class_level}
+                  year={paper.year}
+                  examType={paper.exam_type}
+                  viewsCount={paper.views_count}
+                  downloadsCount={paper.downloads_count}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* How to Find Papers Section */}
       <section className="border-t border-border bg-card/30 py-20">
