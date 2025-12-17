@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail } from 'lucide-react';
+import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES } from '@/lib/constants';
 
@@ -272,6 +272,38 @@ export default function Profile() {
       toast.success('Removed from downloads');
       fetchDownloads();
     }
+  };
+
+  const exportDownloadsToCSV = () => {
+    if (downloads.length === 0) {
+      toast.error('No downloads to export');
+      return;
+    }
+
+    const headers = ['Title', 'Subject', 'Board', 'Class Level', 'Year', 'Downloaded Date'];
+    const rows = downloads.map((d) => [
+      d.paper?.title || 'N/A',
+      d.paper?.subject || 'N/A',
+      d.paper?.board || 'N/A',
+      d.paper?.class_level || 'N/A',
+      d.paper?.year?.toString() || 'N/A',
+      new Date(d.downloaded_at).toLocaleDateString(),
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `qp-hub-downloads-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    toast.success('Download history exported!');
   };
 
   const isFormValid = profile.full_name && profile.full_name.trim().length >= 2 && profile.class_level && profile.board;
@@ -541,11 +573,19 @@ export default function Profile() {
 
           <TabsContent value="downloads">
             <Card className="border-border bg-card">
-              <CardHeader>
-                <CardTitle>My Downloads</CardTitle>
-                <CardDescription>
-                  Papers you have downloaded
-                </CardDescription>
+              <CardHeader className="flex flex-row items-start justify-between">
+                <div>
+                  <CardTitle>My Downloads</CardTitle>
+                  <CardDescription>
+                    Papers you have downloaded
+                  </CardDescription>
+                </div>
+                {downloads.length > 0 && (
+                  <Button variant="outline" size="sm" onClick={exportDownloadsToCSV}>
+                    <FileDown className="mr-2 h-4 w-4" />
+                    Export CSV
+                  </Button>
+                )}
               </CardHeader>
               <CardContent>
                 {loadingDownloads ? (
