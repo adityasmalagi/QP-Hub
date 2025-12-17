@@ -46,7 +46,7 @@ export default function PaperDetail() {
     try {
       const { data, error } = await supabase
         .from('question_papers')
-        .select('*')
+        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number')
         .eq('id', id)
         .maybeSingle();
 

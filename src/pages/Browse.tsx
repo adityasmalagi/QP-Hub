@@ -43,7 +43,7 @@ export default function Browse() {
     try {
       let query = supabase
         .from('question_papers')
-        .select('*')
+        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number')
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
 

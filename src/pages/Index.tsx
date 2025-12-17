@@ -72,7 +72,7 @@ export default function Index() {
       if (profile?.class_level || profile?.board) {
         let query = supabase
           .from('question_papers')
-          .select('*')
+          .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count')
           .eq('status', 'approved')
           .order('downloads_count', { ascending: false })
           .limit(4);
