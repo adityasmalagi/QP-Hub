@@ -563,36 +563,44 @@ export default function Profile() {
         <h1 className="mb-8 text-3xl font-bold text-foreground">My Profile</h1>
 
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="mb-6 flex-wrap">
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Profile
-            </TabsTrigger>
-            <TabsTrigger value="papers" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              My Papers ({myPapers.length})
-            </TabsTrigger>
-            <TabsTrigger value="downloads" className="flex items-center gap-2">
-              <Download className="h-4 w-4" />
-              Downloads ({downloads.length})
-            </TabsTrigger>
-            <TabsTrigger value="bookmarks" className="flex items-center gap-2">
-              <Heart className="h-4 w-4" />
-              Bookmarks ({bookmarks.length})
-            </TabsTrigger>
-            <TabsTrigger value="following" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Following ({following.length})
-            </TabsTrigger>
-            <TabsTrigger value="followers" className="flex items-center gap-2">
-              <UserPlus className="h-4 w-4" />
-              Followers ({followers.length})
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Settings
-            </TabsTrigger>
-          </TabsList>
+          <div className="mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <TabsList className="inline-flex w-max sm:w-auto">
+              <TabsTrigger value="profile" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Profile</span>
+                <span className="sm:hidden">Profile</span>
+              </TabsTrigger>
+              <TabsTrigger value="papers" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">My Papers ({myPapers.length})</span>
+                <span className="sm:hidden">Papers</span>
+              </TabsTrigger>
+              <TabsTrigger value="downloads" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Downloads ({downloads.length})</span>
+                <span className="sm:hidden">Downloads</span>
+              </TabsTrigger>
+              <TabsTrigger value="bookmarks" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Bookmarks ({bookmarks.length})</span>
+                <span className="sm:hidden">Saved</span>
+              </TabsTrigger>
+              <TabsTrigger value="following" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Following ({following.length})</span>
+                <span className="sm:hidden">Following</span>
+              </TabsTrigger>
+              <TabsTrigger value="followers" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <UserPlus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Followers ({followers.length})</span>
+                <span className="sm:hidden">Followers</span>
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span>Settings</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="profile">
             <Card className="max-w-2xl border-border bg-card">
