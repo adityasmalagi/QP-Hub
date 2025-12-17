@@ -14,7 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User, FileText, Download, Eye, Save, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { BOARDS, CLASS_LEVELS } from '@/lib/constants';
+import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES } from '@/lib/constants';
 
 interface Profile {
   full_name: string | null;
@@ -38,6 +38,12 @@ interface Paper {
   views_count: number;
   downloads_count: number;
   created_at: string;
+}
+
+interface ValidationErrors {
+  full_name?: string;
+  class_level?: string;
+  board?: string;
 }
 
 const COURSES = [
@@ -70,8 +76,9 @@ export default function Profile() {
   const [myPapers, setMyPapers] = useState<Paper[]>([]);
   const [saving, setSaving] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
-  const isUndergraduate = profile.class_level === 'undergraduate' || profile.class_level === 'postgraduate';
+  const isEngineeringBranch = ENGINEERING_BRANCHES.includes(profile.class_level || '');
 
   useEffect(() => {
     if (!loading && !user) {
@@ -124,20 +131,44 @@ export default function Profile() {
     }
   };
 
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    
+    if (!profile.full_name || profile.full_name.trim().length < 2) {
+      newErrors.full_name = 'Full name is required (min 2 characters)';
+    }
+    
+    if (!profile.class_level) {
+      newErrors.class_level = 'Class/Level is required';
+    }
+    
+    if (!profile.board) {
+      newErrors.board = 'Board is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSaveProfile = async () => {
     if (!user) return;
+    
+    if (!validateForm()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
     
     setSaving(true);
     const { error } = await supabase
       .from('profiles')
       .update({
-        full_name: profile.full_name,
+        full_name: profile.full_name?.trim(),
         bio: profile.bio,
         class_level: profile.class_level || null,
         board: profile.board || null,
         year: profile.year,
         course: profile.course || null,
-        semester: isUndergraduate ? profile.semester : null
+        semester: isEngineeringBranch ? profile.semester : null
       })
       .eq('id', user.id);
 
@@ -162,6 +193,8 @@ export default function Profile() {
       fetchMyPapers();
     }
   };
+
+  const isFormValid = profile.full_name && profile.full_name.trim().length >= 2 && profile.class_level && profile.board;
 
   if (loading || loadingProfile) {
     return (
@@ -199,18 +232,25 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle>Profile Information</CardTitle>
                 <CardDescription>
-                  Update your profile details visible to other users
+                  Update your profile details visible to other users. Fields marked with * are required.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName">Full Name *</Label>
                   <Input
                     id="fullName"
                     value={profile.full_name || ''}
-                    onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                    onChange={(e) => {
+                      setProfile({ ...profile, full_name: e.target.value });
+                      if (errors.full_name) setErrors({ ...errors, full_name: undefined });
+                    }}
                     placeholder="Enter your full name"
+                    className={errors.full_name ? 'border-destructive' : ''}
                   />
+                  {errors.full_name && (
+                    <p className="text-sm text-destructive">{errors.full_name}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -230,12 +270,15 @@ export default function Profile() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="class">Class/Level</Label>
+                    <Label htmlFor="class">Class/Level *</Label>
                     <Select 
                       value={profile.class_level || ''} 
-                      onValueChange={(value) => setProfile({ ...profile, class_level: value, semester: null })}
+                      onValueChange={(value) => {
+                        setProfile({ ...profile, class_level: value, semester: null });
+                        if (errors.class_level) setErrors({ ...errors, class_level: undefined });
+                      }}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className={errors.class_level ? 'border-destructive' : ''}>
                         <SelectValue placeholder="Select class" />
                       </SelectTrigger>
                       <SelectContent>
@@ -244,15 +287,21 @@ export default function Profile() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {errors.class_level && (
+                      <p className="text-sm text-destructive">{errors.class_level}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="board">Board</Label>
+                    <Label htmlFor="board">Board *</Label>
                     <Select 
                       value={profile.board || ''} 
-                      onValueChange={(value) => setProfile({ ...profile, board: value })}
+                      onValueChange={(value) => {
+                        setProfile({ ...profile, board: value });
+                        if (errors.board) setErrors({ ...errors, board: undefined });
+                      }}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className={errors.board ? 'border-destructive' : ''}>
                         <SelectValue placeholder="Select board" />
                       </SelectTrigger>
                       <SelectContent>
@@ -261,6 +310,9 @@ export default function Profile() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {errors.board && (
+                      <p className="text-sm text-destructive">{errors.board}</p>
+                    )}
                   </div>
                 </div>
 
@@ -300,7 +352,7 @@ export default function Profile() {
                   </div>
                 </div>
 
-                {isUndergraduate && (
+                {isEngineeringBranch && (
                   <div className="space-y-2">
                     <Label htmlFor="semester">Semester</Label>
                     <Select 
@@ -319,7 +371,11 @@ export default function Profile() {
                   </div>
                 )}
 
-                <Button onClick={handleSaveProfile} disabled={saving} className="gradient-primary">
+                <Button 
+                  onClick={handleSaveProfile} 
+                  disabled={saving || !isFormValid} 
+                  className="gradient-primary"
+                >
                   {saving ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
