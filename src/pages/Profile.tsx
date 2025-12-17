@@ -9,12 +9,13 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus } from 'lucide-react';
+import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus, Pencil } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES } from '@/lib/constants';
+import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES, SUBJECTS, EXAM_TYPES, SEMESTERS, INTERNAL_NUMBERS, YEARS as PAPER_YEARS } from '@/lib/constants';
 import { PaperCard } from '@/components/PaperCard';
 
 interface Profile {
@@ -40,6 +41,11 @@ interface Paper {
   views_count: number;
   downloads_count: number;
   created_at: string;
+  exam_type: string;
+  description: string | null;
+  institute_name: string | null;
+  semester: number | null;
+  internal_number: number | null;
 }
 
 interface DownloadedPaper {
@@ -159,6 +165,20 @@ export default function Profile() {
   const [bookmarkSearch, setBookmarkSearch] = useState('');
   const [followingSearch, setFollowingSearch] = useState('');
   const [followersSearch, setFollowersSearch] = useState('');
+  const [editingPaper, setEditingPaper] = useState<Paper | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    subject: '',
+    board: '',
+    class_level: '',
+    year: '',
+    exam_type: '',
+    description: '',
+    institute_name: '',
+    semester: '',
+    internal_number: ''
+  });
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const isEngineeringBranch = ENGINEERING_BRANCHES.includes(profile.class_level || '');
 
@@ -456,6 +476,64 @@ export default function Profile() {
       fetchMyPapers();
     }
   };
+
+  const openEditDialog = (paper: Paper) => {
+    setEditingPaper(paper);
+    setEditFormData({
+      title: paper.title,
+      subject: paper.subject,
+      board: paper.board,
+      class_level: paper.class_level,
+      year: paper.year.toString(),
+      exam_type: paper.exam_type,
+      description: paper.description || '',
+      institute_name: paper.institute_name || '',
+      semester: paper.semester?.toString() || '',
+      internal_number: paper.internal_number?.toString() || ''
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingPaper) return;
+    
+    if (!editFormData.title.trim() || !editFormData.subject || !editFormData.board || !editFormData.class_level || !editFormData.year || !editFormData.exam_type) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+
+    setSavingEdit(true);
+    
+    const requiresSemester = editFormData.exam_type === 'sem_paper' || editFormData.exam_type === 'internals';
+    const requiresInternalNumber = editFormData.exam_type === 'internals';
+
+    const { error } = await supabase
+      .from('question_papers')
+      .update({
+        title: editFormData.title.trim(),
+        subject: editFormData.subject,
+        board: editFormData.board,
+        class_level: editFormData.class_level,
+        year: parseInt(editFormData.year),
+        exam_type: editFormData.exam_type,
+        description: editFormData.description.trim() || null,
+        institute_name: editFormData.institute_name.trim() || null,
+        semester: requiresSemester ? parseInt(editFormData.semester) : null,
+        internal_number: requiresInternalNumber ? parseInt(editFormData.internal_number) : null
+      })
+      .eq('id', editingPaper.id);
+
+    if (error) {
+      toast.error('Failed to update paper');
+    } else {
+      toast.success('Paper updated successfully');
+      setEditingPaper(null);
+      fetchMyPapers();
+    }
+    setSavingEdit(false);
+  };
+
+  const editRequiresSemester = editFormData.exam_type === 'sem_paper' || editFormData.exam_type === 'internals';
+  const editRequiresInternalNumber = editFormData.exam_type === 'internals';
 
   const removeDownload = async (downloadId: string) => {
     const { error } = await supabase
@@ -811,13 +889,24 @@ export default function Profile() {
                             </span>
                           </div>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => deletePaper(paper.id)}
-                        >
-                          Delete
-                        </Button>
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openEditDialog(paper)}
+                          >
+                            <Pencil className="mr-1 h-3 w-3" />
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => deletePaper(paper.id)}
+                          >
+                            <Trash2 className="mr-1 h-3 w-3" />
+                            Delete
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1279,6 +1368,174 @@ export default function Profile() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Paper Dialog */}
+      <Dialog open={!!editingPaper} onOpenChange={(open) => !open && setEditingPaper(null)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Paper</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-title">Title *</Label>
+              <Input
+                id="edit-title"
+                value={editFormData.title}
+                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                placeholder="Enter paper title"
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Subject *</Label>
+                <Select value={editFormData.subject} onValueChange={(value) => setEditFormData({ ...editFormData, subject: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUBJECTS.map((subject) => (
+                      <SelectItem key={subject.value} value={subject.value}>{subject.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Board *</Label>
+                <Select value={editFormData.board} onValueChange={(value) => setEditFormData({ ...editFormData, board: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select board" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BOARDS.map((board) => (
+                      <SelectItem key={board.value} value={board.value}>{board.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Class/Level *</Label>
+                <Select value={editFormData.class_level} onValueChange={(value) => setEditFormData({ ...editFormData, class_level: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select class" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CLASS_LEVELS.map((level) => (
+                      <SelectItem key={level.value} value={level.value}>{level.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Year *</Label>
+                <Select value={editFormData.year} onValueChange={(value) => setEditFormData({ ...editFormData, year: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAPER_YEARS.map((year) => (
+                      <SelectItem key={year.value} value={year.value}>{year.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Exam Type *</Label>
+              <Select value={editFormData.exam_type} onValueChange={(value) => setEditFormData({ ...editFormData, exam_type: value, semester: '', internal_number: '' })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select exam type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {EXAM_TYPES.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {editRequiresSemester && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Semester *</Label>
+                  <Select value={editFormData.semester} onValueChange={(value) => setEditFormData({ ...editFormData, semester: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select semester" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SEMESTERS.map((sem) => (
+                        <SelectItem key={sem.value} value={sem.value}>{sem.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {editRequiresInternalNumber && (
+                  <div className="space-y-2">
+                    <Label>Internal Number *</Label>
+                    <Select value={editFormData.internal_number} onValueChange={(value) => setEditFormData({ ...editFormData, internal_number: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select internal" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INTERNAL_NUMBERS.map((num) => (
+                          <SelectItem key={num.value} value={num.value}>{num.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-institute">Institute Name (Optional)</Label>
+              <Input
+                id="edit-institute"
+                value={editFormData.institute_name}
+                onChange={(e) => setEditFormData({ ...editFormData, institute_name: e.target.value })}
+                placeholder="e.g., MIT College of Engineering"
+                maxLength={200}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-description">Description (Optional)</Label>
+              <Textarea
+                id="edit-description"
+                value={editFormData.description}
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                placeholder="Add any additional details about the paper"
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingPaper(null)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveEdit} disabled={savingEdit} className="gradient-primary">
+              {savingEdit ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
