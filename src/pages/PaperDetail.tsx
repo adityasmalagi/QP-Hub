@@ -84,10 +84,29 @@ export default function PaperDetail() {
     }
   };
 
+  const [downloading, setDownloading] = useState(false);
+
   const handleDownload = async () => {
-    if (!paper) return;
+    if (!paper || downloading) return;
     
+    setDownloading(true);
     try {
+      // Fetch the file as blob
+      const response = await fetch(paper.file_url);
+      if (!response.ok) throw new Error('Failed to fetch file');
+      
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = paper.file_name || `${paper.title}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
       // Increment download count atomically
       await supabase.rpc('increment_downloads', { _paper_id: paper.id });
 
@@ -104,10 +123,19 @@ export default function PaperDetail() {
           });
       }
       
-      // Open file in new tab
-      window.open(paper.file_url, '_blank');
+      toast({
+        title: 'Download started',
+        description: 'Your file is being downloaded.',
+      });
     } catch (error) {
       console.error('Download error:', error);
+      toast({
+        title: 'Download failed',
+        description: 'Could not download the file. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -216,9 +244,13 @@ export default function PaperDetail() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button onClick={handleDownload} className="gradient-primary">
-                <Download className="mr-2 h-4 w-4" />
-                Download PDF
+              <Button onClick={handleDownload} className="gradient-primary" disabled={downloading}>
+                {downloading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-4 w-4" />
+                )}
+                {downloading ? 'Downloading...' : 'Download PDF'}
               </Button>
               <Button
                 variant="outline"
