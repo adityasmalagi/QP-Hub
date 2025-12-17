@@ -4,13 +4,7 @@ import { PaperCard } from '@/components/PaperCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
 import { supabase } from '@/integrations/supabase/client';
 import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
 import { Search, Filter, X } from 'lucide-react';
@@ -175,138 +169,82 @@ export default function Browse() {
               <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
                 <div className="space-y-2">
                   <Label>Board</Label>
-                  <Select
+                  <SearchableSelect
                     value={filters.board}
                     onValueChange={(v) => setFilters(f => ({ ...f, board: v }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="All boards" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BOARDS.map((board) => (
-                        <SelectItem key={board.value} value={board.value}>
-                          {board.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={BOARDS}
+                    placeholder="All boards"
+                    searchPlaceholder="Search boards..."
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Class</Label>
-                  <Select
+                  <SearchableSelect
                     value={filters.classLevel}
                     onValueChange={(v) => setFilters(f => ({ ...f, classLevel: v }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="All classes" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CLASS_LEVELS.map((cl) => (
-                        <SelectItem key={cl.value} value={cl.value}>
-                          {cl.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={CLASS_LEVELS}
+                    placeholder="All classes"
+                    searchPlaceholder="Search classes..."
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Subject</Label>
-                  <Select
+                  <SearchableSelect
                     value={filters.subject}
                     onValueChange={(v) => setFilters(f => ({ ...f, subject: v }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="All subjects" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SUBJECTS.map((subject) => (
-                        <SelectItem key={subject.value} value={subject.value}>
-                          {subject.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={SUBJECTS}
+                    placeholder="All subjects"
+                    searchPlaceholder="Search subjects..."
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Year</Label>
-                  <Select
+                  <SearchableSelect
                     value={filters.year}
                     onValueChange={(v) => setFilters(f => ({ ...f, year: v }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="All years" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {YEARS.map((year) => (
-                        <SelectItem key={year.value} value={year.value}>
-                          {year.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={YEARS}
+                    placeholder="All years"
+                    searchPlaceholder="Search years..."
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Exam Type</Label>
-                  <Select
+                  <SearchableSelect
                     value={filters.examType}
                     onValueChange={(v) => setFilters(f => ({ ...f, examType: v, semester: '', internalNumber: '' }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="All types" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {EXAM_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={EXAM_TYPES}
+                    placeholder="All types"
+                    searchPlaceholder="Search exam types..."
+                  />
                 </div>
 
                 {showSemesterFilter && (
                   <div className="space-y-2">
                     <Label>Semester</Label>
-                    <Select
+                    <SearchableSelect
                       value={filters.semester}
                       onValueChange={(v) => setFilters(f => ({ ...f, semester: v }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="All semesters" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SEMESTERS.map((sem) => (
-                          <SelectItem key={sem.value} value={sem.value}>
-                            {sem.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      options={SEMESTERS}
+                      placeholder="All semesters"
+                      searchPlaceholder="Search semesters..."
+                    />
                   </div>
                 )}
 
                 {showInternalFilter && (
                   <div className="space-y-2">
                     <Label>Internal Number</Label>
-                    <Select
+                    <SearchableSelect
                       value={filters.internalNumber}
                       onValueChange={(v) => setFilters(f => ({ ...f, internalNumber: v }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="All internals" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {INTERNAL_NUMBERS.map((int) => (
-                          <SelectItem key={int.value} value={int.value}>
-                            {int.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      options={INTERNAL_NUMBERS}
+                      placeholder="All internals"
+                      searchPlaceholder="Search internals..."
+                    />
                   </div>
                 )}
               </div>

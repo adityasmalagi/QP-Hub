@@ -32,6 +32,7 @@ export const CLASS_LEVELS = [
 export const ENGINEERING_BRANCHES = ['cse-aiml', 'cse-ds', 'it', 'ece', 'eee', 'civil', 'mechanical'];
 
 export const SUBJECTS = [
+  // General Subjects
   { value: 'mathematics', label: 'Mathematics' },
   { value: 'physics', label: 'Physics' },
   { value: 'chemistry', label: 'Chemistry' },
@@ -47,6 +48,33 @@ export const SUBJECTS = [
   { value: 'political_science', label: 'Political Science' },
   { value: 'sociology', label: 'Sociology' },
   { value: 'psychology', label: 'Psychology' },
+  
+  // Engineering Mathematics
+  { value: 'mathematics_1', label: 'Mathematics 1' },
+  { value: 'mathematics_2', label: 'Mathematics 2' },
+  { value: 'mathematics_3', label: 'Mathematics 3' },
+  { value: 'mathematics_4', label: 'Mathematics 4' },
+  
+  // Engineering Core Subjects
+  { value: 'nas', label: 'NAS (Network and Security)' },
+  { value: 'asd', label: 'ASD (Analysis & System Design)' },
+  { value: 'dsdv', label: 'DSDV (Digital System Design & Verification)' },
+  { value: 'coa', label: 'COA (Computer Organization & Architecture)' },
+  { value: 'dsa', label: 'DSA (Data Structures & Algorithms)' },
+  { value: 'software_engineering', label: 'Software Engineering' },
+  { value: 'ai', label: 'AI (Artificial Intelligence)' },
+  { value: 'mechanics', label: 'Mechanics' },
+  
+  // Programming Languages
+  { value: 'python', label: 'Python' },
+  { value: 'c', label: 'C Programming' },
+  { value: 'java', label: 'Java' },
+  
+  // Engineering Branches as Subjects
+  { value: 'electrical_engineering', label: 'Electrical Engineering' },
+  { value: 'electronics_engineering', label: 'Electronics Engineering' },
+  { value: 'computer_engineering', label: 'Computer Engineering' },
+  
   { value: 'other', label: 'Other' },
 ] as const;
 
