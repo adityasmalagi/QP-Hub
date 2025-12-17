@@ -85,12 +85,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/`
-      }
+        redirectTo: `${window.location.origin}/`,
+        // In embedded previews (iframes), OAuth redirects can lose state due to browser cookie rules.
+        // We manually redirect the TOP window to keep the flow in a first-party context.
+        skipBrowserRedirect: true,
+      },
     });
+
+    if (!error && data?.url) {
+      try {
+        const topWindow = window.top;
+        if (topWindow && topWindow !== window.self) {
+          topWindow.location.href = data.url;
+        } else {
+          window.location.href = data.url;
+        }
+      } catch {
+        window.location.href = data.url;
+      }
+    }
+
     return { error: error as Error | null };
   };
 
