@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from 'next-themes';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -20,7 +22,11 @@ import {
   Clock,
   Shield,
   ShieldOff,
-  Search
+  Search,
+  Settings,
+  Sun,
+  Moon,
+  Monitor
 } from 'lucide-react';
 
 interface Paper {
@@ -53,6 +59,7 @@ interface Stats {
 }
 
 export default function AdminDashboard() {
+  const { theme, setTheme } = useTheme();
   const { user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
   const [papers, setPapers] = useState<Paper[]>([]);
@@ -319,6 +326,10 @@ export default function AdminDashboard() {
               <Users className="h-4 w-4" />
               Users ({users.length})
             </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending">
@@ -500,6 +511,46 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <CardTitle>Site Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <Label className="text-base font-medium">Theme</Label>
+                  <p className="text-sm text-muted-foreground">Choose the appearance of the site</p>
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      variant={theme === 'light' ? 'default' : 'outline'}
+                      onClick={() => setTheme('light')}
+                      className="flex items-center gap-2"
+                    >
+                      <Sun className="h-4 w-4" />
+                      Light
+                    </Button>
+                    <Button
+                      variant={theme === 'dark' ? 'default' : 'outline'}
+                      onClick={() => setTheme('dark')}
+                      className="flex items-center gap-2"
+                    >
+                      <Moon className="h-4 w-4" />
+                      Dark
+                    </Button>
+                    <Button
+                      variant={theme === 'system' ? 'default' : 'outline'}
+                      onClick={() => setTheme('system')}
+                      className="flex items-center gap-2"
+                    >
+                      <Monitor className="h-4 w-4" />
+                      System Default
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

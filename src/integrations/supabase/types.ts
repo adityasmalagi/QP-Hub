@@ -18,26 +18,41 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          board: string | null
+          class_level: string | null
+          course: string | null
           created_at: string | null
           full_name: string | null
           id: string
+          semester: number | null
           updated_at: string | null
+          year: number | null
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          board?: string | null
+          class_level?: string | null
+          course?: string | null
           created_at?: string | null
           full_name?: string | null
           id: string
+          semester?: number | null
           updated_at?: string | null
+          year?: number | null
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          board?: string | null
+          class_level?: string | null
+          course?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
+          semester?: number | null
           updated_at?: string | null
+          year?: number | null
         }
         Relationships: []
       }

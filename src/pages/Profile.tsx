@@ -8,16 +8,23 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User, FileText, Download, Eye, Save, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { BOARDS, CLASS_LEVELS } from '@/lib/constants';
 
 interface Profile {
   full_name: string | null;
   bio: string | null;
   avatar_url: string | null;
+  class_level: string | null;
+  board: string | null;
+  year: number | null;
+  course: string | null;
+  semester: number | null;
 }
 
 interface Paper {
@@ -33,13 +40,38 @@ interface Paper {
   created_at: string;
 }
 
+const COURSES = [
+  'Science',
+  'Commerce',
+  'Arts/Humanities',
+  'Engineering',
+  'Medical',
+  'Law',
+  'Management',
+  'Other'
+];
+
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: 10 }, (_, i) => currentYear - i);
+
 export default function Profile() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<Profile>({ full_name: '', bio: '', avatar_url: '' });
+  const [profile, setProfile] = useState<Profile>({ 
+    full_name: '', 
+    bio: '', 
+    avatar_url: '',
+    class_level: '',
+    board: '',
+    year: null,
+    course: '',
+    semester: null
+  });
   const [myPapers, setMyPapers] = useState<Paper[]>([]);
   const [saving, setSaving] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
+
+  const isUndergraduate = profile.class_level === 'undergraduate' || profile.class_level === 'postgraduate';
 
   useEffect(() => {
     if (!loading && !user) {
@@ -59,7 +91,7 @@ export default function Profile() {
     
     const { data, error } = await supabase
       .from('profiles')
-      .select('full_name, bio, avatar_url')
+      .select('full_name, bio, avatar_url, class_level, board, year, course, semester')
       .eq('id', user.id)
       .maybeSingle();
 
@@ -67,7 +99,12 @@ export default function Profile() {
       setProfile({
         full_name: data.full_name || '',
         bio: data.bio || '',
-        avatar_url: data.avatar_url || ''
+        avatar_url: data.avatar_url || '',
+        class_level: data.class_level || '',
+        board: data.board || '',
+        year: data.year || null,
+        course: data.course || '',
+        semester: data.semester || null
       });
     }
     setLoadingProfile(false);
@@ -95,7 +132,12 @@ export default function Profile() {
       .from('profiles')
       .update({
         full_name: profile.full_name,
-        bio: profile.bio
+        bio: profile.bio,
+        class_level: profile.class_level || null,
+        board: profile.board || null,
+        year: profile.year,
+        course: profile.course || null,
+        semester: isUndergraduate ? profile.semester : null
       })
       .eq('id', user.id);
 
@@ -162,18 +204,6 @@ export default function Profile() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={user.email || ''}
-                    disabled
-                    className="bg-muted"
-                  />
-                  <p className="text-xs text-muted-foreground">Email cannot be changed</p>
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="fullName">Full Name</Label>
                   <Input
                     id="fullName"
@@ -197,6 +227,97 @@ export default function Profile() {
                     {(profile.bio || '').length}/500 characters
                   </p>
                 </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="class">Class/Level</Label>
+                    <Select 
+                      value={profile.class_level || ''} 
+                      onValueChange={(value) => setProfile({ ...profile, class_level: value, semester: null })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select class" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CLASS_LEVELS.map((level) => (
+                          <SelectItem key={level.value} value={level.value}>{level.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="board">Board</Label>
+                    <Select 
+                      value={profile.board || ''} 
+                      onValueChange={(value) => setProfile({ ...profile, board: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select board" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {BOARDS.map((board) => (
+                          <SelectItem key={board.value} value={board.value}>{board.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="year">Year</Label>
+                    <Select 
+                      value={profile.year?.toString() || ''} 
+                      onValueChange={(value) => setProfile({ ...profile, year: parseInt(value) })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {YEARS.map((year) => (
+                          <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="course">Course/Stream</Label>
+                    <Select 
+                      value={profile.course || ''} 
+                      onValueChange={(value) => setProfile({ ...profile, course: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select course" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COURSES.map((course) => (
+                          <SelectItem key={course} value={course}>{course}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {isUndergraduate && (
+                  <div className="space-y-2">
+                    <Label htmlFor="semester">Semester</Label>
+                    <Select 
+                      value={profile.semester?.toString() || ''} 
+                      onValueChange={(value) => setProfile({ ...profile, semester: parseInt(value) })}
+                    >
+                      <SelectTrigger className="w-full sm:w-48">
+                        <SelectValue placeholder="Select semester" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                          <SelectItem key={sem} value={sem.toString()}>Semester {sem}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <Button onClick={handleSaveProfile} disabled={saving} className="gradient-primary">
                   {saving ? (
