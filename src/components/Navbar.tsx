@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { FileText, Upload, LogOut, User, Shield, Settings, Sun, Moon, Monitor, Menu, X, Download, Mail, Calendar, Heart } from 'lucide-react';
+import { FileText, Upload, LogOut, User, Shield, Settings, Sun, Moon, Monitor, Menu, X, Download, Mail, Calendar, Heart, Users } from 'lucide-react';
 import { NotificationsDropdown } from '@/components/NotificationsDropdown';
 import { useTheme } from 'next-themes';
 import {
@@ -176,6 +176,10 @@ export function Navbar() {
                     <Download className="mr-2 h-4 w-4" />
                     Downloads
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/profile?tab=following')}>
+                    <Users className="mr-2 h-4 w-4" />
+                    Following
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <DropdownMenuItem onClick={() => navigate('/admin')}>
                       <Shield className="mr-2 h-4 w-4" />
@@ -249,6 +253,14 @@ export function Navbar() {
                           <Button variant="ghost" className="w-full justify-start">
                             <Download className="mr-2 h-4 w-4" />
                             Downloads
+                          </Button>
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/profile?tab=following">
+                          <Button variant="ghost" className="w-full justify-start">
+                            <Users className="mr-2 h-4 w-4" />
+                            Following
                           </Button>
                         </Link>
                       </SheetClose>
