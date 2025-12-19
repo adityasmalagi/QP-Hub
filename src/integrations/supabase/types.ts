@@ -47,6 +47,38 @@ export type Database = {
         }
         Relationships: []
       }
+      paper_metric_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          identifier_hash: string
+          paper_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          identifier_hash: string
+          paper_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          identifier_hash?: string
+          paper_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_metric_events_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age: number | null
@@ -275,6 +307,7 @@ export type Database = {
       }
       increment_downloads: { Args: { _paper_id: string }; Returns: undefined }
       increment_views: { Args: { _paper_id: string }; Returns: undefined }
+      verify_admin_access: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

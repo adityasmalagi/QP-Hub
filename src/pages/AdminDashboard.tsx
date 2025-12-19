@@ -78,20 +78,36 @@ export default function AdminDashboard() {
   const [userSearch, setUserSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all');
 
-  useEffect(() => {
-    if (!loading && (!user || !isAdmin)) {
-      navigate('/');
-      toast.error('Access denied. Admin privileges required.');
-    }
-  }, [user, isAdmin, loading, navigate]);
+  const [serverVerified, setServerVerified] = useState(false);
 
   useEffect(() => {
-    if (isAdmin) {
+    const verifyAndLoad = async () => {
+      if (loading) return;
+
+      if (!user) {
+        navigate('/');
+        toast.error('Access denied. Please sign in.');
+        return;
+      }
+
+      // Server-side admin verification for defense-in-depth
+      const { data: isAdminServer, error } = await supabase.rpc('verify_admin_access');
+
+      if (error || !isAdminServer) {
+        navigate('/');
+        toast.error('Access denied. Admin privileges required.');
+        return;
+      }
+
+      setServerVerified(true);
+      // Only fetch data after server verification succeeds
       fetchPapers();
       fetchStats();
       fetchUsers();
-    }
-  }, [isAdmin]);
+    };
+
+    verifyAndLoad();
+  }, [user, loading, navigate]);
 
   const fetchUsers = async () => {
     setLoadingUsers(true);
@@ -232,7 +248,7 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading || !isAdmin) {
+  if (loading || !serverVerified) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
