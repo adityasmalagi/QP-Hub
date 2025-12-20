@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
 import { Upload as UploadIcon, FileText, X, Loader2 } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Upload() {
@@ -38,6 +39,7 @@ export default function Upload() {
   });
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
 
   // Redirect if not authenticated
@@ -138,9 +140,10 @@ export default function Upload() {
     }
 
     setUploading(true);
+    setUploadProgress(0);
     
     try {
-      // Upload file via edge function for server-side validation
+      // Upload file via edge function with progress tracking
       const formDataUpload = new FormData();
       formDataUpload.append('file', file);
       
@@ -151,15 +154,41 @@ export default function Upload() {
         throw new Error('Not authenticated');
       }
 
-      const uploadResponse = await supabase.functions.invoke('validate-pdf-upload', {
-        body: formDataUpload,
+      // Use XMLHttpRequest for progress tracking
+      const uploadResult = await new Promise<{ success: boolean; publicUrl?: string; error?: string }>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress(progress);
+          }
+        });
+        
+        xhr.addEventListener('load', () => {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            resolve(response);
+          } catch {
+            reject(new Error('Invalid response from server'));
+          }
+        });
+        
+        xhr.addEventListener('error', () => {
+          reject(new Error('Upload failed. Please check your connection and try again.'));
+        });
+        
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        xhr.open('POST', `${supabaseUrl}/functions/v1/validate-pdf-upload`);
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+        xhr.send(formDataUpload);
       });
 
-      if (uploadResponse.error || !uploadResponse.data?.success) {
-        throw new Error(uploadResponse.data?.error || uploadResponse.error?.message || 'Upload validation failed');
+      if (!uploadResult.success || !uploadResult.publicUrl) {
+        throw new Error(uploadResult.error || 'Upload validation failed');
       }
 
-      const { publicUrl } = uploadResponse.data;
+      const { publicUrl } = uploadResult;
 
       // Insert paper record
       const { error: insertError } = await supabase
@@ -199,6 +228,7 @@ export default function Upload() {
       });
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -287,7 +317,7 @@ export default function Upload() {
                 <Label htmlFor="title">Title *</Label>
                 <Input
                   id="title"
-                  placeholder="e.g., CBSE Class 12 Mathematics Board Exam 2024"
+                  placeholder="e.g., Mathematics 3rd Sem 2025"
                   value={formData.title}
                   onChange={(e) => setFormData(f => ({ ...f, title: e.target.value }))}
                   required
@@ -467,6 +497,17 @@ export default function Upload() {
                 </div>
               </div>
 
+              {/* Upload Progress */}
+              {uploading && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Uploading...</span>
+                    <span className="font-medium text-foreground">{uploadProgress}%</span>
+                  </div>
+                  <Progress value={uploadProgress} className="h-2" />
+                </div>
+              )}
+
               <Button
                 type="submit"
                 className="w-full gradient-primary"
@@ -475,7 +516,7 @@ export default function Upload() {
                 {uploading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Uploading...
+                    Uploading... {uploadProgress}%
                   </>
                 ) : (
                   <>
