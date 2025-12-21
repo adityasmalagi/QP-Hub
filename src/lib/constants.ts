@@ -67,6 +67,17 @@ export const SUBJECTS = [
   { value: "ai", label: "Introduction To AI ( Artificial Intelligence)" },
   { value: "mechanics", label: "Mechanics" },
   { value: "indian constitution", label: "Indian Constitution" },
+  { value: "mechine learning", label: "Mechine Learning" },
+  { value: "inferential statatics", label: "Inferential Statatics" },
+  { value: "pattern recognition", label: "Pattern Recognition" },
+  { value: "data visualization", label: "Data Visualization" },
+  { value: "dbms", label: "DBMS" },
+  { value: "theory of computation", label: "Theory of Computation" },
+  { value: "data visualization", label: "Data Visualization" },
+  { value: "signal and system analysis", label: "Signal And System Analysis" },
+  { value: "data visualization", label: "Data Visualization" },
+  { value: "vlsi", label: "VLSI" },
+  { value: "data visualization", label: "Data Visualization" },
 
   // Programming Languages
   { value: "python", label: "Python" },
