@@ -21,6 +21,44 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFormSchema } from '@/lib/validation';
 
+// File validation helper
+const validatePDFFile = (file: File): { valid: boolean; error?: string } => {
+  // Check file extension
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    return { 
+      valid: false, 
+      error: 'Only PDF files are allowed. The file must have a .pdf extension.' 
+    };
+  }
+  
+  // Check MIME type
+  if (file.type && file.type !== 'application/pdf') {
+    return { 
+      valid: false, 
+      error: 'Invalid file type. Please select a valid PDF document.' 
+    };
+  }
+  
+  // Check maximum file size (10MB)
+  const maxSizeMB = 10;
+  if (file.size > maxSizeMB * 1024 * 1024) {
+    return { 
+      valid: false, 
+      error: `File is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Maximum size is ${maxSizeMB}MB.` 
+    };
+  }
+  
+  // Check minimum size (likely empty or corrupted)
+  if (file.size < 100) {
+    return { 
+      valid: false, 
+      error: 'File appears to be empty or corrupted. Please select a valid PDF.' 
+    };
+  }
+  
+  return { valid: true };
+};
+
 export default function Upload() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -39,6 +77,7 @@ export default function Upload() {
     instituteName: '',
   });
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
@@ -63,41 +102,45 @@ export default function Upload() {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
+    setFileError(null);
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile.type === 'application/pdf' || droppedFile.name.endsWith('.pdf')) {
-        if (droppedFile.size <= 10 * 1024 * 1024) {
-          setFile(droppedFile);
-        } else {
-          toast({
-            title: 'File too large',
-            description: 'Please upload a file smaller than 10MB',
-            variant: 'destructive',
-          });
-        }
-      } else {
+      const validation = validatePDFFile(droppedFile);
+      
+      if (!validation.valid) {
+        setFileError(validation.error || 'Invalid file');
         toast({
-          title: 'Invalid file type',
-          description: 'Please upload a PDF file',
+          title: 'Invalid file',
+          description: validation.error,
           variant: 'destructive',
         });
+        return;
       }
+      
+      setFile(droppedFile);
     }
   }, [toast]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError(null);
+    
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      if (selectedFile.size <= 10 * 1024 * 1024) {
-        setFile(selectedFile);
-      } else {
+      const validation = validatePDFFile(selectedFile);
+      
+      if (!validation.valid) {
+        setFileError(validation.error || 'Invalid file');
         toast({
-          title: 'File too large',
-          description: 'Please upload a file smaller than 10MB',
+          title: 'Invalid file',
+          description: validation.error,
           variant: 'destructive',
         });
+        e.target.value = ''; // Clear the input
+        return;
       }
+      
+      setFile(selectedFile);
     }
   };
 
@@ -108,6 +151,17 @@ export default function Upload() {
     e.preventDefault();
     
     if (!file || !user) return;
+    
+    // Final file validation before upload
+    const fileValidation = validatePDFFile(file);
+    if (!fileValidation.valid) {
+      toast({
+        title: 'Invalid file',
+        description: fileValidation.error,
+        variant: 'destructive',
+      });
+      return;
+    }
     
     // Validate form using zod schema
     const validationResult = uploadFormSchema.safeParse(formData);
@@ -271,7 +325,9 @@ export default function Upload() {
                   className={`relative rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
                     dragActive
                       ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/50'
+                      : fileError
+                        ? 'border-destructive bg-destructive/5'
+                        : 'border-border hover:border-primary/50'
                   }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -291,7 +347,10 @@ export default function Upload() {
                         type="button"
                         variant="ghost"
                         size="sm"
-                        onClick={() => setFile(null)}
+                        onClick={() => {
+                          setFile(null);
+                          setFileError(null);
+                        }}
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -314,6 +373,9 @@ export default function Upload() {
                     </>
                   )}
                 </div>
+                {fileError && (
+                  <p className="text-sm text-destructive">{fileError}</p>
+                )}
               </div>
 
               {/* Title */}
