@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["light", "dark", "system"]} storageKey="qpaperhub-theme">
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
