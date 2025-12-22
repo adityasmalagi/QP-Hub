@@ -322,12 +322,12 @@ export default function Upload() {
               <div className="space-y-2">
                 <Label>PDF File *</Label>
                 <div
-                  className={`relative rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
+                  className={`relative rounded-lg border-2 border-dashed p-8 text-center transition-all duration-300 ease-out ${
                     dragActive
-                      ? 'border-primary bg-primary/5'
+                      ? 'border-primary bg-primary/10 scale-[1.02] shadow-lg shadow-primary/20 ring-4 ring-primary/20'
                       : fileError
                         ? 'border-destructive bg-destructive/5'
-                        : 'border-border hover:border-primary/50'
+                        : 'border-border hover:border-primary/50 hover:bg-muted/30'
                   }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -335,8 +335,10 @@ export default function Upload() {
                   onDrop={handleDrop}
                 >
                   {file ? (
-                    <div className="flex items-center justify-center gap-3">
-                      <FileText className="h-8 w-8 text-primary" />
+                    <div className="flex items-center justify-center gap-3 animate-fade-in">
+                      <div className="rounded-full bg-primary/10 p-3">
+                        <FileText className="h-8 w-8 text-primary" />
+                      </div>
                       <div className="text-left">
                         <p className="font-medium text-foreground">{file.name}</p>
                         <p className="text-sm text-muted-foreground">
@@ -347,6 +349,7 @@ export default function Upload() {
                         type="button"
                         variant="ghost"
                         size="sm"
+                        className="hover:bg-destructive/10 hover:text-destructive transition-colors"
                         onClick={() => {
                           setFile(null);
                           setFileError(null);
@@ -357,11 +360,29 @@ export default function Upload() {
                     </div>
                   ) : (
                     <>
-                      <UploadIcon className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
-                      <p className="mb-2 text-sm text-foreground">
-                        <span className="font-semibold">Click to upload</span> or drag and drop
+                      <div className={`transition-transform duration-300 ${dragActive ? 'scale-110 -translate-y-1' : ''}`}>
+                        <div className={`mx-auto mb-4 rounded-full p-4 transition-colors duration-300 ${
+                          dragActive ? 'bg-primary/20' : 'bg-muted'
+                        }`}>
+                          <UploadIcon className={`h-10 w-10 transition-colors duration-300 ${
+                            dragActive ? 'text-primary' : 'text-muted-foreground'
+                          }`} />
+                        </div>
+                      </div>
+                      <p className={`mb-2 text-sm transition-colors duration-300 ${
+                        dragActive ? 'text-primary font-medium' : 'text-foreground'
+                      }`}>
+                        {dragActive ? (
+                          <span className="font-semibold">Drop your PDF here!</span>
+                        ) : (
+                          <>
+                            <span className="font-semibold">Click to upload</span> or drag and drop
+                          </>
+                        )}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className={`text-xs transition-colors duration-300 ${
+                        dragActive ? 'text-primary/70' : 'text-muted-foreground'
+                      }`}>
                         PDF files only (max 10MB)
                       </p>
                       <input
@@ -374,7 +395,7 @@ export default function Upload() {
                   )}
                 </div>
                 {fileError && (
-                  <p className="text-sm text-destructive">{fileError}</p>
+                  <p className="text-sm text-destructive animate-fade-in">{fileError}</p>
                 )}
               </div>
 
