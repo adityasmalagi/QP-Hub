@@ -3,16 +3,10 @@ import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Upload, BookOpen, Users, FileText, ArrowRight, CheckCircle, Sparkles, Filter } from 'lucide-react';
+import { Search, Upload, BookOpen, FileText, ArrowRight, CheckCircle, Sparkles, Filter } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { PaperCard } from '@/components/PaperCard';
-
-const stats = [
-  { value: '10K+', label: 'Question Papers' },
-  { value: '50K+', label: 'Active Students' },
-  { value: '100+', label: 'Universities' },
-];
 
 const uploadSteps = [
   { step: 1, title: 'Select Your Paper', description: 'Choose subject, board, year' },
@@ -138,16 +132,6 @@ export default function Index() {
                 </Button>
               </Link>
             </div>
-          </div>
-          
-          {/* Stats */}
-          <div className="mx-auto mt-20 grid max-w-3xl grid-cols-3 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl font-bold text-foreground md:text-4xl">{stat.value}</div>
-                <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -332,29 +316,6 @@ export default function Index() {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="border-t border-border py-20">
-        <div className="container mx-auto px-4">
-          <Card className="gradient-primary overflow-hidden glow-purple">
-            <CardContent className="p-8 text-center md:p-12">
-              <Users className="mx-auto mb-4 h-12 w-12 text-primary-foreground/80" />
-              <h2 className="mb-4 text-2xl font-bold text-primary-foreground md:text-3xl">
-                Join Our Growing Community
-              </h2>
-              <p className="mb-6 text-primary-foreground/80">
-                Help fellow students by sharing your question papers. Together, we learn better.
-              </p>
-              <Link to="/auth?mode=signup">
-                <Button size="lg" variant="secondary" className="px-8">
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
