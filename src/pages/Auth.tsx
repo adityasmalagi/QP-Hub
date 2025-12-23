@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { FileText, Loader2, Mail, Lock, User } from 'lucide-react';
+import { FileText, Loader2, Mail, Lock, User, Chrome } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
+import { Separator } from '@/components/ui/separator';
 
 const signUpSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters').max(100),
@@ -31,7 +32,9 @@ export default function Auth() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   
-  const { user, signUp, signIn } = useAuth();
+  const [googleLoading, setGoogleLoading] = useState(false);
+  
+  const { user, signUp, signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   // Validate redirect to prevent open redirect attacks
@@ -124,18 +127,43 @@ export default function Auth() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        toast({
+          title: 'Google Sign In Failed',
+          description: error.message || 'Could not sign in with Google. Please try again.',
+          variant: 'destructive',
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center gradient-hero px-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center gradient-hero-dark relative px-4 py-12">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(280,50%,20%,0.3)_0%,_transparent_50%)]" />
+      
+      <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <Link to="/" className="mb-8 flex items-center justify-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg gradient-primary">
             <FileText className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-2xl font-bold text-foreground">QP Hub</span>
+          <span className="text-2xl font-bold text-white">QP Hub</span>
         </Link>
 
-        <Card className="border-border/50 shadow-card">
+        <Card className="border-border/30 bg-card/95 backdrop-blur-sm shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">
               {isSignUp ? 'Create an account' : 'Welcome back'}
@@ -206,7 +234,7 @@ export default function Auth() {
               <Button
                 type="submit"
                 className="w-full gradient-primary"
-                disabled={loading}
+                disabled={loading || googleLoading}
               >
                 {loading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -214,6 +242,32 @@ export default function Auth() {
                 {isSignUp ? 'Create Account' : 'Sign In'}
               </Button>
             </form>
+
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+
+            {/* Google Sign In */}
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleGoogleSignIn}
+              disabled={loading || googleLoading}
+            >
+              {googleLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Chrome className="mr-2 h-4 w-4" />
+              )}
+              Sign in with Google
+            </Button>
 
             <div className="mt-6 text-center text-sm">
               {isSignUp ? (
