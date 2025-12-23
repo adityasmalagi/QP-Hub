@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import Upload from "./pages/Upload";
 import Auth from "./pages/Auth";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import PaperDetail from "./pages/PaperDetail";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -30,6 +32,8 @@ const App = () => (
               <Route path="/browse" element={<Browse />} />
               <Route path="/upload" element={<Upload />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/paper/:id" element={<PaperDetail />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/user/:userId" element={<PublicProfile />} />
