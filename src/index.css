@@ -111,6 +111,10 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -155,5 +159,14 @@
 
   .glow-purple {
     box-shadow: 0 0 40px hsl(280, 70%, 50%, 0.3);
+  }
+
+  /* Page transition animations */
+  .page-enter {
+    @apply animate-fade-in;
+  }
+
+  .page-transition {
+    @apply transition-all duration-300 ease-out;
   }
 }

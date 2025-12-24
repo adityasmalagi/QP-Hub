@@ -168,10 +168,10 @@ export default function Browse() {
   const hasActiveFilters = Object.values(filters).some(v => v) || searchQuery;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 flex-1 animate-fade-in">
         {/* Header */}
         <div className="mb-8">
           <h1 className="mb-2 text-3xl font-bold text-foreground">

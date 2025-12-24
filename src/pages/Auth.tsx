@@ -5,10 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { FileText, Loader2, Mail, Lock, User, Chrome } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Chrome } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { Separator } from '@/components/ui/separator';
+import qphubLogo from '@/assets/qphub-logo.png';
 
 const signUpSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters').max(100),
@@ -150,16 +151,14 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center gradient-hero-dark relative px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center gradient-hero-dark relative px-4 py-12 animate-fade-in">
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(280,50%,20%,0.3)_0%,_transparent_50%)]" />
       
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg gradient-primary">
-            <FileText className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img src={qphubLogo} alt="QP Hub" className="h-10 w-10 rounded-lg object-contain" />
           <span className="text-2xl font-bold text-white">QP Hub</span>
         </Link>
 
