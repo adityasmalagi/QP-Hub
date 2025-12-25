@@ -247,6 +247,14 @@ export function Navbar() {
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
+                        <Link to="/upload-mobile">
+                          <Button className="w-full justify-start gradient-primary">
+                            <Upload className="mr-2 h-4 w-4" />
+                            📷 Upload Paper
+                          </Button>
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
                         <Link to="/upload">
                           <Button variant="outline" className="w-full justify-start">
                             <Upload className="mr-2 h-4 w-4" />

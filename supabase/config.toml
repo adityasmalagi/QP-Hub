@@ -1,1 +1,7 @@
 project_id = "fziapohwzcbcfumaffeo"
+
+[functions.validate-pdf-upload]
+verify_jwt = false
+
+[functions.upload-question-paper]
+verify_jwt = false

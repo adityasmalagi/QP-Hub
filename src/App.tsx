@@ -15,6 +15,7 @@ import PaperDetail from "./pages/PaperDetail";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import PublicProfile from "./pages/PublicProfile";
+import MobileUpload from "./pages/MobileUpload";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/user/:userId" element={<PublicProfile />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/upload-mobile" element={<MobileUpload />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

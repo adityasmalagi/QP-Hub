@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter } from 'lucide-react';
+import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter, Camera, Smartphone } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { PaperCard } from '@/components/PaperCard';
@@ -126,11 +126,28 @@ export default function Index() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to={user ? "/upload" : "/auth?redirect=/upload"}>
+              <Link to={user ? "/upload" : "/auth?redirect=/upload"} className="hidden sm:block">
                 <Button size="lg" variant="outline" className="border-border/50 bg-card/50 px-8 py-6 text-lg backdrop-blur-sm hover:bg-card">
                   <Upload className="mr-2 h-5 w-5" />
                   Upload a Paper
                 </Button>
+              </Link>
+              {/* Mobile-optimized upload CTA */}
+              <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"} className="sm:hidden w-full">
+                <Button size="lg" variant="outline" className="w-full border-border/50 bg-card/50 px-8 py-6 text-lg backdrop-blur-sm hover:bg-card">
+                  <Camera className="mr-2 h-5 w-5" />
+                  Upload Question Paper
+                </Button>
+              </Link>
+            </div>
+
+            {/* Mobile upload banner */}
+            <div className="mt-8 sm:hidden animate-fade-in">
+              <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm">
+                  <Smartphone className="h-4 w-4" />
+                  <span>📷 Take a photo or upload files from your phone</span>
+                </div>
               </Link>
             </div>
           </div>
