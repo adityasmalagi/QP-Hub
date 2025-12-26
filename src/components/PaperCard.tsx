@@ -3,7 +3,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Eye, Download, FileText, User } from 'lucide-react';
 import { BookmarkButton } from '@/components/BookmarkButton';
-import { formatPaperTitle } from '@/lib/paperUtils';
 
 interface PaperCardProps {
   id: string;
@@ -37,9 +36,6 @@ export function PaperCard({
   internalNumber,
 }: PaperCardProps) {
   const navigate = useNavigate();
-  
-  // Format the display title (e.g., "DSDV 3rd Sem 2025")
-  const displayTitle = formatPaperTitle(subject, semester, year);
 
   const handleUploaderClick = (e: React.MouseEvent) => {
     if (uploaderId) {
@@ -65,7 +61,7 @@ export function PaperCard({
           </div>
           
           <h3 className="mb-2 line-clamp-2 text-base font-semibold text-foreground group-hover:text-primary transition-colors">
-            {displayTitle}
+            {title}
           </h3>
           
           <div className="mb-4 flex flex-wrap gap-1.5">
