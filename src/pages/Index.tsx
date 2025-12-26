@@ -1,14 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter, Camera, Image as ImageIcon } from 'lucide-react';
+import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { PaperCard } from '@/components/PaperCard';
 import qphubLogo from '@/assets/qphub-logo.png';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 const uploadSteps = [
   { step: 1, title: 'Select Your Paper', description: 'Choose subject, board, year' },
@@ -44,37 +43,8 @@ interface RecommendedPaper {
 
 export default function Index() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<RecommendedPaper[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
-  const [uploadSheetOpen, setUploadSheetOpen] = useState(false);
-  
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleUploadClick = () => {
-    if (!user) {
-      navigate('/auth?redirect=/upload-mobile');
-      return;
-    }
-    setUploadSheetOpen(true);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      // Store files in sessionStorage and navigate to upload page
-      const fileData = Array.from(files).map(f => ({
-        name: f.name,
-        size: f.size,
-        type: f.type
-      }));
-      sessionStorage.setItem('pendingUploadType', type);
-      setUploadSheetOpen(false);
-      navigate('/upload-mobile');
-    }
-  };
 
   useEffect(() => {
     if (user) {
@@ -157,97 +127,12 @@ export default function Index() {
                 </Button>
               </Link>
               
-              <Sheet open={uploadSheetOpen} onOpenChange={setUploadSheetOpen}>
-                <SheetTrigger asChild>
-                  <Button 
-                    size="lg" 
-                    className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple"
-                    onClick={handleUploadClick}
-                  >
-                    <Upload className="mr-2 h-5 w-5" />
-                    Upload Paper
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="bottom" className="rounded-t-2xl">
-                  <SheetHeader className="text-left pb-4">
-                    <SheetTitle>Upload Question Paper</SheetTitle>
-                  </SheetHeader>
-                  <div className="space-y-3 pb-6">
-                    {/* Camera Option */}
-                    <Button
-                      variant="outline"
-                      className="w-full h-16 justify-start gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
-                      onClick={() => cameraInputRef.current?.click()}
-                    >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <Camera className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <span className="text-base font-medium">📷 Camera</span>
-                        <span className="text-xs text-muted-foreground">Take a photo</span>
-                      </div>
-                    </Button>
-                    <input
-                      ref={cameraInputRef}
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      onChange={(e) => handleFileSelect(e, 'camera')}
-                      className="hidden"
-                    />
-
-                    {/* Gallery Option */}
-                    <Button
-                      variant="outline"
-                      className="w-full h-16 justify-start gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
-                      onClick={() => galleryInputRef.current?.click()}
-                    >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <ImageIcon className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <span className="text-base font-medium">🖼️ Gallery</span>
-                        <span className="text-xs text-muted-foreground">Choose from photos</span>
-                      </div>
-                    </Button>
-                    <input
-                      ref={galleryInputRef}
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={(e) => handleFileSelect(e, 'gallery')}
-                      className="hidden"
-                    />
-
-                    {/* Files Option */}
-                    <Button
-                      variant="outline"
-                      className="w-full h-16 justify-start gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <Upload className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <span className="text-base font-medium">📁 Files</span>
-                        <span className="text-xs text-muted-foreground">Select PDF/DOC files</span>
-                      </div>
-                    </Button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      multiple
-                      accept=".pdf,.doc,.docx"
-                      onChange={(e) => handleFileSelect(e, 'files')}
-                      className="hidden"
-                    />
-
-                    <p className="text-xs text-muted-foreground text-center pt-2">
-                      Supported: PDF, DOC, DOCX, JPEG, PNG, WEBP, HEIC • Max 10MB per file
-                    </p>
-                  </div>
-                </SheetContent>
-              </Sheet>
+              <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
+                <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
+                  <Upload className="mr-2 h-5 w-5" />
+                  Upload Paper
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
