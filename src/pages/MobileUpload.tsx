@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -479,102 +480,57 @@ export default function MobileUploadPage() {
               <div className="grid gap-4 grid-cols-2">
                 <div className="space-y-2">
                   <Label>Board *</Label>
-                  <Select
+                  <SearchableSelect
                     value={formData.board}
                     onValueChange={(v) => setFormData(f => ({ ...f, board: v }))}
-                    disabled={uploading}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BOARDS.map((board) => (
-                        <SelectItem key={board.value} value={board.value}>
-                          {board.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={BOARDS}
+                    placeholder="Select board"
+                    searchPlaceholder="Search boards..."
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Class *</Label>
-                  <Select
+                  <SearchableSelect
                     value={formData.classLevel}
                     onValueChange={(v) => setFormData(f => ({ ...f, classLevel: v }))}
-                    disabled={uploading}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CLASS_LEVELS.map((cl) => (
-                        <SelectItem key={cl.value} value={cl.value}>
-                          {cl.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={CLASS_LEVELS}
+                    placeholder="Select class"
+                    searchPlaceholder="Search class..."
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Subject *</Label>
-                  <Select
+                  <SearchableSelect
                     value={formData.subject}
                     onValueChange={(v) => setFormData(f => ({ ...f, subject: v }))}
-                    disabled={uploading}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SUBJECTS.map((subject) => (
-                        <SelectItem key={subject.value} value={subject.value}>
-                          {subject.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={SUBJECTS}
+                    placeholder="Select subject"
+                    searchPlaceholder="Search subjects..."
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Year *</Label>
-                  <Select
+                  <SearchableSelect
                     value={formData.year}
                     onValueChange={(v) => setFormData(f => ({ ...f, year: v }))}
-                    disabled={uploading}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {YEARS.map((year) => (
-                        <SelectItem key={year.value} value={year.value}>
-                          {year.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={YEARS}
+                    placeholder="Select year"
+                    searchPlaceholder="Search year..."
+                  />
                 </div>
 
                 <div className="space-y-2 col-span-2">
                   <Label>Exam Type *</Label>
-                  <Select
+                  <SearchableSelect
                     value={formData.examType}
                     onValueChange={(v) => setFormData(f => ({ ...f, examType: v, semester: '', internalNumber: '' }))}
-                    disabled={uploading}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select exam type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {EXAM_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={EXAM_TYPES}
+                    placeholder="Select exam type"
+                    searchPlaceholder="Search exam type..."
+                  />
                 </div>
 
                 {requiresSemester && (
