@@ -74,6 +74,7 @@ function getFileIcon(file: File) {
 
 export function MobileUpload({ files, onFilesChange, disabled }: MobileUploadProps) {
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -130,6 +131,10 @@ export function MobileUpload({ files, onFilesChange, disabled }: MobileUploadPro
     cameraInputRef.current?.click();
   };
 
+  const handleGallerySelect = () => {
+    galleryInputRef.current?.click();
+  };
+
   const handleFileUpload = () => {
     fileInputRef.current?.click();
   };
@@ -148,7 +153,10 @@ export function MobileUpload({ files, onFilesChange, disabled }: MobileUploadPro
         disabled={disabled || isProcessing}
       >
         <Camera className="h-6 w-6" />
-        📷 Take Photo
+        <div className="flex flex-col items-start">
+          <span>📷 Camera</span>
+          <span className="text-xs text-muted-foreground font-normal">Take a photo</span>
+        </div>
       </Button>
       <input
         ref={cameraInputRef}
@@ -160,7 +168,31 @@ export function MobileUpload({ files, onFilesChange, disabled }: MobileUploadPro
         disabled={disabled}
       />
 
-      {/* File Upload Button */}
+      {/* Gallery Button */}
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full h-14 text-lg font-medium gap-3 border-2 border-dashed hover:border-primary hover:bg-primary/5 transition-all"
+        onClick={handleGallerySelect}
+        disabled={disabled || isProcessing}
+      >
+        <ImageIcon className="h-6 w-6" />
+        <div className="flex flex-col items-start">
+          <span>🖼️ Gallery</span>
+          <span className="text-xs text-muted-foreground font-normal">Choose from photos</span>
+        </div>
+      </Button>
+      <input
+        ref={galleryInputRef}
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={(e) => processFiles(e.target.files)}
+        className="hidden"
+        disabled={disabled}
+      />
+
+      {/* Files Button */}
       <Button
         type="button"
         variant="outline"
@@ -169,13 +201,16 @@ export function MobileUpload({ files, onFilesChange, disabled }: MobileUploadPro
         disabled={disabled || isProcessing}
       >
         <Upload className="h-6 w-6" />
-        📁 Upload File
+        <div className="flex flex-col items-start">
+          <span>📁 Files</span>
+          <span className="text-xs text-muted-foreground font-normal">Select PDF/DOC files</span>
+        </div>
       </Button>
       <input
         ref={fileInputRef}
         type="file"
         multiple
-        accept=".pdf,.doc,.docx,image/*"
+        accept=".pdf,.doc,.docx"
         onChange={(e) => processFiles(e.target.files)}
         className="hidden"
         disabled={disabled}
