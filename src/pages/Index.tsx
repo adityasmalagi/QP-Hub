@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -127,12 +128,21 @@ export default function Index() {
                 </Button>
               </Link>
               
-              <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
-                <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
-                  <Upload className="mr-2 h-5 w-5" />
-                  Upload Paper
-                </Button>
-              </Link>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
+                      <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple animate-pulse-subtle">
+                        <Upload className="mr-2 h-5 w-5" />
+                        Upload Paper
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="max-w-[200px] text-center">
+                    <p>Upload photos, PDFs, or DOC files of question papers</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>

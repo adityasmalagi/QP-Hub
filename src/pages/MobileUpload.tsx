@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -19,7 +20,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
-import { Loader2, Upload, ArrowLeft, Camera, Image as ImageIcon, X, FileText, Plus } from 'lucide-react';
+import { Loader2, Upload, ArrowLeft, Camera, Image as ImageIcon, X, FileText, Plus, Eye, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFormSchema } from '@/lib/validation';
 
@@ -288,6 +289,58 @@ export default function MobileUploadPage() {
             Share your question papers with the community
           </p>
         </div>
+
+        {/* Live Preview Card */}
+        <Card className="mb-6 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5 animate-fade-in">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm text-muted-foreground">Preview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary shrink-0">
+                <FileText className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-foreground truncate">
+                  {formData.title || 'Paper Title'}
+                </h3>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {formData.subject && (
+                    <Badge variant="outline" className="text-xs">{formData.subject}</Badge>
+                  )}
+                  {formData.classLevel && (
+                    <Badge variant="outline" className="text-xs">Class {formData.classLevel}</Badge>
+                  )}
+                  {formData.year && (
+                    <Badge variant="outline" className="text-xs">{formData.year}</Badge>
+                  )}
+                  {formData.examType === 'internals' && formData.internalNumber && (
+                    <Badge className="text-xs bg-primary/20 text-primary border-primary/30">
+                      Internal {formData.internalNumber}
+                    </Badge>
+                  )}
+                </div>
+                <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Eye className="h-3.5 w-3.5" />
+                    0
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Download className="h-3.5 w-3.5" />
+                    0
+                  </span>
+                  {formData.examType && (
+                    <span className="capitalize">
+                      {formData.examType === 'internals' && formData.internalNumber 
+                        ? `Internal ${formData.internalNumber}` 
+                        : formData.examType.replace('_', ' ')}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="animate-fade-in">
           <CardHeader className="pb-4">

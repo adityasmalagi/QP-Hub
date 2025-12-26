@@ -78,6 +78,11 @@ export function PaperCard({
             <Badge variant="outline" className="text-xs">
               {year}
             </Badge>
+            {examType === 'internals' && internalNumber && (
+              <Badge className="text-xs bg-primary/20 text-primary border-primary/30 hover:bg-primary/30">
+                Internal {internalNumber}
+              </Badge>
+            )}
           </div>
           
           <div className="flex flex-col gap-2 text-xs text-muted-foreground">
