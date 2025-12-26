@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,7 @@ import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_
 import { Loader2, Upload, ArrowLeft, Camera, Image as ImageIcon, X, FileText, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFormSchema } from '@/lib/validation';
+import { formatPaperTitle } from '@/lib/paperUtils';
 
 interface UploadedFile {
   file: File;
@@ -51,10 +52,23 @@ export default function MobileUploadPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadSheetOpen, setUploadSheetOpen] = useState(false);
+  const [titleManuallyEdited, setTitleManuallyEdited] = useState(false);
   
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-fill title when subject, semester, or year changes
+  useEffect(() => {
+    if (titleManuallyEdited) return;
+    
+    if (formData.subject && formData.year) {
+      const semester = formData.semester ? parseInt(formData.semester) : null;
+      const year = parseInt(formData.year);
+      const autoTitle = formatPaperTitle(formData.subject, semester, year);
+      setFormData(prev => ({ ...prev, title: autoTitle }));
+    }
+  }, [formData.subject, formData.semester, formData.year, titleManuallyEdited]);
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -450,16 +464,24 @@ export default function MobileUploadPage() {
 
               {/* Title */}
               <div className="space-y-2">
-                <Label htmlFor="title">Title *</Label>
+                <Label htmlFor="title">Title * {!titleManuallyEdited && formData.title && <span className="text-xs text-muted-foreground">(auto-filled)</span>}</Label>
                 <Input
                   id="title"
-                  placeholder="e.g., Mathematics 3rd Sem 2025"
+                  placeholder="e.g., MATH 3rd Sem 2025"
                   value={formData.title}
-                  onChange={(e) => setFormData(f => ({ ...f, title: e.target.value }))}
+                  onChange={(e) => {
+                    setTitleManuallyEdited(true);
+                    setFormData(f => ({ ...f, title: e.target.value }));
+                  }}
                   required
                   maxLength={200}
                   disabled={uploading}
                 />
+                {!titleManuallyEdited && (
+                  <p className="text-xs text-muted-foreground">
+                    Title is auto-generated from subject, semester & year. Edit to customize.
+                  </p>
+                )}
               </div>
 
               {/* Description */}
