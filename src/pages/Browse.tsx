@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { PaperCard } from '@/components/PaperCard';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { SearchableSelect } from '@/components/ui/searchable-select';
 import { supabase } from '@/integrations/supabase/client';
 import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, Filter, X, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { sanitizeSearchInput, browseFiltersSchema } from '@/lib/validation';
 
@@ -174,6 +175,10 @@ export default function Browse() {
       <div className="container mx-auto px-4 py-8 flex-1 animate-fade-in">
         {/* Header */}
         <div className="mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
           <h1 className="mb-2 text-3xl font-bold text-foreground">
             Browse Question Papers
           </h1>

@@ -14,7 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus, Pencil } from 'lucide-react';
+import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus, Pencil, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES, SUBJECTS, EXAM_TYPES, SEMESTERS, INTERNAL_NUMBERS, YEARS as PAPER_YEARS } from '@/lib/constants';
 import { PaperCard } from '@/components/PaperCard';
@@ -643,6 +643,10 @@ export default function Profile() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
+        <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Link>
         <h1 className="mb-8 text-3xl font-bold text-foreground">My Profile</h1>
 
         <Tabs defaultValue={defaultTab} className="w-full">
