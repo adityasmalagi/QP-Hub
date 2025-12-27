@@ -74,6 +74,11 @@ export function PaperCard({
             <Badge variant="outline" className="text-xs">
               {year}
             </Badge>
+            {semester && (
+              <Badge className="text-xs bg-accent/20 text-accent-foreground border-accent/30 hover:bg-accent/30">
+                Sem {semester}
+              </Badge>
+            )}
             {examType === 'internals' && internalNumber && (
               <Badge className="text-xs bg-primary/20 text-primary border-primary/30 hover:bg-primary/30">
                 Internal {internalNumber}
