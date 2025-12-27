@@ -82,19 +82,14 @@ export function PaperCard({
           </div>
           
           <div className="flex flex-col gap-2 text-xs text-muted-foreground">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1">
-                  <Eye className="h-3.5 w-3.5" />
-                  {viewsCount}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Download className="h-3.5 w-3.5" />
-                  {downloadsCount}
-                </span>
-              </div>
-              <span className="capitalize">
-                {examType.replace('_', ' ')}
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1">
+                <Eye className="h-3.5 w-3.5" />
+                {viewsCount}
+              </span>
+              <span className="flex items-center gap-1">
+                <Download className="h-3.5 w-3.5" />
+                {downloadsCount}
               </span>
             </div>
             {uploaderName && (
