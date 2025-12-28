@@ -115,18 +115,14 @@
     scroll-behavior: smooth;
   }
 
-  /* Smooth theme transitions */
-  html,
-  html * {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-duration: 300ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Exclude elements that shouldn't transition */
-  html .no-theme-transition,
-  html .no-theme-transition * {
-    transition: none !important;
+  /* Smooth theme transitions - only on color properties */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: background-color 200ms ease-out, 
+                border-color 200ms ease-out, 
+                color 200ms ease-out !important;
   }
 
   body {
