@@ -120,9 +120,9 @@
   html.theme-transition *,
   html.theme-transition *::before,
   html.theme-transition *::after {
-    transition: background-color 200ms ease-out, 
-                border-color 200ms ease-out, 
-                color 200ms ease-out !important;
+    transition: background-color 100ms ease-out, 
+                border-color 100ms ease-out, 
+                color 100ms ease-out !important;
   }
 
   body {
