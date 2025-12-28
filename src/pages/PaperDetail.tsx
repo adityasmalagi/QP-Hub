@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User } from 'lucide-react';
+import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { PDFViewer } from '@/components/PDFViewer';
@@ -27,6 +27,7 @@ interface Paper {
   created_at: string;
   semester: number | null;
   internal_number: number | null;
+  institute_name: string | null;
   user_id: string;
 }
 
@@ -48,7 +49,7 @@ export default function PaperDetail() {
     try {
       const { data, error } = await supabase
         .from('question_papers')
-        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, user_id')
+        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, institute_name, user_id')
         .eq('id', id)
         .maybeSingle();
 
@@ -238,6 +239,12 @@ export default function PaperDetail() {
                   <User className="h-4 w-4" />
                   Uploaded by {uploaderName}
                 </Link>
+              )}
+              {paper.institute_name && (
+                <span className="flex items-center gap-1">
+                  <Building2 className="h-4 w-4" />
+                  {paper.institute_name}
+                </span>
               )}
             </div>
 

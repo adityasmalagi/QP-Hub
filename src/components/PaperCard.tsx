@@ -75,8 +75,13 @@ export function PaperCard({
               {year}
             </Badge>
             {examType === 'internals' && internalNumber && (
-              <Badge className="text-xs bg-primary/20 text-primary border-primary/30 hover:bg-primary/30">
+              <Badge className="text-xs bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30">
                 Internal {internalNumber}
+              </Badge>
+            )}
+            {examType === 'sem_paper' && semester && (
+              <Badge className="text-xs bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30">
+                Sem {semester}
               </Badge>
             )}
           </div>
@@ -91,11 +96,6 @@ export function PaperCard({
                 <Download className="h-3.5 w-3.5" />
                 {downloadsCount}
               </span>
-              {examType === 'semester' && semester && (
-                <Badge className="text-xs bg-accent/20 text-accent-foreground border-accent/30">
-                  Sem {semester}
-                </Badge>
-              )}
             </div>
             {uploaderName && (
               <div 
