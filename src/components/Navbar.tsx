@@ -45,7 +45,7 @@ export function Navbar() {
     // Remove transition class after animation completes
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transition');
-    }, 200);
+    }, 100);
   };
 
   const handleSignOut = async () => {

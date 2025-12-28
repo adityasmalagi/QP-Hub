@@ -88,20 +88,20 @@ export function PaperCard({
             )}
           </div>
           
-          <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+          <div className="flex flex-col gap-2 text-xs">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400">
                 <Eye className="h-3.5 w-3.5" />
                 {viewsCount}
               </span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 text-green-500 dark:text-green-400">
                 <Download className="h-3.5 w-3.5" />
                 {downloadsCount}
               </span>
             </div>
             {uploaderName && (
               <div 
-                className={`flex items-center gap-1 text-muted-foreground ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : ''}`}
+                className={`flex items-center gap-1 text-purple-500 dark:text-purple-400 ${uploaderId ? 'cursor-pointer hover:text-purple-600 dark:hover:text-purple-300 transition-colors' : ''}`}
                 onClick={uploaderId ? handleUploaderClick : undefined}
               >
                 <User className="h-3.5 w-3.5" />
@@ -109,7 +109,7 @@ export function PaperCard({
               </div>
             )}
             {instituteName && (
-              <div className="flex items-center gap-1 text-muted-foreground">
+              <div className="flex items-center gap-1 text-amber-500 dark:text-amber-400">
                 <Building2 className="h-3.5 w-3.5" />
                 <span className="truncate">{instituteName}</span>
               </div>
