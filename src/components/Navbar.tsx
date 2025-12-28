@@ -38,6 +38,16 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const handleThemeChange = (newTheme: string) => {
+    // Add transition class before changing theme
+    document.documentElement.classList.add('theme-transition');
+    setTheme(newTheme);
+    // Remove transition class after animation completes
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 200);
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
@@ -100,15 +110,15 @@ export function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme("light")}>
+              <DropdownMenuItem onClick={() => handleThemeChange("light")}>
                 <Sun className="mr-2 h-4 w-4" />
                 Light
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("dark")}>
+              <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
                 <Moon className="mr-2 h-4 w-4" />
                 Dark
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("system")}>
+              <DropdownMenuItem onClick={() => handleThemeChange("system")}>
                 <Monitor className="mr-2 h-4 w-4" />
                 System
               </DropdownMenuItem>

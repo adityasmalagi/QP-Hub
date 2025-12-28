@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { PaperCard } from '@/components/PaperCard';
+import { PaperCardSkeleton } from '@/components/PaperCardSkeleton';
 import { ScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -325,7 +326,7 @@ export default function Browse() {
         {loading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-48 animate-pulse rounded-lg bg-muted" />
+              <PaperCardSkeleton key={i} />
             ))}
           </div>
         ) : papers.length === 0 ? (

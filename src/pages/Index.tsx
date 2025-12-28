@@ -8,6 +8,8 @@ import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter } f
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { PaperCard } from '@/components/PaperCard';
+import { PaperCardSkeleton } from '@/components/PaperCardSkeleton';
+import { ScrollAnimation } from '@/hooks/useScrollAnimation';
 import qphubLogo from '@/assets/qphub-logo.png';
 
 const uploadSteps = [
@@ -70,8 +72,7 @@ export default function Index() {
           .from('question_papers')
           .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count')
           .eq('status', 'approved')
-          .order('downloads_count', { ascending: false })
-          .limit(4);
+          .limit(20); // Fetch more to randomize from
 
         if (profile.class_level) {
           query = query.eq('class_level', profile.class_level);
@@ -81,7 +82,12 @@ export default function Index() {
         }
 
         const { data } = await query;
-        setRecommendations(data || []);
+        
+        // Shuffle and pick 4 random papers
+        if (data && data.length > 0) {
+          const shuffled = data.sort(() => Math.random() - 0.5);
+          setRecommendations(shuffled.slice(0, 4));
+        }
       }
     } catch (error) {
       console.error('Error fetching recommendations:', error);
@@ -100,94 +106,112 @@ export default function Index() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(280,50%,20%,0.3)_0%,_transparent_50%)]" />
         
         <div className="container relative mx-auto px-4 pb-20 pt-24 text-center">
-          <div className="mx-auto max-w-4xl animate-fade-in">
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">
-                Your Academic Success Partner
-              </span>
-            </div>
+          <div className="mx-auto max-w-4xl">
+            <ScrollAnimation animation="fade-up" delay={0}>
+              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-muted-foreground">
+                  Your Academic Success Partner
+                </span>
+              </div>
+            </ScrollAnimation>
             
-            <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
-              Access Question Papers{' '}
-              <span className="text-gradient">
-                From Anywhere
-              </span>
-            </h1>
+            <ScrollAnimation animation="fade-up" delay={100}>
+              <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+                Access Question Papers{' '}
+                <span className="text-gradient">
+                  From Anywhere
+                </span>
+              </h1>
+            </ScrollAnimation>
             
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl">
-              The ultimate platform for students to discover, download, and share academic question papers. 
-              Prepare smarter with our vast collection spanning multiple boards and years.
-            </p>
+            <ScrollAnimation animation="fade-up" delay={200}>
+              <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl">
+                The ultimate platform for students to discover, download, and share academic question papers. 
+                Prepare smarter with our vast collection spanning multiple boards and years.
+              </p>
+            </ScrollAnimation>
             
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
-                  Browse Papers
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
-                      <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple animate-pulse-subtle">
-                        <Upload className="mr-2 h-5 w-5" />
-                        Upload Paper
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-[200px] text-center">
-                    <p>Upload photos, PDFs, or DOC files of question papers</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <ScrollAnimation animation="fade-up" delay={300}>
+              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
+                  <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
+                    Browse Papers
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
+                        <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
+                          <Upload className="mr-2 h-5 w-5" />
+                          Upload Paper
+                        </Button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-[200px] text-center">
+                      <p>Upload photos, PDFs, or DOC files of question papers</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </ScrollAnimation>
           </div>
         </div>
       </section>
 
       {/* Recommended Papers Section - Only for logged in users */}
-      {user && recommendations.length > 0 && (
-        <section className="border-t border-border bg-card/30 py-12 animate-fade-in">
+      {user && (loadingRecs || recommendations.length > 0) && (
+        <section className="border-t border-border bg-card/30 py-12">
           <div className="container mx-auto px-4">
-            <div className="mb-8 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground md:text-3xl">
-                  Recommended For You
-                </h2>
-                <p className="mt-1 text-muted-foreground">
-                  Based on your profile preferences
-                </p>
-              </div>
-              <Link to="/browse">
-                <Button variant="outline" size="sm">
-                  View All
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {recommendations.map((paper, index) => (
-                <div 
-                  key={paper.id} 
-                  className="opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
-                >
-                  <PaperCard
-                    id={paper.id}
-                    title={paper.title}
-                    subject={paper.subject}
-                    board={paper.board}
-                    classLevel={paper.class_level}
-                    year={paper.year}
-                    examType={paper.exam_type}
-                    viewsCount={paper.views_count}
-                    downloadsCount={paper.downloads_count}
-                  />
+            <ScrollAnimation animation="fade-up">
+              <div className="mb-8 flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                    Recommended For You
+                  </h2>
+                  <p className="mt-1 text-muted-foreground">
+                    Based on your profile preferences
+                  </p>
                 </div>
-              ))}
+                <Link to="/browse">
+                  <Button variant="outline" size="sm">
+                    View All
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </ScrollAnimation>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {loadingRecs ? (
+                <>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <PaperCardSkeleton key={i} />
+                  ))}
+                </>
+              ) : (
+                recommendations.map((paper, index) => (
+                  <ScrollAnimation
+                    key={paper.id}
+                    animation="fade-up"
+                    delay={index * 100}
+                  >
+                    <PaperCard
+                      id={paper.id}
+                      title={paper.title}
+                      subject={paper.subject}
+                      board={paper.board}
+                      classLevel={paper.class_level}
+                      year={paper.year}
+                      examType={paper.exam_type}
+                      viewsCount={paper.views_count}
+                      downloadsCount={paper.downloads_count}
+                    />
+                  </ScrollAnimation>
+                ))
+              )}
             </div>
           </div>
         </section>
@@ -196,7 +220,7 @@ export default function Index() {
       {/* How to Find Papers Section */}
       <section className="border-t border-border bg-card/30 py-20">
         <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
+          <ScrollAnimation animation="fade-up" className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-secondary/50 px-4 py-2">
               <Filter className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium text-muted-foreground">Finding Papers Made Easy</span>
@@ -207,23 +231,25 @@ export default function Index() {
             <p className="mx-auto max-w-2xl text-muted-foreground">
               Use our powerful filters to quickly find exactly what you need
             </p>
-          </div>
+          </ScrollAnimation>
           
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-4">
             {filterTips.map((tip, index) => (
-              <Card 
-                key={index} 
-                className="border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg opacity-0 animate-fade-in-up"
-                style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
+              <ScrollAnimation
+                key={index}
+                animation="fade-up"
+                delay={index * 100}
               >
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold animate-float" style={{ animationDelay: `${index * 200}ms` }}>
-                    {index + 1}
-                  </div>
-                  <h3 className="mb-2 font-semibold text-foreground">{tip.title}</h3>
-                  <p className="text-sm text-muted-foreground">{tip.description}</p>
-                </CardContent>
-              </Card>
+                <Card className="h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold">
+                      {index + 1}
+                    </div>
+                    <h3 className="mb-2 font-semibold text-foreground">{tip.title}</h3>
+                    <p className="text-sm text-muted-foreground">{tip.description}</p>
+                  </CardContent>
+                </Card>
+              </ScrollAnimation>
             ))}
           </div>
         </div>
@@ -234,57 +260,60 @@ export default function Index() {
         <div className="container mx-auto px-4">
           <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
             {/* Left Content */}
-            <div>
-              <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">
-                Share Your <span className="text-gradient">Knowledge</span>
-              </h2>
-              <p className="mb-8 text-lg text-muted-foreground">
-                Help fellow students by uploading question papers from your exams. 
-                It takes just a few seconds and makes a real difference.
-              </p>
-              
-              <div className="mb-8 space-y-4">
-                {uploadFeatures.map((feature, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                    <div>
-                      <h4 className="font-semibold text-foreground">{feature.title}</h4>
-                      <p className="text-sm text-muted-foreground">{feature.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <Link to={user ? "/upload" : "/auth?redirect=/upload"}>
-                <Button size="lg" className="gradient-primary glow-purple">
-                  <Upload className="mr-2 h-5 w-5" />
-                  Start Uploading
-                </Button>
-              </Link>
-            </div>
-            
-            {/* Right - Steps Card */}
-            <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card via-card to-secondary/20 p-1">
-              <div className="rounded-xl bg-card/80 p-6 backdrop-blur-sm">
-                <div className="space-y-4">
-                  {uploadSteps.map((item, index) => (
-                    <div 
-                      key={index} 
-                      className={`rounded-xl border p-4 transition-all opacity-0 animate-slide-in ${
-                        index === 3 
-                          ? 'border-primary/50 bg-gradient-to-r from-primary/10 to-accent/10' 
-                          : 'border-border/50 bg-secondary/30'
-                      }`}
-                      style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'forwards' }}
-                    >
-                      <div className="mb-1 text-xs font-medium text-primary">Step {item.step}</div>
-                      <div className="font-semibold text-foreground">{item.title}</div>
-                      <div className="text-sm text-muted-foreground">{item.description}</div>
+            <ScrollAnimation animation="slide-right">
+              <div>
+                <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">
+                  Share Your <span className="text-gradient">Knowledge</span>
+                </h2>
+                <p className="mb-8 text-lg text-muted-foreground">
+                  Help fellow students by uploading question papers from your exams. 
+                  It takes just a few seconds and makes a real difference.
+                </p>
+                
+                <div className="mb-8 space-y-4">
+                  {uploadFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                      <div>
+                        <h4 className="font-semibold text-foreground">{feature.title}</h4>
+                        <p className="text-sm text-muted-foreground">{feature.description}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
+                
+                <Link to={user ? "/upload" : "/auth?redirect=/upload"}>
+                  <Button size="lg" className="gradient-primary glow-purple">
+                    <Upload className="mr-2 h-5 w-5" />
+                    Start Uploading
+                  </Button>
+                </Link>
               </div>
-            </div>
+            </ScrollAnimation>
+            
+            {/* Right - Steps Card */}
+            <ScrollAnimation animation="slide-left">
+              <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card via-card to-secondary/20 p-1">
+                <div className="rounded-xl bg-card/80 p-6 backdrop-blur-sm">
+                  <div className="space-y-4">
+                    {uploadSteps.map((item, index) => (
+                      <div 
+                        key={index} 
+                        className={`rounded-xl border p-4 transition-all ${
+                          index === 3 
+                            ? 'border-primary/50 bg-gradient-to-r from-primary/10 to-accent/10' 
+                            : 'border-border/50 bg-secondary/30'
+                        }`}
+                      >
+                        <div className="mb-1 text-xs font-medium text-primary">Step {item.step}</div>
+                        <div className="font-semibold text-foreground">{item.title}</div>
+                        <div className="text-sm text-muted-foreground">{item.description}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
           </div>
         </div>
       </section>
@@ -292,51 +321,57 @@ export default function Index() {
       {/* Features Section */}
       <section className="border-t border-border bg-card/30 py-20">
         <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
+          <ScrollAnimation animation="fade-up" className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">
               Why Choose <span className="text-gradient">QP Hub</span>?
             </h2>
             <p className="text-muted-foreground">
               Everything you need to excel in your exams, all in one place.
             </p>
-          </div>
+          </ScrollAnimation>
           
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
-            <Card className="group border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg opacity-0 animate-scale-in" style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}>
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                  <Search className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">Advanced Filters</h3>
-                <p className="text-sm text-muted-foreground">
-                  Find exactly what you need with powerful search and filtering by board, class, subject, and year.
-                </p>
-              </CardContent>
-            </Card>
+            <ScrollAnimation animation="scale-in" delay={0}>
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
+                    <Search className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  </div>
+                  <h3 className="mb-2 text-lg font-semibold text-foreground">Advanced Filters</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Find exactly what you need with powerful search and filtering by board, class, subject, and year.
+                  </p>
+                </CardContent>
+              </Card>
+            </ScrollAnimation>
             
-            <Card className="group border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg opacity-0 animate-scale-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                  <Upload className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">Easy Uploads</h3>
-                <p className="text-sm text-muted-foreground">
-                  Share your question papers effortlessly. Drag, drop, and help fellow students succeed.
-                </p>
-              </CardContent>
-            </Card>
+            <ScrollAnimation animation="scale-in" delay={100}>
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
+                    <Upload className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  </div>
+                  <h3 className="mb-2 text-lg font-semibold text-foreground">Easy Uploads</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Share your question papers effortlessly. Drag, drop, and help fellow students succeed.
+                  </p>
+                </CardContent>
+              </Card>
+            </ScrollAnimation>
             
-            <Card className="group border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg opacity-0 animate-scale-in" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                  <BookOpen className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">Academic Success</h3>
-                <p className="text-sm text-muted-foreground">
-                  Access thousands of past papers from Indian and International boards to ace your exams.
-                </p>
-              </CardContent>
-            </Card>
+            <ScrollAnimation animation="scale-in" delay={200}>
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
+                    <BookOpen className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  </div>
+                  <h3 className="mb-2 text-lg font-semibold text-foreground">Academic Success</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Access thousands of past papers from Indian and International boards to ace your exams.
+                  </p>
+                </CardContent>
+              </Card>
+            </ScrollAnimation>
           </div>
         </div>
       </section>
