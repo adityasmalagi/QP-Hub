@@ -88,29 +88,29 @@ export function PaperCard({
             )}
           </div>
           
-          <div className="flex flex-col gap-2 text-xs">
+          <div className="flex flex-col gap-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400">
-                <Eye className="h-3.5 w-3.5" />
+              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-default group/stat">
+                <Eye className="h-3.5 w-3.5 group-hover/stat:scale-110 transition-transform" />
                 {viewsCount}
               </span>
-              <span className="flex items-center gap-1 text-green-500 dark:text-green-400">
-                <Download className="h-3.5 w-3.5" />
+              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-default group/stat">
+                <Download className="h-3.5 w-3.5 group-hover/stat:scale-110 transition-transform" />
                 {downloadsCount}
               </span>
             </div>
             {uploaderName && (
               <div 
-                className={`flex items-center gap-1 text-purple-500 dark:text-purple-400 ${uploaderId ? 'cursor-pointer hover:text-purple-600 dark:hover:text-purple-300 transition-colors' : ''}`}
+                className={`flex items-center gap-1 group/uploader ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : 'hover:text-foreground transition-colors'}`}
                 onClick={uploaderId ? handleUploaderClick : undefined}
               >
-                <User className="h-3.5 w-3.5" />
+                <User className="h-3.5 w-3.5 group-hover/uploader:scale-110 transition-transform" />
                 <span className="truncate">Uploaded by {uploaderName}</span>
               </div>
             )}
             {instituteName && (
-              <div className="flex items-center gap-1 text-amber-500 dark:text-amber-400">
-                <Building2 className="h-3.5 w-3.5" />
+              <div className="flex items-center gap-1 hover:text-foreground transition-colors group/inst">
+                <Building2 className="h-3.5 w-3.5 group-hover/inst:scale-110 transition-transform" />
                 <span className="truncate">{instituteName}</span>
               </div>
             )}
