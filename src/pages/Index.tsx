@@ -46,6 +46,7 @@ interface RecommendedPaper {
   internal_number: number | null;
   institute_name: string | null;
   user_id: string;
+  created_at: string | null;
   uploaderName?: string | null;
 }
 
@@ -90,7 +91,7 @@ export default function Index() {
       if (profile?.class_level || profile?.board) {
         let query = supabase
           .from('question_papers')
-          .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, institute_name, user_id')
+          .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, institute_name, user_id, created_at')
           .eq('status', 'approved')
           .limit(20); // Fetch more to randomize from
 
@@ -272,6 +273,7 @@ export default function Index() {
                       instituteName={paper.institute_name}
                       uploaderName={paper.uploaderName}
                       uploaderId={paper.user_id}
+                      createdAt={paper.created_at}
                     />
                   </ScrollAnimation>
                 ))
