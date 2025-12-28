@@ -142,15 +142,13 @@ export default function PaperDetail() {
   const getExamTypeDisplay = () => {
     if (!paper) return '';
     
-    let display = paper.exam_type.replace('_', ' ');
-    
     if (paper.exam_type === 'sem_paper' && paper.semester) {
-      display = `SEM ${paper.semester} Paper`;
-    } else if (paper.exam_type === 'internals' && paper.semester && paper.internal_number) {
-      display = `SEM ${paper.semester} - Internal ${paper.internal_number}`;
+      return `SEM ${paper.semester} Paper`;
+    } else if (paper.exam_type === 'internals' && paper.internal_number) {
+      return `Internal ${paper.internal_number}`;
     }
     
-    return display;
+    return paper.exam_type.replace('_', ' ');
   };
 
   if (loading) {
