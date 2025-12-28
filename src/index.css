@@ -115,6 +115,20 @@
     scroll-behavior: smooth;
   }
 
+  /* Smooth theme transitions */
+  html,
+  html * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Exclude elements that shouldn't transition */
+  html .no-theme-transition,
+  html .no-theme-transition * {
+    transition: none !important;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Plus Jakarta Sans', sans-serif;

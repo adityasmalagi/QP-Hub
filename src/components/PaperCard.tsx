@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Eye, Download, FileText, User } from 'lucide-react';
+import { Eye, Download, FileText, User, Building2 } from 'lucide-react';
 import { BookmarkButton } from '@/components/BookmarkButton';
 
 interface PaperCardProps {
@@ -18,6 +18,7 @@ interface PaperCardProps {
   uploaderId?: string | null;
   semester?: number | null;
   internalNumber?: number | null;
+  instituteName?: string | null;
 }
 
 export function PaperCard({
@@ -34,6 +35,7 @@ export function PaperCard({
   uploaderId,
   semester,
   internalNumber,
+  instituteName,
 }: PaperCardProps) {
   const navigate = useNavigate();
 
@@ -104,6 +106,12 @@ export function PaperCard({
               >
                 <User className="h-3.5 w-3.5" />
                 <span className="truncate">Uploaded by {uploaderName}</span>
+              </div>
+            )}
+            {instituteName && (
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Building2 className="h-3.5 w-3.5" />
+                <span className="truncate">{instituteName}</span>
               </div>
             )}
           </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { PaperCard } from '@/components/PaperCard';
+import { ScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,6 +26,7 @@ interface QuestionPaper {
   user_id: string;
   semester: number | null;
   internal_number: number | null;
+  institute_name: string | null;
   uploaderName?: string | null;
 }
 
@@ -61,7 +63,7 @@ export default function Browse() {
 
       let query = supabase
         .from('question_papers')
-        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, user_id')
+        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, institute_name, user_id')
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
 
@@ -347,23 +349,30 @@ export default function Browse() {
               Showing {papers.length} paper{papers.length !== 1 ? 's' : ''}
             </p>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {papers.map((paper) => (
-                <PaperCard
+              {papers.map((paper, index) => (
+                <ScrollAnimation
                   key={paper.id}
-                  id={paper.id}
-                  title={paper.title}
-                  subject={paper.subject}
-                  board={paper.board}
-                  classLevel={paper.class_level}
-                  year={paper.year}
-                  examType={paper.exam_type}
-                  viewsCount={paper.views_count}
-                  downloadsCount={paper.downloads_count}
-                  uploaderName={paper.uploaderName}
-                  uploaderId={paper.user_id}
-                  semester={paper.semester}
-                  internalNumber={paper.internal_number}
-                />
+                  animation="fade-up"
+                  delay={Math.min(index * 50, 300)}
+                  duration={400}
+                >
+                  <PaperCard
+                    id={paper.id}
+                    title={paper.title}
+                    subject={paper.subject}
+                    board={paper.board}
+                    classLevel={paper.class_level}
+                    year={paper.year}
+                    examType={paper.exam_type}
+                    viewsCount={paper.views_count}
+                    downloadsCount={paper.downloads_count}
+                    uploaderName={paper.uploaderName}
+                    uploaderId={paper.user_id}
+                    semester={paper.semester}
+                    internalNumber={paper.internal_number}
+                    instituteName={paper.institute_name}
+                  />
+                </ScrollAnimation>
               ))}
             </div>
           </>
