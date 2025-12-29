@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Mail, Lock, User, Chrome } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Chrome, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { Separator } from '@/components/ui/separator';
@@ -32,6 +32,7 @@ export default function Auth() {
     password: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
   
   const [googleLoading, setGoogleLoading] = useState(false);
   
@@ -228,12 +229,24 @@ export default function Auth() {
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={(e) => setFormData(f => ({ ...f, password: e.target.value }))}
-                    className="pl-10"
+                    className="pl-10 pr-10"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
                 {errors.password && (
                   <p className="text-xs text-destructive">{errors.password}</p>
