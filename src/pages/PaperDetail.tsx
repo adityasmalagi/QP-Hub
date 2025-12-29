@@ -6,10 +6,35 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2 } from 'lucide-react';
+import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { PDFViewer } from '@/components/PDFViewer';
+import { ImageViewer } from '@/components/ImageViewer';
+
+// Helper to detect file type from URL or filename
+const getFileType = (fileUrl: string, fileName: string): 'pdf' | 'image' | 'unknown' => {
+  const url = fileUrl.toLowerCase();
+  const name = fileName.toLowerCase();
+  
+  // Check for image extensions
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+  if (imageExtensions.some(ext => url.includes(ext) || name.endsWith(ext))) {
+    return 'image';
+  }
+  
+  // Check for PDF
+  if (url.includes('.pdf') || name.endsWith('.pdf')) {
+    return 'pdf';
+  }
+  
+  // Try to detect from content-type in URL params or default to PDF
+  if (url.includes('image/') || url.includes('image%2F')) {
+    return 'image';
+  }
+  
+  return 'pdf'; // Default to PDF for backwards compatibility
+};
 
 interface Paper {
   id: string;
@@ -87,6 +112,14 @@ export default function PaperDetail() {
 
   const [downloading, setDownloading] = useState(false);
 
+  // Determine file type
+  const fileType = paper ? getFileType(paper.file_url, paper.file_name) : 'pdf';
+
+  const getDownloadButtonText = () => {
+    if (downloading) return 'Downloading...';
+    return fileType === 'image' ? 'Download Image' : 'Download PDF';
+  };
+
   const handleDownload = async () => {
     if (!paper || downloading) return;
     
@@ -102,7 +135,7 @@ export default function PaperDetail() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = paper.file_name || `${paper.title}.pdf`;
+      link.download = paper.file_name || `${paper.title}.${fileType === 'image' ? 'png' : 'pdf'}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -252,10 +285,12 @@ export default function PaperDetail() {
               <Button onClick={handleDownload} className="gradient-primary" disabled={downloading}>
                 {downloading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : fileType === 'image' ? (
+                  <Image className="mr-2 h-4 w-4" />
                 ) : (
                   <Download className="mr-2 h-4 w-4" />
                 )}
-                {downloading ? 'Downloading...' : 'Download PDF'}
+                {getDownloadButtonText()}
               </Button>
               <Button
                 variant="outline"
@@ -269,12 +304,20 @@ export default function PaperDetail() {
           </CardContent>
         </Card>
 
-        {/* PDF Viewer */}
-        <PDFViewer
-          fileUrl={paper.file_url}
-          title={paper.title}
-          className="min-h-[600px]"
-        />
+        {/* File Viewer - PDF or Image */}
+        {fileType === 'image' ? (
+          <ImageViewer
+            fileUrl={paper.file_url}
+            title={paper.title}
+            className="min-h-[600px]"
+          />
+        ) : (
+          <PDFViewer
+            fileUrl={paper.file_url}
+            title={paper.title}
+            className="min-h-[600px]"
+          />
+        )}
       </div>
     </div>
   );
