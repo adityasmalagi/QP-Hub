@@ -6,16 +6,30 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2, Image } from 'lucide-react';
+import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2, Image, Images, FileType } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { PDFViewer } from '@/components/PDFViewer';
 import { ImageViewer } from '@/components/ImageViewer';
+import { ImageGalleryViewer } from '@/components/ImageGalleryViewer';
+import { DocViewer } from '@/components/DocViewer';
+
+type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
 
 // Helper to detect file type from URL or filename
-const getFileType = (fileUrl: string, fileName: string): 'pdf' | 'image' | 'unknown' => {
+const getFileType = (fileUrl: string, fileName: string, additionalUrls?: string[]): FileViewType => {
   const url = fileUrl.toLowerCase();
   const name = fileName.toLowerCase();
+  
+  // Check if it's a gallery (multiple images)
+  if (additionalUrls && additionalUrls.length > 0) {
+    return 'gallery';
+  }
+  
+  // Check for Word documents
+  if (url.includes('.docx') || url.includes('.doc') || name.endsWith('.docx') || name.endsWith('.doc')) {
+    return 'docx';
+  }
   
   // Check for image extensions
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
@@ -28,7 +42,7 @@ const getFileType = (fileUrl: string, fileName: string): 'pdf' | 'image' | 'unkn
     return 'pdf';
   }
   
-  // Try to detect from content-type in URL params or default to PDF
+  // Try to detect from content-type in URL params
   if (url.includes('image/') || url.includes('image%2F')) {
     return 'image';
   }
@@ -54,6 +68,8 @@ interface Paper {
   internal_number: number | null;
   institute_name: string | null;
   user_id: string;
+  file_type: string | null;
+  additional_file_urls: string[] | null;
 }
 
 export default function PaperDetail() {
@@ -74,7 +90,7 @@ export default function PaperDetail() {
     try {
       const { data, error } = await supabase
         .from('question_papers')
-        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, institute_name, user_id')
+        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, institute_name, user_id, file_type, additional_file_urls')
         .eq('id', id)
         .maybeSingle();
 
@@ -113,11 +129,28 @@ export default function PaperDetail() {
   const [downloading, setDownloading] = useState(false);
 
   // Determine file type
-  const fileType = paper ? getFileType(paper.file_url, paper.file_name) : 'pdf';
+  const fileType = paper ? getFileType(paper.file_url, paper.file_name, paper.additional_file_urls || undefined) : 'pdf';
+
+  // Get all image URLs for gallery
+  const galleryUrls = paper && fileType === 'gallery' 
+    ? [paper.file_url, ...(paper.additional_file_urls || [])]
+    : [];
 
   const getDownloadButtonText = () => {
     if (downloading) return 'Downloading...';
-    return fileType === 'image' ? 'Download Image' : 'Download PDF';
+    if (fileType === 'gallery') return 'Download All Images';
+    if (fileType === 'image') return 'Download Image';
+    if (fileType === 'docx') return 'Download Document';
+    return 'Download PDF';
+  };
+
+  const getFileIcon = () => {
+    switch (fileType) {
+      case 'gallery': return <Images className="mr-2 h-4 w-4" />;
+      case 'image': return <Image className="mr-2 h-4 w-4" />;
+      case 'docx': return <FileType className="mr-2 h-4 w-4" />;
+      default: return <Download className="mr-2 h-4 w-4" />;
+    }
   };
 
   const handleDownload = async () => {
@@ -125,21 +158,39 @@ export default function PaperDetail() {
     
     setDownloading(true);
     try {
-      // Fetch the file as blob
-      const response = await fetch(paper.file_url);
-      if (!response.ok) throw new Error('Failed to fetch file');
+      // For gallery, download all images
+      const urlsToDownload = fileType === 'gallery' 
+        ? [paper.file_url, ...(paper.additional_file_urls || [])]
+        : [paper.file_url];
       
-      const blob = await response.blob();
-      
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = paper.file_name || `${paper.title}.${fileType === 'image' ? 'png' : 'pdf'}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      for (let i = 0; i < urlsToDownload.length; i++) {
+        const url = urlsToDownload[i];
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch file');
+        
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        
+        // Generate filename
+        const ext = url.split('.').pop()?.split('?')[0] || 'png';
+        if (urlsToDownload.length > 1) {
+          link.download = `${paper.title}_${i + 1}.${ext}`;
+        } else {
+          link.download = paper.file_name || `${paper.title}.${ext}`;
+        }
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+        
+        // Small delay between downloads
+        if (i < urlsToDownload.length - 1) {
+          await new Promise(r => setTimeout(r, 300));
+        }
+      }
 
       // Increment download count atomically
       await supabase.rpc('increment_downloads', { _paper_id: paper.id });
@@ -285,31 +336,45 @@ export default function PaperDetail() {
               <Button onClick={handleDownload} className="gradient-primary" disabled={downloading}>
                 {downloading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : fileType === 'image' ? (
-                  <Image className="mr-2 h-4 w-4" />
                 ) : (
-                  <Download className="mr-2 h-4 w-4" />
+                  getFileIcon()
                 )}
                 {getDownloadButtonText()}
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => window.open(paper.file_url, '_blank')}
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                Open in New Tab
-              </Button>
+              {fileType !== 'docx' && (
+                <Button
+                  variant="outline"
+                  onClick={() => window.open(paper.file_url, '_blank')}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Open in New Tab
+                </Button>
+              )}
               <BookmarkButton paperId={paper.id} variant="button" />
             </div>
           </CardContent>
         </Card>
 
-        {/* File Viewer - PDF or Image */}
-        {fileType === 'image' ? (
+        {/* File Viewer - PDF, Image, Gallery, or Document */}
+        {fileType === 'gallery' ? (
+          <ImageGalleryViewer
+            fileUrls={galleryUrls}
+            title={paper.title}
+            className="min-h-[600px]"
+          />
+        ) : fileType === 'image' ? (
           <ImageViewer
             fileUrl={paper.file_url}
             title={paper.title}
             className="min-h-[600px]"
+          />
+        ) : fileType === 'docx' ? (
+          <DocViewer
+            fileUrl={paper.file_url}
+            fileName={paper.file_name}
+            title={paper.title}
+            className="min-h-[400px]"
+            onDownload={handleDownload}
           />
         ) : (
           <PDFViewer
