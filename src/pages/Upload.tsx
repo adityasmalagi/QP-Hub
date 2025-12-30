@@ -16,47 +16,68 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
-import { Upload as UploadIcon, FileText, X, Loader2 } from 'lucide-react';
+import { Upload as UploadIcon, FileText, X, Loader2, Image, Images } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFormSchema } from '@/lib/validation';
+import { Badge } from '@/components/ui/badge';
 
-// File validation helper
-const validatePDFFile = (file: File): { valid: boolean; error?: string } => {
-  // Check file extension
-  if (!file.name.toLowerCase().endsWith('.pdf')) {
-    return { 
-      valid: false, 
-      error: 'Only PDF files are allowed. The file must have a .pdf extension.' 
-    };
-  }
+// Allowed file types and validation
+type FileType = 'pdf' | 'docx' | 'image' | 'unknown';
+
+const ALLOWED_EXTENSIONS = {
+  pdf: ['.pdf'],
+  docx: ['.docx', '.doc'],
+  image: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
+};
+
+const getFileType = (fileName: string): FileType => {
+  const ext = fileName.toLowerCase().split('.').pop();
+  if (!ext) return 'unknown';
   
-  // Check MIME type
-  if (file.type && file.type !== 'application/pdf') {
-    return { 
-      valid: false, 
-      error: 'Invalid file type. Please select a valid PDF document.' 
-    };
+  if (ALLOWED_EXTENSIONS.pdf.some(e => e === `.${ext}`)) return 'pdf';
+  if (ALLOWED_EXTENSIONS.docx.some(e => e === `.${ext}`)) return 'docx';
+  if (ALLOWED_EXTENSIONS.image.some(e => e === `.${ext}`)) return 'image';
+  return 'unknown';
+};
+
+const validateFiles = (files: File[]): { valid: boolean; error?: string; fileType?: FileType } => {
+  if (files.length === 0) {
+    return { valid: false, error: 'No files selected' };
   }
-  
-  // Check maximum file size (10MB)
-  const maxSizeMB = 10;
-  if (file.size > maxSizeMB * 1024 * 1024) {
-    return { 
-      valid: false, 
-      error: `File is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Maximum size is ${maxSizeMB}MB.` 
-    };
+
+  // Check total size (max 20MB)
+  const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+  if (totalSize > 20 * 1024 * 1024) {
+    return { valid: false, error: `Total file size is too large (${(totalSize / (1024 * 1024)).toFixed(1)}MB). Maximum is 20MB.` };
   }
+
+  // Check each file
+  const fileTypes = files.map(f => getFileType(f.name));
   
-  // Check minimum size (likely empty or corrupted)
-  if (file.size < 100) {
-    return { 
-      valid: false, 
-      error: 'File appears to be empty or corrupted. Please select a valid PDF.' 
-    };
+  // All files must be of recognized type
+  if (fileTypes.includes('unknown')) {
+    const unknownFile = files[fileTypes.indexOf('unknown')];
+    return { valid: false, error: `Unsupported file type: ${unknownFile.name}. Allowed: PDF, Word (.docx), Images.` };
   }
+
+  // If multiple files, they must all be images
+  if (files.length > 1) {
+    if (!fileTypes.every(t => t === 'image')) {
+      return { valid: false, error: 'Multiple files can only be uploaded for images. For PDF or Word, upload a single file.' };
+    }
+    return { valid: true, fileType: 'image' };
+  }
+
+  // Single file
+  const firstType = fileTypes[0];
   
-  return { valid: true };
+  // Check minimum size
+  if (files[0].size < 100) {
+    return { valid: false, error: 'File appears to be empty or corrupted.' };
+  }
+
+  return { valid: true, fileType: firstType };
 };
 
 export default function Upload() {
@@ -76,11 +97,12 @@ export default function Upload() {
     internalNumber: '',
     instituteName: '',
   });
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
+  const [detectedFileType, setDetectedFileType] = useState<FileType | null>(null);
 
   // Redirect if not authenticated
   if (!authLoading && !user) {
@@ -104,9 +126,9 @@ export default function Upload() {
     setDragActive(false);
     setFileError(null);
     
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      const validation = validatePDFFile(droppedFile);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      const validation = validateFiles(droppedFiles);
       
       if (!validation.valid) {
         setFileError(validation.error || 'Invalid file');
@@ -118,16 +140,17 @@ export default function Upload() {
         return;
       }
       
-      setFile(droppedFile);
+      setFiles(droppedFiles);
+      setDetectedFileType(validation.fileType || null);
     }
   }, [toast]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFileError(null);
     
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      const validation = validatePDFFile(selectedFile);
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFiles = Array.from(e.target.files);
+      const validation = validateFiles(selectedFiles);
       
       if (!validation.valid) {
         setFileError(validation.error || 'Invalid file');
@@ -140,7 +163,16 @@ export default function Upload() {
         return;
       }
       
-      setFile(selectedFile);
+      setFiles(selectedFiles);
+      setDetectedFileType(validation.fileType || null);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    const newFiles = files.filter((_, i) => i !== index);
+    setFiles(newFiles);
+    if (newFiles.length === 0) {
+      setDetectedFileType(null);
     }
   };
 
@@ -150,10 +182,10 @@ export default function Upload() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!file || !user) return;
+    if (files.length === 0 || !user) return;
     
     // Final file validation before upload
-    const fileValidation = validatePDFFile(file);
+    const fileValidation = validateFiles(files);
     if (!fileValidation.valid) {
       toast({
         title: 'Invalid file',
@@ -201,9 +233,9 @@ export default function Upload() {
     setUploadProgress(0);
     
     try {
-      // Upload file via edge function with progress tracking
+      // Upload files via edge function with progress tracking
       const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
+      files.forEach(f => formDataUpload.append('files', f));
       
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData?.session?.access_token;
@@ -213,7 +245,14 @@ export default function Upload() {
       }
 
       // Use XMLHttpRequest for progress tracking
-      const uploadResult = await new Promise<{ success: boolean; publicUrl?: string; error?: string }>((resolve, reject) => {
+      const uploadResult = await new Promise<{ 
+        success: boolean; 
+        primaryUrl?: string; 
+        files?: Array<{ url: string; type: string; name: string }>;
+        fileType?: string;
+        isMultiImage?: boolean;
+        error?: string;
+      }>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         
         xhr.upload.addEventListener('progress', (event) => {
@@ -237,16 +276,18 @@ export default function Upload() {
         });
         
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        xhr.open('POST', `${supabaseUrl}/functions/v1/validate-pdf-upload`);
+        xhr.open('POST', `${supabaseUrl}/functions/v1/upload-files`);
         xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
         xhr.send(formDataUpload);
       });
 
-      if (!uploadResult.success || !uploadResult.publicUrl) {
+      if (!uploadResult.success || !uploadResult.primaryUrl) {
         throw new Error(uploadResult.error || 'Upload validation failed');
       }
 
-      const { publicUrl } = uploadResult;
+      const primaryUrl = uploadResult.primaryUrl;
+      const additionalUrls = uploadResult.files?.slice(1).map(f => f.url) || [];
+      const fileType = uploadResult.isMultiImage ? 'gallery' : (uploadResult.fileType || 'pdf');
 
       // Insert paper record with validated data
       const { error: insertError } = await supabase
@@ -260,12 +301,14 @@ export default function Upload() {
           subject: validatedData.subject,
           year: parseInt(validatedData.year),
           exam_type: validatedData.examType,
-          file_url: publicUrl,
-          file_name: file.name,
+          file_url: primaryUrl,
+          file_name: files[0].name,
           status: 'approved',
           semester: requiresSemester && validatedData.semester ? parseInt(validatedData.semester) : null,
           internal_number: requiresInternalNumber && validatedData.internalNumber ? parseInt(validatedData.internalNumber) : null,
           institute_name: validatedData.instituteName || null,
+          file_type: fileType,
+          additional_file_urls: additionalUrls,
         });
 
       if (insertError) throw insertError;
@@ -320,7 +363,7 @@ export default function Upload() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* File Upload */}
               <div className="space-y-2">
-                <Label>PDF File *</Label>
+                <Label>File(s) *</Label>
                 <div
                   className={`relative rounded-lg border-2 border-dashed p-8 text-center transition-all duration-300 ease-out ${
                     dragActive
@@ -334,28 +377,56 @@ export default function Upload() {
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
                 >
-                  {file ? (
-                    <div className="flex items-center justify-center gap-3 animate-fade-in">
-                      <div className="rounded-full bg-primary/10 p-3">
-                        <FileText className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="text-left">
-                        <p className="font-medium text-foreground">{file.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {(file.size / (1024 * 1024)).toFixed(2)} MB
-                        </p>
-                      </div>
+                {files.length > 0 ? (
+                    <div className="space-y-3 animate-fade-in">
+                      {files.map((f, index) => (
+                        <div key={index} className="flex items-center justify-between gap-3 bg-muted/50 p-3 rounded-lg">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="rounded-full bg-primary/10 p-2 flex-shrink-0">
+                              {getFileType(f.name) === 'image' ? (
+                                <Image className="h-5 w-5 text-primary" />
+                              ) : (
+                                <FileText className="h-5 w-5 text-primary" />
+                              )}
+                            </div>
+                            <div className="text-left min-w-0">
+                              <p className="font-medium text-foreground truncate">{f.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {(f.size / (1024 * 1024)).toFixed(2)} MB
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="hover:bg-destructive/10 hover:text-destructive transition-colors flex-shrink-0"
+                            onClick={() => removeFile(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      {files.length > 1 && (
+                        <div className="flex items-center justify-center gap-2">
+                          <Badge variant="secondary" className="text-xs">
+                            <Images className="h-3 w-3 mr-1" />
+                            {files.length} images - Gallery mode
+                          </Badge>
+                        </div>
+                      )}
                       <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        className="hover:bg-destructive/10 hover:text-destructive transition-colors"
+                        className="w-full"
                         onClick={() => {
-                          setFile(null);
+                          setFiles([]);
+                          setDetectedFileType(null);
                           setFileError(null);
                         }}
                       >
-                        <X className="h-4 w-4" />
+                        Clear all files
                       </Button>
                     </div>
                   ) : (
@@ -373,7 +444,7 @@ export default function Upload() {
                         dragActive ? 'text-primary font-medium' : 'text-foreground'
                       }`}>
                         {dragActive ? (
-                          <span className="font-semibold">Drop your PDF here!</span>
+                          <span className="font-semibold">Drop your files here!</span>
                         ) : (
                           <>
                             <span className="font-semibold">Click to upload</span> or drag and drop
@@ -383,11 +454,15 @@ export default function Upload() {
                       <p className={`text-xs transition-colors duration-300 ${
                         dragActive ? 'text-primary/70' : 'text-muted-foreground'
                       }`}>
-                        PDF files only (max 10MB)
+                        PDF, Word (.docx), or Images (max 20MB total)
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Upload multiple images for a gallery view
                       </p>
                       <input
                         type="file"
-                        accept=".pdf,application/pdf"
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                        multiple
                         onChange={handleFileChange}
                         className="absolute inset-0 cursor-pointer opacity-0"
                       />
@@ -598,7 +673,7 @@ export default function Upload() {
               <Button
                 type="submit"
                 className="w-full gradient-primary"
-                disabled={uploading || !file}
+                disabled={uploading || files.length === 0}
               >
                 {uploading ? (
                   <>

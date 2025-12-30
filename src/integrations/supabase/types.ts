@@ -126,6 +126,7 @@ export type Database = {
       }
       question_papers: {
         Row: {
+          additional_file_urls: string[] | null
           board: string
           class_level: string
           created_at: string | null
@@ -133,6 +134,7 @@ export type Database = {
           downloads_count: number | null
           exam_type: string
           file_name: string
+          file_type: string | null
           file_url: string
           id: string
           institute_name: string | null
@@ -148,6 +150,7 @@ export type Database = {
           year: number
         }
         Insert: {
+          additional_file_urls?: string[] | null
           board: string
           class_level: string
           created_at?: string | null
@@ -155,6 +158,7 @@ export type Database = {
           downloads_count?: number | null
           exam_type: string
           file_name: string
+          file_type?: string | null
           file_url: string
           id?: string
           institute_name?: string | null
@@ -170,6 +174,7 @@ export type Database = {
           year: number
         }
         Update: {
+          additional_file_urls?: string[] | null
           board?: string
           class_level?: string
           created_at?: string | null
@@ -177,6 +182,7 @@ export type Database = {
           downloads_count?: number | null
           exam_type?: string
           file_name?: string
+          file_type?: string | null
           file_url?: string
           id?: string
           institute_name?: string | null
