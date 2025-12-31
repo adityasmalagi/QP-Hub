@@ -15,15 +15,13 @@ import {
 import { SearchableSelect } from '@/components/ui/searchable-select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
-import { Loader2, Upload, ArrowLeft, Camera, Image as ImageIcon, X, FileText, Plus } from 'lucide-react';
+import { Loader2, Upload, ArrowLeft, X, FileText, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFormSchema } from '@/lib/validation';
 import { formatPaperTitle } from '@/lib/paperUtils';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface UploadedFile {
   file: File;
@@ -52,14 +50,9 @@ export default function MobileUploadPage() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadSheetOpen, setUploadSheetOpen] = useState(false);
   const [titleManuallyEdited, setTitleManuallyEdited] = useState(false);
   
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const desktopFileInputRef = useRef<HTMLInputElement>(null);
-  const isMobile = useIsMobile();
 
   // Auto-fill title when subject, semester, or year changes
   useEffect(() => {
@@ -101,8 +94,6 @@ export default function MobileUploadPage() {
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (!selectedFiles) return;
-    
-    setUploadSheetOpen(false);
     
     const newFiles: UploadedFile[] = [];
     for (const file of Array.from(selectedFiles)) {
@@ -316,131 +307,29 @@ export default function MobileUploadPage() {
               <div className="space-y-3">
                 <Label>Files *</Label>
                 
-                {/* Mobile: Show 3-option Sheet popup */}
-                {isMobile ? (
-                  <Sheet open={uploadSheetOpen} onOpenChange={setUploadSheetOpen}>
-                    <SheetTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full h-20 border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/5 transition-all flex flex-col gap-1"
-                        disabled={uploading}
-                      >
-                        <Plus className="h-6 w-6 text-primary" />
-                        <span className="text-sm font-medium">Add Files</span>
-                        <span className="text-xs text-muted-foreground">Tap to upload</span>
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom" className="rounded-t-2xl">
-                      <SheetHeader className="text-left pb-4">
-                        <SheetTitle>Upload Question Paper</SheetTitle>
-                      </SheetHeader>
-                      <div className="space-y-3 pb-6">
-                        {/* Camera Option */}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full h-16 justify-start gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
-                          onClick={() => cameraInputRef.current?.click()}
-                        >
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                            <Camera className="h-5 w-5 text-primary" />
-                          </div>
-                          <div className="flex flex-col items-start">
-                            <span className="text-base font-medium">📷 Camera</span>
-                            <span className="text-xs text-muted-foreground">Take a photo</span>
-                          </div>
-                        </Button>
-                        <input
-                          ref={cameraInputRef}
-                          type="file"
-                          accept="image/*"
-                          capture="environment"
-                          onChange={handleFileSelect}
-                          className="hidden"
-                        />
-
-                        {/* Gallery Option */}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full h-16 justify-start gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
-                          onClick={() => galleryInputRef.current?.click()}
-                        >
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                            <ImageIcon className="h-5 w-5 text-primary" />
-                          </div>
-                          <div className="flex flex-col items-start">
-                            <span className="text-base font-medium">🖼️ Gallery</span>
-                            <span className="text-xs text-muted-foreground">Choose from photos</span>
-                          </div>
-                        </Button>
-                        <input
-                          ref={galleryInputRef}
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleFileSelect}
-                          className="hidden"
-                        />
-
-                        {/* Files Option */}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full h-16 justify-start gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                            <Upload className="h-5 w-5 text-primary" />
-                          </div>
-                          <div className="flex flex-col items-start">
-                            <span className="text-base font-medium">📁 Files</span>
-                            <span className="text-xs text-muted-foreground">Select PDF/DOC files</span>
-                          </div>
-                        </Button>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          multiple
-                          accept=".pdf,.doc,.docx,image/*"
-                          onChange={handleFileSelect}
-                          className="hidden"
-                        />
-
-                        <p className="text-xs text-muted-foreground text-center pt-2">
-                          Supported: PDF, DOC, DOCX, JPEG, PNG, WEBP, HEIC • Max 10MB per file
-                        </p>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-                ) : (
-                  /* Desktop/Tablet: Simple file input button */
-                  <>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full h-20 border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/5 transition-all flex flex-col gap-1"
-                      disabled={uploading}
-                      onClick={() => desktopFileInputRef.current?.click()}
-                    >
-                      <Plus className="h-6 w-6 text-primary" />
-                      <span className="text-sm font-medium">Add Files</span>
-                      <span className="text-xs text-muted-foreground">Click to select PDF, DOC, or images</span>
-                    </Button>
-                    <input
-                      ref={desktopFileInputRef}
-                      type="file"
-                      multiple
-                      accept=".pdf,.doc,.docx,image/*"
-                      onChange={handleFileSelect}
-                      className="hidden"
-                    />
-                    <p className="text-xs text-muted-foreground text-center">
-                      Supported: PDF, DOC, DOCX, JPEG, PNG, WEBP, HEIC • Max 10MB per file
-                    </p>
-                  </>
-                )}
+                {/* Direct file input - mobile OS handles camera/gallery/files options natively */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-20 border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/5 transition-all flex flex-col gap-1"
+                  disabled={uploading}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Plus className="h-6 w-6 text-primary" />
+                  <span className="text-sm font-medium">Add Files</span>
+                  <span className="text-xs text-muted-foreground">Tap to select camera, gallery, or files</span>
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*,.pdf,.doc,.docx"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <p className="text-xs text-muted-foreground text-center">
+                  Supported: PDF, DOC, DOCX, JPEG, PNG, WEBP, HEIC • Max 10MB per file
+                </p>
 
                 {/* File Previews */}
                 {files.length > 0 && (
