@@ -115,14 +115,16 @@
     scroll-behavior: smooth;
   }
 
-  /* Smooth theme transitions - only on color properties */
-  html.theme-transition,
-  html.theme-transition *,
-  html.theme-transition *::before,
-  html.theme-transition *::after {
-    transition: background-color 100ms ease-out, 
-                border-color 100ms ease-out, 
-                color 100ms ease-out !important;
+  /* Smooth theme transitions - applied directly without class toggling */
+  * {
+    transition: background-color 150ms ease-out, 
+                border-color 150ms ease-out,
+                box-shadow 150ms ease-out;
+  }
+  
+  /* Exclude elements that shouldn't animate (performance optimization) */
+  img, video, canvas, svg path, svg rect, svg circle {
+    transition: none !important;
   }
 
   body {

@@ -39,13 +39,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleThemeChange = (newTheme: string) => {
-    // Add transition class before changing theme
-    document.documentElement.classList.add('theme-transition');
     setTheme(newTheme);
-    // Remove transition class after animation completes
-    setTimeout(() => {
-      document.documentElement.classList.remove('theme-transition');
-    }, 100);
   };
 
   const handleSignOut = async () => {
