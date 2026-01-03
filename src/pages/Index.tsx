@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -68,16 +68,48 @@ export default function Index() {
   const [recommendations, setRecommendations] = useState<RecommendedPaper[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const bgLayer1Ref = useRef<HTMLDivElement>(null);
+  const bgLayer2Ref = useRef<HTMLDivElement>(null);
+  const bgLayer3Ref = useRef<HTMLDivElement>(null);
+  const bgLayer4Ref = useRef<HTMLDivElement>(null);
 
-  // Parallax scroll effect
+  // Parallax scroll effect (optimized to avoid re-rendering on scroll)
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (reduceMotion || isMobile) return;
+
+    let rafId = 0;
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      if (rafId) return;
+
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+
+        if (bgLayer1Ref.current) {
+          bgLayer1Ref.current.style.transform = `translate3d(0, ${y * 0.3}px, 0)`;
+        }
+        if (bgLayer2Ref.current) {
+          bgLayer2Ref.current.style.transform = `translate3d(0, ${y * 0.2}px, 0) scale(${1 + y * 0.0005})`;
+        }
+        if (bgLayer3Ref.current) {
+          bgLayer3Ref.current.style.transform = `translate3d(0, ${y * 0.15}px, 0)`;
+        }
+        if (bgLayer4Ref.current) {
+          bgLayer4Ref.current.style.transform = `translate3d(0, ${y * 0.1}px, 0)`;
+        }
+      });
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
   }, []);
+
 
   useEffect(() => {
     if (user) {
@@ -154,21 +186,21 @@ export default function Index() {
       {/* Hero Section with Floating Elements */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center">
         {/* Background layers */}
-        <div 
-          className="absolute inset-0 gradient-hero-dark"
-          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+        <div
+          ref={bgLayer1Ref}
+          className="absolute inset-0 gradient-hero-dark will-change-transform"
         />
-        <div 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(280,50%,20%,0.4)_0%,_transparent_50%)]"
-          style={{ transform: `translateY(${scrollY * 0.2}px) scale(${1 + scrollY * 0.0005})` }}
+        <div
+          ref={bgLayer2Ref}
+          className="absolute inset-0 will-change-transform bg-[radial-gradient(ellipse_at_top,_hsl(280,50%,20%,0.4)_0%,_transparent_50%)]"
         />
-        <div 
-          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,_hsl(var(--primary)/0.2)_0%,_transparent_40%)]"
-          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+        <div
+          ref={bgLayer3Ref}
+          className="absolute inset-0 will-change-transform bg-[radial-gradient(circle_at_30%_70%,_hsl(var(--primary)/0.2)_0%,_transparent_40%)]"
         />
-        <div 
-          className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_hsl(var(--accent)/0.15)_0%,_transparent_35%)]"
-          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+        <div
+          ref={bgLayer4Ref}
+          className="absolute inset-0 will-change-transform bg-[radial-gradient(circle_at_70%_30%,_hsl(var(--accent)/0.15)_0%,_transparent_35%)]"
         />
         
         {/* Floating Elements */}
