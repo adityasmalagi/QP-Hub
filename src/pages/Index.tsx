@@ -10,8 +10,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { PaperCard } from '@/components/PaperCard';
 import { PaperCardSkeleton } from '@/components/PaperCardSkeleton';
 import { ScrollAnimation, useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import qphubLogo from '@/assets/qphub-logo.png';
-
 const uploadSteps = [
   { step: 1, title: 'Select Your Paper', description: 'Choose subject, board, year' },
   { step: 2, title: 'Upload File', description: 'Drag & drop or browse files' },
@@ -134,6 +135,22 @@ export default function Index() {
     fetchRecommendations(true);
   };
 
+  // Pull-to-refresh for mobile
+  const handlePullRefresh = useCallback(async () => {
+    await fetchRecommendations(true);
+  }, [fetchRecommendations]);
+
+  const {
+    containerRef: pullContainerRef,
+    pullDistance,
+    isRefreshing: isPullRefreshing,
+    progress: pullProgress,
+    shouldTrigger,
+  } = usePullToRefresh({
+    onRefresh: handlePullRefresh,
+    threshold: 60,
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -223,6 +240,9 @@ export default function Index() {
                   <p className="mt-1 text-muted-foreground">
                     Based on your profile preferences
                   </p>
+                  <p className="mt-1 text-xs text-muted-foreground sm:hidden">
+                    Pull down to refresh
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button 
@@ -244,6 +264,17 @@ export default function Index() {
                 </div>
               </div>
             </ScrollAnimation>
+            
+            {/* Pull-to-refresh container for mobile */}
+            <div ref={pullContainerRef} className="sm:hidden touch-pan-y">
+              <PullToRefreshIndicator
+                pullDistance={pullDistance}
+                isRefreshing={isPullRefreshing}
+                progress={pullProgress}
+                shouldTrigger={shouldTrigger}
+              />
+            </div>
+            
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {loadingRecs ? (
                 <>
