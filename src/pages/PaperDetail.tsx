@@ -17,7 +17,7 @@ import { DocViewer } from '@/components/DocViewer';
 type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
 
 // Helper to detect file type from URL or filename
-const getFileType = (fileUrl: string, fileName: string, additionalUrls?: string[]): FileViewType => {
+const getFileType = (fileUrl: string, fileName: string, additionalUrls?: string[], storedFileType?: string | null): FileViewType => {
   const url = fileUrl.toLowerCase();
   const name = fileName.toLowerCase();
   
@@ -26,12 +26,17 @@ const getFileType = (fileUrl: string, fileName: string, additionalUrls?: string[
     return 'gallery';
   }
   
+  // Use stored file type if it's 'gallery'
+  if (storedFileType === 'gallery') {
+    return 'gallery';
+  }
+  
   // Check for Word documents
   if (url.includes('.docx') || url.includes('.doc') || name.endsWith('.docx') || name.endsWith('.doc')) {
     return 'docx';
   }
   
-  // Check for image extensions
+  // Check for image extensions - prioritize URL detection over stored type
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
   if (imageExtensions.some(ext => url.includes(ext) || name.endsWith(ext))) {
     return 'image';
@@ -129,7 +134,7 @@ export default function PaperDetail() {
   const [downloading, setDownloading] = useState(false);
 
   // Determine file type
-  const fileType = paper ? getFileType(paper.file_url, paper.file_name, paper.additional_file_urls || undefined) : 'pdf';
+  const fileType = paper ? getFileType(paper.file_url, paper.file_name, paper.additional_file_urls || undefined, paper.file_type) : 'pdf';
 
   // Get all image URLs for gallery
   const galleryUrls = paper && fileType === 'gallery' 
