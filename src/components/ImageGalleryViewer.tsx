@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, RotateCw, Loader2, Grid3X3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSwipeGesture } from '@/hooks/useSwipeGesture';
 
 interface ImageGalleryViewerProps {
   fileUrls: string[];
@@ -16,6 +17,23 @@ export function ImageGalleryViewer({ fileUrls, title, className }: ImageGalleryV
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showThumbnails, setShowThumbnails] = useState(false);
+
+  // Swipe gesture for mobile navigation (disabled when zoomed)
+  const { containerRef: swipeRef } = useSwipeGesture({
+    onSwipeLeft: () => {
+      setCurrentIndex(prev => (prev === fileUrls.length - 1 ? 0 : prev + 1));
+      setScale(1);
+      setRotation(0);
+      setLoading(true);
+    },
+    onSwipeRight: () => {
+      setCurrentIndex(prev => (prev === 0 ? fileUrls.length - 1 : prev - 1));
+      setScale(1);
+      setRotation(0);
+      setLoading(true);
+    },
+    enabled: fileUrls.length > 1 && scale === 1,
+  });
 
   const zoomIn = () => setScale(prev => Math.min(prev + 0.25, 3));
   const zoomOut = () => setScale(prev => Math.max(prev - 0.25, 0.25));
@@ -131,7 +149,7 @@ export function ImageGalleryViewer({ fileUrls, title, className }: ImageGalleryV
       )}
 
       {/* Image Display with Navigation */}
-      <div className="relative flex-1 overflow-auto bg-muted/30 p-2 md:p-4" style={{ minHeight: '70vh' }}>
+      <div ref={swipeRef} className="relative flex-1 overflow-auto bg-muted/30 p-2 md:p-4 touch-pan-y" style={{ minHeight: '70vh' }}>
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
