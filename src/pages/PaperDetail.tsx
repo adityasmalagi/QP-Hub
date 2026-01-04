@@ -6,13 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2, Image, Images, FileType } from 'lucide-react';
+import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2, Image, Images, FileType, Archive } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { PDFViewer } from '@/components/PDFViewer';
 import { ImageViewer } from '@/components/ImageViewer';
 import { ImageGalleryViewer } from '@/components/ImageGalleryViewer';
 import { DocViewer } from '@/components/DocViewer';
+import JSZip from 'jszip';
 
 type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
 
@@ -132,7 +133,7 @@ export default function PaperDetail() {
   };
 
   const [downloading, setDownloading] = useState(false);
-
+  const [downloadingZip, setDownloadingZip] = useState(false);
   // Determine file type
   const fileType = paper ? getFileType(paper.file_url, paper.file_name, paper.additional_file_urls || undefined, paper.file_type) : 'pdf';
 
@@ -226,6 +227,65 @@ export default function PaperDetail() {
       });
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleDownloadZip = async () => {
+    if (!paper || downloadingZip || fileType !== 'gallery') return;
+    
+    setDownloadingZip(true);
+    try {
+      const urlsToDownload = [paper.file_url, ...(paper.additional_file_urls || [])];
+      const zip = new JSZip();
+      
+      // Fetch all images and add to zip
+      for (let i = 0; i < urlsToDownload.length; i++) {
+        const url = urlsToDownload[i];
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch page ${i + 1}`);
+        
+        const blob = await response.blob();
+        const ext = url.split('.').pop()?.split('?')[0] || 'png';
+        zip.file(`${paper.title}_page_${i + 1}.${ext}`, blob);
+      }
+      
+      // Generate and download zip
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const downloadUrl = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `${paper.title}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      // Increment download count
+      await supabase.rpc('increment_downloads', { _paper_id: paper.id });
+
+      if (user) {
+        await supabase
+          .from('user_downloads')
+          .upsert({
+            user_id: user.id,
+            paper_id: paper.id,
+            downloaded_at: new Date().toISOString()
+          }, { onConflict: 'user_id,paper_id' });
+      }
+      
+      toast({
+        title: 'Download complete',
+        description: `All ${urlsToDownload.length} pages downloaded as ZIP.`,
+      });
+    } catch (error) {
+      console.error('ZIP download error:', error);
+      toast({
+        title: 'Download failed',
+        description: 'Could not create ZIP file. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setDownloadingZip(false);
     }
   };
 
@@ -338,7 +398,7 @@ export default function PaperDetail() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button onClick={handleDownload} className="gradient-primary" disabled={downloading}>
+              <Button onClick={handleDownload} className="gradient-primary" disabled={downloading || downloadingZip}>
                 {downloading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
@@ -346,6 +406,20 @@ export default function PaperDetail() {
                 )}
                 {getDownloadButtonText()}
               </Button>
+              {fileType === 'gallery' && (
+                <Button 
+                  variant="secondary" 
+                  onClick={handleDownloadZip} 
+                  disabled={downloading || downloadingZip}
+                >
+                  {downloadingZip ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Archive className="mr-2 h-4 w-4" />
+                  )}
+                  {downloadingZip ? 'Creating ZIP...' : 'Download as ZIP'}
+                </Button>
+              )}
               {fileType !== 'docx' && (
                 <Button
                   variant="outline"

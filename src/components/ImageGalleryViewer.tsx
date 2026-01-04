@@ -163,18 +163,26 @@ export function ImageGalleryViewer({ fileUrls, title, className }: ImageGalleryV
         )}
 
         <div className="flex justify-center items-center min-h-[60vh]">
-          <img
-            key={currentIndex}
-            src={fileUrls[currentIndex]}
-            alt={`${title || 'Question Paper'} - Page ${currentIndex + 1}`}
-            onLoad={handleLoad}
-            onError={handleError}
-            className="max-w-full shadow-lg transition-transform duration-200"
-            style={{
-              transform: `scale(${scale}) rotate(${rotation}deg)`,
-              transformOrigin: 'center center',
-            }}
-          />
+          <div className="relative">
+            <img
+              key={currentIndex}
+              src={fileUrls[currentIndex]}
+              alt={`${title || 'Question Paper'} - Page ${currentIndex + 1}`}
+              onLoad={handleLoad}
+              onError={handleError}
+              className="max-w-full shadow-lg transition-transform duration-200"
+              style={{
+                transform: `scale(${scale}) rotate(${rotation}deg)`,
+                transformOrigin: 'center center',
+              }}
+            />
+            {/* Page number overlay */}
+            <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md border border-border">
+              <span className="text-sm font-medium text-foreground">
+                Page {currentIndex + 1} / {fileUrls.length}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Page indicator dots */}
