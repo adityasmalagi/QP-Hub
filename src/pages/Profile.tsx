@@ -14,7 +14,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus, Pencil, ArrowLeft } from 'lucide-react';
+import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus, Pencil, ArrowLeft, Type, Palette } from 'lucide-react';
+import { useAccessibility, fontSizeOptions, accentColorOptions } from '@/hooks/useAccessibility';
 import { Link } from 'react-router-dom';
 import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES, SUBJECTS, EXAM_TYPES, SEMESTERS, INTERNAL_NUMBERS, YEARS as PAPER_YEARS } from '@/lib/constants';
 import { PaperCard } from '@/components/PaperCard';
@@ -133,6 +134,7 @@ const YEARS = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
 export default function Profile() {
   const { user, loading } = useAuth();
+  const { settings, setFontSize, setAccentColor } = useAccessibility();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'profile';
@@ -1372,6 +1374,71 @@ export default function Profile() {
                     </>
                   )}
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* Accessibility Settings */}
+            <Card className="max-w-2xl border-border bg-card mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Accessibility
+                </CardTitle>
+                <CardDescription>
+                  Customize font size and button colors for better readability
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Font Size */}
+                <div className="space-y-3">
+                  <Label className="flex items-center gap-2">
+                    <Type className="h-4 w-4" />
+                    Font Size
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    {fontSizeOptions.map((option) => (
+                      <Button
+                        key={option.value}
+                        variant={settings.fontSize === option.value ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setFontSize(option.value)}
+                        className={settings.fontSize === option.value ? 'gradient-primary' : ''}
+                      >
+                        {option.label}
+                      </Button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Changes apply immediately across the entire website
+                  </p>
+                </div>
+
+                {/* Accent Color */}
+                <div className="space-y-3">
+                  <Label className="flex items-center gap-2">
+                    <Palette className="h-4 w-4" />
+                    Accent Color
+                  </Label>
+                  <div className="flex flex-wrap gap-3">
+                    {accentColorOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => setAccentColor(option.value)}
+                        className={`relative w-10 h-10 rounded-full ${option.colorClass} transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-ring ${
+                          settings.accentColor === option.value ? 'ring-2 ring-offset-2 ring-offset-background ring-foreground scale-110' : ''
+                        }`}
+                        title={option.label}
+                      >
+                        {settings.accentColor === option.value && (
+                          <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg">✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Changes the color of buttons and interactive elements
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
