@@ -16,6 +16,13 @@ export function usePullToRefresh({
   const [isPulling, setIsPulling] = useState(false);
   const startY = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasTriggeredHaptic = useRef(false);
+
+  const triggerHaptic = useCallback((duration: number = 15) => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(duration);
+    }
+  }, []);
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (isRefreshing) return;
@@ -23,6 +30,7 @@ export function usePullToRefresh({
     if (containerRef.current && containerRef.current.scrollTop === 0) {
       startY.current = e.touches[0].clientY;
       setIsPulling(true);
+      hasTriggeredHaptic.current = false;
     }
   }, [isRefreshing]);
 
@@ -36,8 +44,16 @@ export function usePullToRefresh({
       // Apply resistance to the pull
       const distance = Math.min(diff / resistance, threshold * 1.5);
       setPullDistance(distance);
+      
+      // Trigger haptic when crossing threshold
+      if (distance >= threshold && !hasTriggeredHaptic.current) {
+        hasTriggeredHaptic.current = true;
+        triggerHaptic(15);
+      } else if (distance < threshold) {
+        hasTriggeredHaptic.current = false;
+      }
     }
-  }, [isPulling, isRefreshing, resistance, threshold]);
+  }, [isPulling, isRefreshing, resistance, threshold, triggerHaptic]);
 
   const handleTouchEnd = useCallback(async () => {
     if (!isPulling) return;
@@ -45,7 +61,8 @@ export function usePullToRefresh({
     
     if (pullDistance >= threshold && !isRefreshing) {
       setIsRefreshing(true);
-      setPullDistance(threshold / 2); // Keep showing indicator while refreshing
+      setPullDistance(threshold / 2);
+      triggerHaptic(25); // Confirmation vibration
       
       try {
         await onRefresh();
@@ -56,7 +73,7 @@ export function usePullToRefresh({
     } else {
       setPullDistance(0);
     }
-  }, [isPulling, pullDistance, threshold, isRefreshing, onRefresh]);
+  }, [isPulling, pullDistance, threshold, isRefreshing, onRefresh, triggerHaptic]);
 
   useEffect(() => {
     const container = containerRef.current;
