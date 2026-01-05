@@ -20,6 +20,7 @@ import { CommentSection } from '@/components/CommentSection';
 import { AddToCollectionModal } from '@/components/AddToCollectionModal';
 import { ProgressTracker } from '@/components/ProgressTracker';
 import JSZip from 'jszip';
+import { SolutionSection } from '@/components/SolutionSection';
 
 type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
 
@@ -501,6 +502,9 @@ export default function PaperDetail() {
             className="min-h-[600px]"
           />
         )}
+
+        {/* Solutions & Answer Keys */}
+        <SolutionSection paperId={paper.id} className="mt-8" />
 
         {/* Comments & Discussion */}
         <CommentSection 

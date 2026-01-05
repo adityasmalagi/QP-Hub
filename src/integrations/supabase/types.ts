@@ -146,6 +146,86 @@ export type Database = {
           },
         ]
       }
+      exam_events: {
+        Row: {
+          board: string | null
+          class_level: string | null
+          color: string | null
+          created_at: string | null
+          description: string | null
+          exam_date: string
+          id: string
+          reminder_days: number[] | null
+          subject: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          board?: string | null
+          class_level?: string | null
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          exam_date: string
+          id?: string
+          reminder_days?: number[] | null
+          subject?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          board?: string | null
+          class_level?: string | null
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          exam_date?: string
+          id?: string
+          reminder_days?: number[] | null
+          subject?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      exam_reminders: {
+        Row: {
+          created_at: string | null
+          exam_event_id: string
+          id: string
+          is_sent: boolean | null
+          reminder_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          exam_event_id: string
+          id?: string
+          is_sent?: boolean | null
+          reminder_date: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          exam_event_id?: string
+          id?: string
+          is_sent?: boolean | null
+          reminder_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_reminders_exam_event_id_fkey"
+            columns: ["exam_event_id"]
+            isOneToOne: false
+            referencedRelation: "exam_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -330,6 +410,65 @@ export type Database = {
           },
         ]
       }
+      paper_requests: {
+        Row: {
+          board: string
+          class_level: string
+          created_at: string | null
+          description: string | null
+          exam_type: string | null
+          fulfilled_by_paper_id: string | null
+          id: string
+          status: string | null
+          subject: string
+          title: string
+          updated_at: string | null
+          upvotes_count: number | null
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          board: string
+          class_level: string
+          created_at?: string | null
+          description?: string | null
+          exam_type?: string | null
+          fulfilled_by_paper_id?: string | null
+          id?: string
+          status?: string | null
+          subject: string
+          title: string
+          updated_at?: string | null
+          upvotes_count?: number | null
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          board?: string
+          class_level?: string
+          created_at?: string | null
+          description?: string | null
+          exam_type?: string | null
+          fulfilled_by_paper_id?: string | null
+          id?: string
+          status?: string | null
+          subject?: string
+          title?: string
+          updated_at?: string | null
+          upvotes_count?: number | null
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_requests_fulfilled_by_paper_id_fkey"
+            columns: ["fulfilled_by_paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age: number | null
@@ -488,6 +627,111 @@ export type Database = {
           year?: number
         }
         Relationships: []
+      }
+      request_upvotes: {
+        Row: {
+          created_at: string | null
+          id: string
+          request_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          request_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          request_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_upvotes_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "paper_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      solution_papers: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_verified: boolean | null
+          question_paper_id: string
+          solution_file_name: string
+          solution_file_url: string
+          updated_at: string | null
+          uploaded_by: string
+          upvotes_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_verified?: boolean | null
+          question_paper_id: string
+          solution_file_name: string
+          solution_file_url: string
+          updated_at?: string | null
+          uploaded_by: string
+          upvotes_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_verified?: boolean | null
+          question_paper_id?: string
+          solution_file_name?: string
+          solution_file_url?: string
+          updated_at?: string | null
+          uploaded_by?: string
+          upvotes_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solution_papers_question_paper_id_fkey"
+            columns: ["question_paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      solution_upvotes: {
+        Row: {
+          created_at: string | null
+          id: string
+          solution_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          solution_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          solution_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solution_upvotes_solution_id_fkey"
+            columns: ["solution_id"]
+            isOneToOne: false
+            referencedRelation: "solution_papers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       study_streaks: {
         Row: {

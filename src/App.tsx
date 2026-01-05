@@ -17,6 +17,8 @@ import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import PublicProfile from "./pages/PublicProfile";
 import MobileUpload from "./pages/MobileUpload";
+import Requests from "./pages/Requests";
+import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +44,8 @@ const App = () => (
                 <Route path="/user/:userId" element={<PublicProfile />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/upload-mobile" element={<MobileUpload />} />
+                <Route path="/requests" element={<Requests />} />
+                <Route path="/calendar" element={<Calendar />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

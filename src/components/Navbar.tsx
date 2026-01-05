@@ -15,6 +15,8 @@ import {
   Download,
   Heart,
   Users,
+  FileQuestion,
+  CalendarDays,
 } from "lucide-react";
 import qphubLogo from "@/assets/qphub-logo.png";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
@@ -68,6 +70,20 @@ export function Navbar() {
         className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
       >
         Browse Papers
+      </Link>
+      <Link
+        to={user ? "/requests" : "/auth?redirect=/requests"}
+        onClick={onClose}
+        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
+      >
+        Requests
+      </Link>
+      <Link
+        to={user ? "/calendar" : "/auth?redirect=/calendar"}
+        onClick={onClose}
+        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
+      >
+        Calendar
       </Link>
       {isAdmin && (
         <Link
