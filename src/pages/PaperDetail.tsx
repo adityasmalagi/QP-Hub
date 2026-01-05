@@ -13,6 +13,9 @@ import { PDFViewer } from '@/components/PDFViewer';
 import { ImageViewer } from '@/components/ImageViewer';
 import { ImageGalleryViewer } from '@/components/ImageGalleryViewer';
 import { DocViewer } from '@/components/DocViewer';
+import { DifficultyRating } from '@/components/DifficultyRating';
+import { DifficultyBadge } from '@/components/DifficultyBadge';
+import { AIChat } from '@/components/AIChat';
 import JSZip from 'jszip';
 
 type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
@@ -76,6 +79,8 @@ interface Paper {
   user_id: string;
   file_type: string | null;
   additional_file_urls: string[] | null;
+  avg_difficulty: string | null;
+  ratings_count: number | null;
 }
 
 export default function PaperDetail() {
@@ -96,7 +101,7 @@ export default function PaperDetail() {
     try {
       const { data, error } = await supabase
         .from('question_papers')
-        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, institute_name, user_id, file_type, additional_file_urls')
+        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, institute_name, user_id, file_type, additional_file_urls, avg_difficulty, ratings_count')
         .eq('id', id)
         .maybeSingle();
 
@@ -357,6 +362,11 @@ export default function PaperDetail() {
               <Badge variant="outline" className="capitalize">
                 {getExamTypeDisplay()}
               </Badge>
+              <DifficultyBadge 
+                difficulty={paper.avg_difficulty as 'easy' | 'medium' | 'hard' | null} 
+                ratingsCount={paper.ratings_count ?? 0}
+                showCount
+              />
             </div>
 
             <h1 className="mb-4 text-2xl font-bold text-foreground md:text-3xl">
@@ -433,6 +443,28 @@ export default function PaperDetail() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Difficulty Rating */}
+        <Card className="mb-8">
+          <CardContent className="p-6">
+            <DifficultyRating paperId={paper.id} />
+          </CardContent>
+        </Card>
+
+        {/* AI Study Assistant */}
+        <AIChat 
+          paperContext={{
+            id: paper.id,
+            title: paper.title,
+            subject: paper.subject,
+            board: paper.board,
+            class_level: paper.class_level,
+            year: paper.year,
+            exam_type: paper.exam_type,
+            description: paper.description,
+          }}
+          className="mb-8 h-[450px]"
+        />
 
         {/* File Viewer - PDF, Image, Gallery, or Document */}
         {fileType === 'gallery' ? (

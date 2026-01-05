@@ -14,6 +14,73 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          paper_id: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          paper_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          paper_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_conversations_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -72,6 +139,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "paper_metric_events_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paper_ratings: {
+        Row: {
+          created_at: string | null
+          difficulty: string
+          id: string
+          paper_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty: string
+          id?: string
+          paper_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: string
+          id?: string
+          paper_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_ratings_paper_id_fkey"
             columns: ["paper_id"]
             isOneToOne: false
             referencedRelation: "question_papers"
@@ -160,6 +259,7 @@ export type Database = {
       question_papers: {
         Row: {
           additional_file_urls: string[] | null
+          avg_difficulty: string | null
           board: string
           class_level: string
           created_at: string | null
@@ -172,6 +272,7 @@ export type Database = {
           id: string
           institute_name: string | null
           internal_number: number | null
+          ratings_count: number | null
           semester: number | null
           status: string | null
           subject: string
@@ -184,6 +285,7 @@ export type Database = {
         }
         Insert: {
           additional_file_urls?: string[] | null
+          avg_difficulty?: string | null
           board: string
           class_level: string
           created_at?: string | null
@@ -196,6 +298,7 @@ export type Database = {
           id?: string
           institute_name?: string | null
           internal_number?: number | null
+          ratings_count?: number | null
           semester?: number | null
           status?: string | null
           subject: string
@@ -208,6 +311,7 @@ export type Database = {
         }
         Update: {
           additional_file_urls?: string[] | null
+          avg_difficulty?: string | null
           board?: string
           class_level?: string
           created_at?: string | null
@@ -220,6 +324,7 @@ export type Database = {
           id?: string
           institute_name?: string | null
           internal_number?: number | null
+          ratings_count?: number | null
           semester?: number | null
           status?: string | null
           subject?: string
@@ -337,6 +442,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_trending_score: {
+        Args: { p_paper_id: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

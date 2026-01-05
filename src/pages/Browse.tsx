@@ -29,6 +29,8 @@ interface QuestionPaper {
   internal_number: number | null;
   institute_name: string | null;
   created_at: string | null;
+  avg_difficulty: string | null;
+  ratings_count: number | null;
   uploaderName?: string | null;
 }
 
@@ -65,7 +67,7 @@ export default function Browse() {
 
       let query = supabase
         .from('question_papers')
-        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, institute_name, user_id, created_at')
+        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, institute_name, user_id, created_at, avg_difficulty, ratings_count')
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
 
@@ -374,6 +376,8 @@ export default function Browse() {
                     internalNumber={paper.internal_number}
                     instituteName={paper.institute_name}
                     createdAt={paper.created_at}
+                    avgDifficulty={paper.avg_difficulty}
+                    ratingsCount={paper.ratings_count}
                   />
                 </ScrollAnimation>
               ))}

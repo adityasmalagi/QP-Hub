@@ -12,6 +12,7 @@ import { PaperCardSkeleton } from '@/components/PaperCardSkeleton';
 import { ScrollAnimation, useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { PullToRefreshIndicator } from '@/components/PullToRefresh';
+import { TrendingSection } from '@/components/TrendingSection';
 import qphubLogo from '@/assets/qphub-logo.png';
 const uploadSteps = [
   { step: 1, title: 'Select Your Paper', description: 'Choose subject, board, year' },
@@ -313,6 +314,9 @@ export default function Index() {
           </div>
         </section>
       )}
+
+      {/* Trending Papers Section */}
+      <TrendingSection />
 
       {/* How to Find Papers Section */}
       <section className="border-t border-border bg-card/30 py-20">

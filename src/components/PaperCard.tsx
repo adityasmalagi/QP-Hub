@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Eye, Download, FileText, User, Building2 } from 'lucide-react';
 import { BookmarkButton } from '@/components/BookmarkButton';
+import { DifficultyBadge } from '@/components/DifficultyBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useState, useEffect } from 'react';
 
@@ -22,6 +23,8 @@ interface PaperCardProps {
   internalNumber?: number | null;
   instituteName?: string | null;
   createdAt?: string | null;
+  avgDifficulty?: string | null;
+  ratingsCount?: number | null;
 }
 
 // Helper to get/set clicked papers from localStorage
@@ -56,6 +59,8 @@ export function PaperCard({
   internalNumber,
   instituteName,
   createdAt,
+  avgDifficulty,
+  ratingsCount,
 }: PaperCardProps) {
   const navigate = useNavigate();
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
@@ -132,6 +137,10 @@ export function PaperCard({
                 Sem {semester}
               </Badge>
             )}
+            <DifficultyBadge 
+              difficulty={avgDifficulty as 'easy' | 'medium' | 'hard' | null} 
+              ratingsCount={ratingsCount ?? 0}
+            />
           </div>
           
           <div className="flex flex-col gap-2 text-xs text-muted-foreground">
