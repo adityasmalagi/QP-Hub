@@ -104,7 +104,37 @@ export function useComments(paperId: string | undefined) {
 
   useEffect(() => {
     fetchComments();
-  }, [fetchComments]);
+
+    // Subscribe to real-time comment updates
+    if (paperId) {
+      const channel = supabase
+        .channel(`comments-${paperId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'paper_comments',
+            filter: `paper_id=eq.${paperId}`,
+          },
+          () => fetchComments()
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'comment_upvotes',
+          },
+          () => fetchComments()
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [fetchComments, paperId]);
 
   const addComment = async (content: string, parentId?: string) => {
     if (!user) {

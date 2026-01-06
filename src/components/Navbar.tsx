@@ -72,6 +72,13 @@ export function Navbar() {
         Browse Papers
       </Link>
       <Link
+        to={user ? "/groups" : "/auth?redirect=/groups"}
+        onClick={onClose}
+        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
+      >
+        Study Groups
+      </Link>
+      <Link
         to={user ? "/requests" : "/auth?redirect=/requests"}
         onClick={onClose}
         className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}

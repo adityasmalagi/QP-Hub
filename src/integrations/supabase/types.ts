@@ -226,6 +226,125 @@ export type Database = {
           },
         ]
       }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string | null
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          group_id: string
+          id: string
+          message_type: string | null
+          paper_reference_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          group_id: string
+          id?: string
+          message_type?: string | null
+          paper_reference_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          group_id?: string
+          id?: string
+          message_type?: string | null
+          paper_reference_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_messages_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_messages_paper_reference_id_fkey"
+            columns: ["paper_reference_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_papers: {
+        Row: {
+          group_id: string
+          id: string
+          note: string | null
+          paper_id: string
+          shared_at: string | null
+          shared_by: string | null
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          note?: string | null
+          paper_id: string
+          shared_at?: string | null
+          shared_by?: string | null
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          note?: string | null
+          paper_id?: string
+          shared_at?: string | null
+          shared_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_papers_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_papers_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -733,6 +852,51 @@ export type Database = {
           },
         ]
       }
+      study_groups: {
+        Row: {
+          board: string | null
+          class_level: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          max_members: number | null
+          name: string
+          subject: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          board?: string | null
+          class_level?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          max_members?: number | null
+          name: string
+          subject?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          board?: string | null
+          class_level?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          max_members?: number | null
+          name?: string
+          subject?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       study_streaks: {
         Row: {
           created_at: string | null
@@ -928,6 +1092,14 @@ export type Database = {
       }
       increment_downloads: { Args: { _paper_id: string }; Returns: undefined }
       increment_views: { Args: { _paper_id: string }; Returns: undefined }
+      is_group_admin: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
       verify_admin_access: { Args: never; Returns: boolean }
     }
     Enums: {

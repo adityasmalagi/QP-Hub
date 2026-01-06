@@ -19,6 +19,8 @@ import PublicProfile from "./pages/PublicProfile";
 import MobileUpload from "./pages/MobileUpload";
 import Requests from "./pages/Requests";
 import Calendar from "./pages/Calendar";
+import StudyGroups from "./pages/StudyGroups";
+import GroupDetail from "./pages/GroupDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +48,8 @@ const App = () => (
                 <Route path="/upload-mobile" element={<MobileUpload />} />
                 <Route path="/requests" element={<Requests />} />
                 <Route path="/calendar" element={<Calendar />} />
+                <Route path="/groups" element={<StudyGroups />} />
+                <Route path="/groups/:groupId" element={<GroupDetail />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

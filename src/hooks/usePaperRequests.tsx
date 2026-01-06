@@ -91,6 +91,33 @@ export function usePaperRequests() {
 
   useEffect(() => {
     fetchRequests('open');
+
+    // Subscribe to real-time request updates
+    const channel = supabase
+      .channel('paper-requests')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'paper_requests',
+        },
+        () => fetchRequests('open')
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'request_upvotes',
+        },
+        () => fetchRequests('open')
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const createRequest = async (data: CreateRequestData) => {
