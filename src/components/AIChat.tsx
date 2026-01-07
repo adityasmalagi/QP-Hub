@@ -67,7 +67,7 @@ export function AIChat({ paperContext, className }: AIChatProps) {
   ];
 
   return (
-    <Card className={cn('flex flex-col', className)}>
+    <Card className={cn('flex flex-col overflow-hidden', className)}>
       <CardHeader className="pb-3 flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Sparkles className="h-5 w-5 text-primary" />
@@ -81,9 +81,9 @@ export function AIChat({ paperContext, className }: AIChatProps) {
         )}
       </CardHeader>
       
-      <CardContent className="flex-1 flex flex-col p-4 pt-0">
+      <CardContent className="flex-1 flex flex-col p-4 pt-0 overflow-hidden min-h-0">
         {/* Messages Area */}
-        <ScrollArea ref={scrollAreaRef} className="flex-1 h-[300px] pr-4">
+        <ScrollArea ref={scrollAreaRef} className="flex-1 pr-4 min-h-0">
           {messages.length === 0 ? (
             <div className="space-y-4">
               <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50">

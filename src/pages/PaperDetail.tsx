@@ -18,7 +18,6 @@ import { DifficultyBadge } from '@/components/DifficultyBadge';
 import { AIChat } from '@/components/AIChat';
 import { CommentSection } from '@/components/CommentSection';
 import { AddToCollectionModal } from '@/components/AddToCollectionModal';
-import { ProgressTracker } from '@/components/ProgressTracker';
 import { ShareToGroupModal } from '@/components/ShareToGroupModal';
 import JSZip from 'jszip';
 import { SolutionSection } from '@/components/SolutionSection';
@@ -449,9 +448,6 @@ export default function PaperDetail() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Progress Tracking */}
-        <ProgressTracker paperId={paper.id} className="mb-8" />
 
         {/* Difficulty Rating */}
         <Card className="mb-8">
