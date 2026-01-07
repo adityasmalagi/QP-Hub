@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2, Image, Images, FileType, Archive } from 'lucide-react';
+import { ArrowLeft, Download, Eye, Calendar, FileText, Loader2, User, Building2, Image, Images, FileType, Archive, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { PDFViewer } from '@/components/PDFViewer';
@@ -19,9 +19,9 @@ import { AIChat } from '@/components/AIChat';
 import { CommentSection } from '@/components/CommentSection';
 import { AddToCollectionModal } from '@/components/AddToCollectionModal';
 import { ProgressTracker } from '@/components/ProgressTracker';
+import { ShareToGroupModal } from '@/components/ShareToGroupModal';
 import JSZip from 'jszip';
 import { SolutionSection } from '@/components/SolutionSection';
-
 type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
 
 // Helper to detect file type from URL or filename
@@ -445,6 +445,7 @@ export default function PaperDetail() {
               )}
               <BookmarkButton paperId={paper.id} variant="button" />
               <AddToCollectionModal paperId={paper.id} />
+              <ShareToGroupModal paperId={paper.id} paperTitle={paper.title} />
             </div>
           </CardContent>
         </Card>
@@ -458,21 +459,6 @@ export default function PaperDetail() {
             <DifficultyRating paperId={paper.id} />
           </CardContent>
         </Card>
-
-        {/* AI Study Assistant */}
-        <AIChat 
-          paperContext={{
-            id: paper.id,
-            title: paper.title,
-            subject: paper.subject,
-            board: paper.board,
-            class_level: paper.class_level,
-            year: paper.year,
-            exam_type: paper.exam_type,
-            description: paper.description,
-          }}
-          className="mb-8 h-[450px]"
-        />
 
         {/* File Viewer - PDF, Image, Gallery, or Document */}
         {fileType === 'gallery' ? (
@@ -502,6 +488,21 @@ export default function PaperDetail() {
             className="min-h-[600px]"
           />
         )}
+
+        {/* AI Study Assistant - Below the paper viewer */}
+        <AIChat 
+          paperContext={{
+            id: paper.id,
+            title: paper.title,
+            subject: paper.subject,
+            board: paper.board,
+            class_level: paper.class_level,
+            year: paper.year,
+            exam_type: paper.exam_type,
+            description: paper.description,
+          }}
+          className="mt-8 h-[450px]"
+        />
 
         {/* Solutions & Answer Keys */}
         <SolutionSection paperId={paper.id} className="mt-8" />
