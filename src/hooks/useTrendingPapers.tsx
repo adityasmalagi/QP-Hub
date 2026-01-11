@@ -19,6 +19,7 @@ interface TrendingPaper {
   avg_difficulty: string | null;
   ratings_count: number | null;
   uploaderName?: string | null;
+  uploaderAvatar?: string | null;
   trendingScore?: number;
 }
 
@@ -82,17 +83,18 @@ export function useTrendingPapers(timeFrame: TimeFrame = 'weekly', limit = 8) {
           .sort((a, b) => (b.trendingScore || 0) - (a.trendingScore || 0))
           .slice(0, limit);
 
-        // Fetch uploader names
+        // Fetch uploader names and avatars
         const userIds = [...new Set(sortedPapers.map(p => p.user_id))];
         const { data: profiles } = await supabase
           .from('public_profiles')
-          .select('id, full_name')
+          .select('id, full_name, avatar_url')
           .in('id', userIds);
 
-        const profileMap = new Map(profiles?.map(p => [p.id, p.full_name]) || []);
+        const profileMap = new Map(profiles?.map(p => [p.id, { name: p.full_name, avatar: p.avatar_url }]) || []);
         const papersWithUploaders = sortedPapers.map(paper => ({
           ...paper,
-          uploaderName: profileMap.get(paper.user_id) || null,
+          uploaderName: profileMap.get(paper.user_id)?.name || null,
+          uploaderAvatar: profileMap.get(paper.user_id)?.avatar || null,
         }));
 
         setPapers(papersWithUploaders);

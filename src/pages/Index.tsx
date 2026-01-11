@@ -50,6 +50,7 @@ interface RecommendedPaper {
   user_id: string;
   created_at: string | null;
   uploaderName?: string | null;
+  uploaderAvatar?: string | null;
 }
 
 export default function Index() {
@@ -106,18 +107,19 @@ export default function Index() {
 
         const { data } = await query;
         
-        // Fetch uploader names and shuffle from public_profiles (limited fields)
+        // Fetch uploader names and avatars from public_profiles
         if (data && data.length > 0) {
           const userIds = [...new Set(data.map(p => p.user_id))];
           const { data: profiles } = await supabase
             .from('public_profiles')
-            .select('id, full_name')
+            .select('id, full_name, avatar_url')
             .in('id', userIds);
           
-          const profileMap = new Map(profiles?.map(p => [p.id, p.full_name]) || []);
+          const profileMap = new Map(profiles?.map(p => [p.id, { name: p.full_name, avatar: p.avatar_url }]) || []);
           const papersWithUploaders = data.map(paper => ({
             ...paper,
-            uploaderName: profileMap.get(paper.user_id) || null
+            uploaderName: profileMap.get(paper.user_id)?.name || null,
+            uploaderAvatar: profileMap.get(paper.user_id)?.avatar || null,
           }));
           
           const shuffled = papersWithUploaders.sort(() => Math.random() - 0.5);
@@ -304,6 +306,7 @@ export default function Index() {
                       internalNumber={paper.internal_number}
                       instituteName={paper.institute_name}
                       uploaderName={paper.uploaderName}
+                      uploaderAvatar={paper.uploaderAvatar}
                       uploaderId={paper.user_id}
                       createdAt={paper.created_at}
                     />

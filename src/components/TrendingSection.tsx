@@ -81,6 +81,7 @@ export function TrendingSection() {
                     internalNumber={paper.internal_number}
                     instituteName={paper.institute_name}
                     uploaderName={paper.uploaderName}
+                    uploaderAvatar={paper.uploaderAvatar}
                     uploaderId={paper.user_id}
                     createdAt={paper.created_at}
                   />

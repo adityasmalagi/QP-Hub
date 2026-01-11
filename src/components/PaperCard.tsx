@@ -1,10 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Eye, Download, FileText, User, Building2 } from 'lucide-react';
+import { Eye, Download, FileText, Building2 } from 'lucide-react';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { DifficultyBadge } from '@/components/DifficultyBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useState, useEffect } from 'react';
 
 interface PaperCardProps {
@@ -19,6 +20,7 @@ interface PaperCardProps {
   downloadsCount: number;
   uploaderName?: string | null;
   uploaderId?: string | null;
+  uploaderAvatar?: string | null;
   semester?: number | null;
   internalNumber?: number | null;
   instituteName?: string | null;
@@ -55,6 +57,7 @@ export function PaperCard({
   downloadsCount,
   uploaderName,
   uploaderId,
+  uploaderAvatar,
   semester,
   internalNumber,
   instituteName,
@@ -159,15 +162,20 @@ export function PaperCard({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div 
-                      className={`flex items-center gap-1 group/uploader ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : 'hover:text-foreground transition-colors'}`}
+                      className={`flex items-center gap-1.5 group/uploader ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : 'hover:text-foreground transition-colors'}`}
                       onClick={uploaderId ? handleUploaderClick : undefined}
                     >
-                      <User className="h-3.5 w-3.5 group-hover/uploader:scale-110 transition-transform" />
-                      <span className="truncate">Uploaded by {uploaderName}</span>
+                      <Avatar className="h-5 w-5 ring-1 ring-border">
+                        <AvatarImage src={uploaderAvatar || undefined} alt={uploaderName} />
+                        <AvatarFallback className="text-[8px] bg-primary/10 text-primary font-medium">
+                          {uploaderName.split(' ').map(n => n.charAt(0)).join('').slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="truncate">{uploaderName}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Uploaded by {uploaderName}</p>
+                    <p>View {uploaderName}'s profile</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
