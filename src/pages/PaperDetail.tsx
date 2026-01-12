@@ -21,6 +21,10 @@ import { AddToCollectionModal } from '@/components/AddToCollectionModal';
 import { ShareToGroupModal } from '@/components/ShareToGroupModal';
 import JSZip from 'jszip';
 import { SolutionSection } from '@/components/SolutionSection';
+import { SocialShareButtons } from '@/components/SocialShareButtons';
+import { SimilarPapers } from '@/components/SimilarPapers';
+import { PaperVoting } from '@/components/PaperVoting';
+import { ReportModal } from '@/components/ReportModal';
 type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
 
 // Helper to detect file type from URL or filename
@@ -84,6 +88,8 @@ interface Paper {
   additional_file_urls: string[] | null;
   avg_difficulty: string | null;
   ratings_count: number | null;
+  upvotes_count: number | null;
+  downvotes_count: number | null;
 }
 
 export default function PaperDetail() {
@@ -104,7 +110,7 @@ export default function PaperDetail() {
     try {
       const { data, error } = await supabase
         .from('question_papers')
-        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, institute_name, user_id, file_type, additional_file_urls, avg_difficulty, ratings_count')
+        .select('id, title, description, subject, board, class_level, year, exam_type, file_url, file_name, views_count, downloads_count, created_at, semester, internal_number, institute_name, user_id, file_type, additional_file_urls, avg_difficulty, ratings_count, upvotes_count, downvotes_count')
         .eq('id', id)
         .maybeSingle();
 
@@ -445,6 +451,21 @@ export default function PaperDetail() {
               <BookmarkButton paperId={paper.id} variant="button" />
               <AddToCollectionModal paperId={paper.id} />
               <ShareToGroupModal paperId={paper.id} paperTitle={paper.title} />
+              <SocialShareButtons 
+                url={window.location.href} 
+                title={paper.title}
+                description={paper.description || `${paper.subject} - ${paper.board} - Class ${paper.class_level}`}
+              />
+              <ReportModal targetId={paper.id} targetType="paper" />
+            </div>
+            
+            {/* Paper Quality Voting */}
+            <div className="mt-4 pt-4 border-t border-border">
+              <PaperVoting 
+                paperId={paper.id} 
+                initialUpvotes={paper.upvotes_count || 0}
+                initialDownvotes={paper.downvotes_count || 0}
+              />
             </div>
           </CardContent>
         </Card>
@@ -502,6 +523,16 @@ export default function PaperDetail() {
 
         {/* Solutions & Answer Keys */}
         <SolutionSection paperId={paper.id} className="mt-8" />
+
+        {/* Similar Papers */}
+        <SimilarPapers 
+          paperId={paper.id}
+          subject={paper.subject}
+          classLevel={paper.class_level}
+          board={paper.board}
+          year={paper.year}
+          className="mt-8"
+        />
 
         {/* Comments & Discussion */}
         <CommentSection 
