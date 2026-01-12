@@ -91,6 +91,13 @@ export function Navbar() {
       >
         Activity
       </Link>
+      <Link
+        to={user ? "/study-plan" : "/auth?redirect=/study-plan"}
+        onClick={onClose}
+        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
+      >
+        Study Plan
+      </Link>
       {isAdmin && (
         <Link
           to="/admin"
