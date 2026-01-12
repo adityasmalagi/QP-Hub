@@ -81,6 +81,39 @@ export type Database = {
           },
         ]
       }
+      badge_definitions: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          requirement_type: string
+          requirement_value: number
+          tier: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id: string
+          name: string
+          requirement_type: string
+          requirement_value: number
+          tier?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          requirement_type?: string
+          requirement_value?: number
+          tier?: string | null
+        }
+        Relationships: []
+      }
       collection_papers: {
         Row: {
           added_at: string | null
@@ -632,6 +665,38 @@ export type Database = {
           },
         ]
       }
+      paper_votes: {
+        Row: {
+          created_at: string
+          id: string
+          paper_id: string
+          user_id: string
+          vote_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          paper_id: string
+          user_id: string
+          vote_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          paper_id?: string
+          user_id?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_votes_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age: number | null
@@ -719,6 +784,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           downloads_count: number | null
+          downvotes_count: number | null
           exam_type: string
           file_name: string
           file_type: string | null
@@ -726,6 +792,7 @@ export type Database = {
           id: string
           institute_name: string | null
           internal_number: number | null
+          quality_score: number | null
           ratings_count: number | null
           semester: number | null
           status: string | null
@@ -733,6 +800,7 @@ export type Database = {
           tags: string[] | null
           title: string
           updated_at: string | null
+          upvotes_count: number | null
           user_id: string
           views_count: number | null
           year: number
@@ -745,6 +813,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           downloads_count?: number | null
+          downvotes_count?: number | null
           exam_type: string
           file_name: string
           file_type?: string | null
@@ -752,6 +821,7 @@ export type Database = {
           id?: string
           institute_name?: string | null
           internal_number?: number | null
+          quality_score?: number | null
           ratings_count?: number | null
           semester?: number | null
           status?: string | null
@@ -759,6 +829,7 @@ export type Database = {
           tags?: string[] | null
           title: string
           updated_at?: string | null
+          upvotes_count?: number | null
           user_id: string
           views_count?: number | null
           year: number
@@ -771,6 +842,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           downloads_count?: number | null
+          downvotes_count?: number | null
           exam_type?: string
           file_name?: string
           file_type?: string | null
@@ -778,6 +850,7 @@ export type Database = {
           id?: string
           institute_name?: string | null
           internal_number?: number | null
+          quality_score?: number | null
           ratings_count?: number | null
           semester?: number | null
           status?: string | null
@@ -785,9 +858,49 @@ export type Database = {
           tags?: string[] | null
           title?: string
           updated_at?: string | null
+          upvotes_count?: number | null
           user_id?: string
           views_count?: number | null
           year?: number
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          reason: string
+          report_type: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          target_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason: string
+          report_type: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          target_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason?: string
+          report_type?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          target_id?: string
         }
         Relationships: []
       }
@@ -941,6 +1054,93 @@ export type Database = {
         }
         Relationships: []
       }
+      study_plan_items: {
+        Row: {
+          completed: boolean | null
+          created_at: string
+          day_number: number | null
+          id: string
+          notes: string | null
+          paper_id: string | null
+          plan_id: string
+          scheduled_date: string | null
+          title: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string
+          day_number?: number | null
+          id?: string
+          notes?: string | null
+          paper_id?: string | null
+          plan_id: string
+          scheduled_date?: string | null
+          title: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string
+          day_number?: number | null
+          id?: string
+          notes?: string | null
+          paper_id?: string | null
+          plan_id?: string
+          scheduled_date?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_plan_items_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "question_papers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_plan_items_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "study_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_plans: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          status: string | null
+          subjects: string[] | null
+          target_date: string | null
+          target_exam: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          status?: string | null
+          subjects?: string[] | null
+          target_date?: string | null
+          target_exam?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          status?: string | null
+          subjects?: string[] | null
+          target_date?: string | null
+          target_exam?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       study_streaks: {
         Row: {
           created_at: string | null
@@ -970,6 +1170,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          target_id: string | null
+          target_type: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badge_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_bookmarks: {
         Row: {
