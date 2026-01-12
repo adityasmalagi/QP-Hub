@@ -1,13 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Eye, Download, FileText, Building2, FileUp, Clock } from 'lucide-react';
+import { Eye, Download, FileText, Building2, FileUp, Star } from 'lucide-react';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { DifficultyBadge } from '@/components/DifficultyBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useState, useEffect } from 'react';
-import { formatDistanceToNow } from 'date-fns';
 
 interface PaperCardProps {
   id: string;
@@ -175,6 +174,21 @@ export function PaperCard({
                         </AvatarFallback>
                       </Avatar>
                       <span className="truncate">Uploaded by {uploaderName}</span>
+                      {uploaderPaperCount && uploaderPaperCount > 10 && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge className="h-4 px-1.5 text-[10px] font-medium gap-0.5 shrink-0 bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/30">
+                                <Star className="h-2.5 w-2.5 fill-current" />
+                                Top
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Top Contributor - {uploaderPaperCount} papers uploaded</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                       {uploaderPaperCount && uploaderPaperCount > 0 && (
                         <Badge variant="secondary" className="h-4 px-1.5 text-[10px] font-medium gap-0.5 shrink-0">
                           <FileUp className="h-2.5 w-2.5" />
@@ -188,12 +202,6 @@ export function PaperCard({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-            )}
-            {createdAt && (
-              <div className="flex items-center gap-1 hover:text-foreground transition-colors">
-                <Clock className="h-3.5 w-3.5" />
-                <span>{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</span>
-              </div>
             )}
             {instituteName && (
               <div className="flex items-center gap-1 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors group/inst">
