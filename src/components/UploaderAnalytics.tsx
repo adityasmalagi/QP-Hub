@@ -166,26 +166,58 @@ export function UploaderAnalytics() {
             <CardTitle className="text-base">Papers by Subject</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={analytics.subjectBreakdown}
-                    dataKey="count"
-                    nameKey="subject"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label={({ subject, count }) => `${subject}: ${count}`}
-                    labelLine={false}
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+              <div className="h-48 w-full lg:w-1/2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={analytics.subjectBreakdown}
+                      dataKey="count"
+                      nameKey="subject"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={70}
+                      label={false}
+                    >
+                      {analytics.subjectBreakdown.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                      formatter={(value: number, name: string) => [value, name]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap gap-2 lg:w-1/2">
+                {analytics.subjectBreakdown.slice(0, 8).map((item, index) => (
+                  <div 
+                    key={item.subject} 
+                    className="flex items-center gap-2 rounded-md bg-muted/50 px-2 py-1"
                   >
-                    {analytics.subjectBreakdown.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+                    <div 
+                      className="h-3 w-3 rounded-full" 
+                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    />
+                    <span className="text-xs text-foreground truncate max-w-[100px]" title={item.subject}>
+                      {item.subject}
+                    </span>
+                    <span className="text-xs font-medium text-muted-foreground">{item.count}</span>
+                  </div>
+                ))}
+                {analytics.subjectBreakdown.length > 8 && (
+                  <div className="flex items-center rounded-md bg-muted/50 px-2 py-1">
+                    <span className="text-xs text-muted-foreground">
+                      +{analytics.subjectBreakdown.length - 8} more
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
