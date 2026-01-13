@@ -22,7 +22,6 @@ import Calendar from "./pages/Calendar";
 import StudyGroups from "./pages/StudyGroups";
 import GroupDetail from "./pages/GroupDetail";
 import JoinGroup from "./pages/JoinGroup";
-import ActivityFeed from "./pages/ActivityFeed";
 import StudyPlan from "./pages/StudyPlan";
 import NotFound from "./pages/NotFound";
 
@@ -54,7 +53,6 @@ const App = () => (
                 <Route path="/groups" element={<StudyGroups />} />
                 <Route path="/groups/:groupId" element={<GroupDetail />} />
                 <Route path="/join/:inviteCode" element={<JoinGroup />} />
-                <Route path="/activity" element={<ActivityFeed />} />
                 <Route path="/study-plan" element={<StudyPlan />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
