@@ -27,7 +27,8 @@ import {
   Clock,
   TrendingUp,
   Sparkles,
-  Loader2
+  Loader2,
+  ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useStudyPlans, StudyPlan, StudyPlanItem } from '@/hooks/useStudyPlans';
@@ -243,6 +244,10 @@ export default function StudyPlanPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
+        <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Link>
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground md:text-3xl">Study Plans</h1>
