@@ -144,8 +144,11 @@ export function UploaderAnalytics() {
                     contentStyle={{ 
                       backgroundColor: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))'
                     }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                    itemStyle={{ color: 'hsl(var(--foreground))' }}
                   />
                   <Line 
                     type="monotone" 
@@ -187,27 +190,34 @@ export function UploaderAnalytics() {
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        color: 'hsl(var(--foreground))'
                       }}
+                      labelStyle={{ color: 'hsl(var(--foreground))' }}
+                      itemStyle={{ color: 'hsl(var(--foreground))' }}
                       formatter={(value: number, name: string) => [value, name]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="flex flex-wrap gap-2 lg:w-1/2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:w-1/2">
                 {analytics.subjectBreakdown.slice(0, 8).map((item, index) => (
-                  <div 
-                    key={item.subject} 
-                    className="flex items-center gap-2 rounded-md bg-muted/50 px-2 py-1"
+                  <div
+                    key={item.subject}
+                    className="flex min-w-0 items-center gap-2 rounded-md bg-muted/50 px-2 py-1"
                   >
-                    <div 
-                      className="h-3 w-3 rounded-full" 
+                    <div
+                      className="h-3 w-3 shrink-0 rounded-full"
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                      aria-hidden="true"
                     />
-                    <span className="text-xs text-foreground truncate max-w-[100px]" title={item.subject}>
+                    <span
+                      className="min-w-0 flex-1 truncate text-xs text-foreground"
+                      title={item.subject}
+                    >
                       {item.subject}
                     </span>
-                    <span className="text-xs font-medium text-muted-foreground">{item.count}</span>
+                    <span className="shrink-0 text-xs font-medium text-muted-foreground">{item.count}</span>
                   </div>
                 ))}
                 {analytics.subjectBreakdown.length > 8 && (
