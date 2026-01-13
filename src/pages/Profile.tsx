@@ -14,12 +14,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus, Pencil, ArrowLeft, Type, Folder } from 'lucide-react';
+import { User, FileText, Download, Eye, Save, Loader2, Settings, Mail, FileDown, Search, Heart, Trash2, Users, UserMinus, UserPlus, Pencil, ArrowLeft, Type, Folder, BarChart3 } from 'lucide-react';
 import { useAccessibility, fontSizeOptions } from '@/hooks/useAccessibility';
 import { Link } from 'react-router-dom';
 import { BOARDS, CLASS_LEVELS, ENGINEERING_BRANCHES, SUBJECTS, EXAM_TYPES, SEMESTERS, INTERNAL_NUMBERS, YEARS as PAPER_YEARS } from '@/lib/constants';
 import { PaperCard } from '@/components/PaperCard';
 import { useCollections, Collection } from '@/hooks/useCollections';
+import { UploaderAnalytics } from '@/components/UploaderAnalytics';
 
 interface Profile {
   full_name: string | null;
@@ -690,6 +691,11 @@ export default function Profile() {
                 <Folder className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">Collections ({collections.length})</span>
                 <span className="sm:hidden">Collections</span>
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
+                <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Analytics</span>
+                <span className="sm:hidden">Stats</span>
               </TabsTrigger>
               <TabsTrigger value="settings" className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2">
                 <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -1383,6 +1389,16 @@ export default function Profile() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">Your Upload Analytics</h2>
+                <p className="text-sm text-muted-foreground">Track the performance of your uploaded papers</p>
+              </div>
+              <UploaderAnalytics />
+            </div>
           </TabsContent>
 
           <TabsContent value="settings">
