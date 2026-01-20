@@ -14,7 +14,7 @@ export default function StudyGroups() {
   const navigate = useNavigate();
   const { groups, myGroups, loading, joinGroup, leaveGroup } = useStudyGroups();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState(user ? 'my-groups' : 'discover');
+  const [activeTab, setActiveTab] = useState('discover');
 
   const filteredGroups = groups.filter(
     (group) =>
@@ -66,8 +66,8 @@ export default function StudyGroups() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList>
-            {user && <TabsTrigger value="my-groups">My Groups</TabsTrigger>}
             <TabsTrigger value="discover">Discover</TabsTrigger>
+            {user && <TabsTrigger value="my-groups">My Groups</TabsTrigger>}
           </TabsList>
 
           {user && (
