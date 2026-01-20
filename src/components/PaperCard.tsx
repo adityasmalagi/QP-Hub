@@ -189,12 +189,6 @@ export function PaperCard({
                           </Tooltip>
                         </TooltipProvider>
                       )}
-                      {uploaderPaperCount && uploaderPaperCount > 0 && (
-                        <Badge variant="secondary" className="h-4 px-1.5 text-[10px] font-medium gap-0.5 shrink-0">
-                          <FileUp className="h-2.5 w-2.5" />
-                          {uploaderPaperCount}
-                        </Badge>
-                      )}
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
