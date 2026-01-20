@@ -13,11 +13,11 @@ const allowedOrigins = [
 
 function getCorsHeaders(req: Request) {
   const origin = req.headers.get('Origin') || '';
-  // Check if origin matches allowed list or is a Lovable/Vercel preview domain
+  // Check if origin is in whitelist or matches controlled Lovable domains
+  // Removed wildcard .vercel.app - only allow specific Vercel production deployment
   const isAllowed = allowedOrigins.includes(origin) || 
     origin.endsWith('.lovableproject.com') ||
-    origin.endsWith('.lovable.app') ||
-    origin.endsWith('.vercel.app');
+    origin.endsWith('.lovable.app');
   
   return {
     'Access-Control-Allow-Origin': isAllowed ? origin : allowedOrigins[0],
