@@ -82,6 +82,21 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Sanitize function to prevent prompt injection
+    function sanitizeForPrompt(text: string | undefined | null): string {
+      if (!text) return '';
+      return text
+        .replace(/[\r\n]+/g, ' ')       // Remove newlines to prevent multi-line injection
+        .replace(/[\\]/g, '')           // Remove backslashes
+        .replace(/ignore.*previous.*instructions?/gi, '')  // Remove common injection patterns
+        .replace(/system.*override/gi, '')
+        .replace(/new.*system.*instruction/gi, '')
+        .replace(/\[system\]/gi, '')
+        .replace(/from now on/gi, '')
+        .substring(0, 200)              // Limit length
+        .trim();
+    }
+
     // Build system prompt
     let systemPrompt = `You are an intelligent study assistant for QPaperHub, an educational platform for question papers. Your role is to:
 
@@ -93,16 +108,16 @@ Deno.serve(async (req) => {
 
 Be friendly, encouraging, and educational. Give clear, concise explanations. When explaining concepts, use examples where helpful. If asked about something outside academics, politely redirect to educational topics.`;
 
-    // Add paper context if available
+    // Add paper context if available (sanitized to prevent prompt injection)
     if (paperContext) {
       systemPrompt += `\n\nThe student is currently viewing a question paper with the following details:
-- Title: ${paperContext.title}
-- Subject: ${paperContext.subject}
-- Board: ${paperContext.board}
-- Class: ${paperContext.class_level}
-- Year: ${paperContext.year}
-- Exam Type: ${paperContext.exam_type}
-${paperContext.description ? `- Description: ${paperContext.description}` : ''}
+- Title: ${sanitizeForPrompt(paperContext.title)}
+- Subject: ${sanitizeForPrompt(paperContext.subject)}
+- Board: ${sanitizeForPrompt(paperContext.board)}
+- Class: ${sanitizeForPrompt(paperContext.class_level)}
+- Year: ${paperContext.year ? String(paperContext.year).substring(0, 4) : ''}
+- Exam Type: ${sanitizeForPrompt(paperContext.exam_type)}
+${paperContext.description ? `- Description: ${sanitizeForPrompt(paperContext.description)}` : ''}
 
 When answering questions, you can reference this paper's context. If the student asks about topics from this paper, provide relevant explanations and study tips.`;
     }
