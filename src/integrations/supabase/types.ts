@@ -1386,6 +1386,10 @@ export type Database = {
         Args: { p_paper_id: string }
         Returns: number
       }
+      grant_user_badge: {
+        Args: { _badge_id: string; _user_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
