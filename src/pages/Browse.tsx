@@ -38,6 +38,7 @@ interface QuestionPaper {
 
 export default function Browse() {
   const [papers, setPapers] = useState<QuestionPaper[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
