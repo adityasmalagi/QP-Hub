@@ -116,9 +116,10 @@ export default function Browse() {
         }
       }
 
-      const { data, error } = await query.limit(50);
+      const { data, error, count } = await query.limit(50);
 
       if (error) throw error;
+      setTotalCount(count ?? 0);
       
       // Fetch uploader names, avatars and paper counts for all papers from public_profiles
       if (data && data.length > 0) {
