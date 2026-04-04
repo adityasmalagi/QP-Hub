@@ -1407,6 +1407,21 @@ export type Database = {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
+      lookup_invite_by_code: {
+        Args: { p_invite_code: string }
+        Returns: {
+          expires_at: string
+          group_description: string
+          group_id: string
+          group_name: string
+          group_subject: string
+          id: string
+          invite_code: string
+          is_active: boolean
+          max_uses: number
+          use_count: number
+        }[]
+      }
       use_group_invite: { Args: { p_invite_code: string }; Returns: string }
       verify_admin_access: { Args: never; Returns: boolean }
     }
