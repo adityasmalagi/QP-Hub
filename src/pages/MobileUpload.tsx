@@ -273,6 +273,9 @@ export default function MobileUploadPage() {
 
       // Use the first uploaded file's URL
       const primaryFile = uploadResult.files[0];
+      const additionalUrls = uploadResult.files.slice(1).map(f => f.publicUrl);
+      const isMultiImage = uploadResult.files.length > 1;
+      const fileType = isMultiImage ? 'gallery' : undefined;
 
       // Insert paper record
       const { error: insertError } = await supabase
@@ -292,6 +295,8 @@ export default function MobileUploadPage() {
           semester: requiresSemester && validatedData.semester ? parseInt(validatedData.semester) : null,
           internal_number: requiresInternalNumber && validatedData.internalNumber ? parseInt(validatedData.internalNumber) : null,
           institute_name: validatedData.instituteName || null,
+          file_type: fileType || null,
+          additional_file_urls: additionalUrls.length > 0 ? additionalUrls : null,
         });
 
       if (insertError) throw insertError;
