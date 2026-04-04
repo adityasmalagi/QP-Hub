@@ -35,19 +35,17 @@ export default function JoinGroup() {
       }
 
       try {
-        // Get invite and group info
-        const { data: invite, error: inviteError } = await supabase
-          .from('group_invites')
-          .select('*, study_groups(id, name, description, subject)')
-          .eq('invite_code', inviteCode)
-          .eq('is_active', true)
-          .single();
+        // Look up invite via secure RPC
+        const { data: inviteData, error: inviteError } = await supabase
+          .rpc('lookup_invite_by_code', { p_invite_code: inviteCode });
 
-        if (inviteError || !invite) {
+        if (inviteError || !inviteData || inviteData.length === 0) {
           setError('Invalid or expired invite link');
           setLoading(false);
           return;
         }
+
+        const invite = inviteData[0];
 
         // Check expiration
         if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
@@ -69,13 +67,11 @@ export default function JoinGroup() {
           .select('*', { count: 'exact', head: true })
           .eq('group_id', invite.group_id);
 
-        const group = invite.study_groups as { id: string; name: string; description: string | null; subject: string | null };
-        
         setGroupInfo({
-          id: group.id,
-          name: group.name,
-          description: group.description,
-          subject: group.subject,
+          id: invite.group_id,
+          name: invite.group_name,
+          description: invite.group_description,
+          subject: invite.group_subject,
           member_count: count || 0,
         });
       } catch (err) {

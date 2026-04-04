@@ -156,17 +156,15 @@ export function useJoinViaInvite() {
 
     setJoining(true);
     try {
-      // First, get the invite details
-      const { data: invite, error: inviteError } = await supabase
-        .from('group_invites')
-        .select('*, study_groups(*)')
-        .eq('invite_code', inviteCode)
-        .eq('is_active', true)
-        .single();
+      // Look up invite via secure RPC
+      const { data: inviteData, error: inviteError } = await supabase
+        .rpc('lookup_invite_by_code', { p_invite_code: inviteCode });
 
-      if (inviteError || !invite) {
+      if (inviteError || !inviteData || inviteData.length === 0) {
         throw new Error('Invalid or expired invite link');
       }
+
+      const invite = inviteData[0];
 
       // Check if already a member
       const { data: existingMember } = await supabase
