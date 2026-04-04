@@ -368,7 +368,7 @@ export default function Browse() {
         ) : (
           <>
             <p className="mb-4 text-sm text-muted-foreground">
-              Showing {papers.length} paper{papers.length !== 1 ? 's' : ''}
+              Showing {papers.length} of {totalCount} paper{totalCount !== 1 ? 's' : ''}
             </p>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {papers.map((paper, index) => (
