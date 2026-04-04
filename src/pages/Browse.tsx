@@ -38,6 +38,7 @@ interface QuestionPaper {
 
 export default function Browse() {
   const [papers, setPapers] = useState<QuestionPaper[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
@@ -69,7 +70,7 @@ export default function Browse() {
 
       let query = supabase
         .from('question_papers')
-        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, institute_name, user_id, created_at, avg_difficulty, ratings_count')
+        .select('id, title, subject, board, class_level, year, exam_type, views_count, downloads_count, semester, internal_number, institute_name, user_id, created_at, avg_difficulty, ratings_count', { count: 'exact' })
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
 
@@ -115,9 +116,10 @@ export default function Browse() {
         }
       }
 
-      const { data, error } = await query.limit(50);
+      const { data, error, count } = await query.limit(50);
 
       if (error) throw error;
+      setTotalCount(count ?? 0);
       
       // Fetch uploader names, avatars and paper counts for all papers from public_profiles
       if (data && data.length > 0) {
@@ -366,7 +368,7 @@ export default function Browse() {
         ) : (
           <>
             <p className="mb-4 text-sm text-muted-foreground">
-              Showing {papers.length} paper{papers.length !== 1 ? 's' : ''}
+              Showing {papers.length} of {totalCount} paper{totalCount !== 1 ? 's' : ''}
             </p>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {papers.map((paper, index) => (
