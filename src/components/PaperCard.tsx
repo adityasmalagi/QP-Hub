@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Eye, Download, FileText, Building2, FileUp, Star } from 'lucide-react';
@@ -7,6 +7,7 @@ import { DifficultyBadge } from '@/components/DifficultyBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 interface PaperCardProps {
   id: string;
@@ -68,6 +69,7 @@ export function PaperCard({
   ratingsCount,
 }: PaperCardProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
 
   // Check if paper was uploaded within last 24 hours and hasn't been clicked
@@ -81,10 +83,16 @@ export function PaperCard({
 
   const showNewAnimation = isNewPaper && !hasBeenClicked;
 
-  const handleCardClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (isNewPaper) {
       markPaperAsClicked(id);
       setHasBeenClicked(true);
+    }
+    if (user) {
+      navigate(`/paper/${id}`);
+    } else {
+      navigate(`/auth?redirect=/paper/${id}`);
     }
   };
 
@@ -96,7 +104,7 @@ export function PaperCard({
     }
   };
   return (
-    <Link to={`/paper/${id}`} onClick={handleCardClick}>
+    <div onClick={handleCardClick} className="cursor-pointer">
       <Card className={`group relative h-full transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border-border/50 bg-card ${showNewAnimation ? 'animate-pulse-subtle ring-2 ring-primary/20' : ''}`}>
         {showNewAnimation && (
           <div className="absolute -top-2 -right-2 z-10">
@@ -206,6 +214,6 @@ export function PaperCard({
           </div>
         </CardContent>
       </Card>
-    </Link>
+    </div>
   );
 }

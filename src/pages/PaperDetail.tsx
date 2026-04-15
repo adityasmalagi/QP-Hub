@@ -94,17 +94,24 @@ interface Paper {
 
 export default function PaperDetail() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [paper, setPaper] = useState<Paper | null>(null);
   const [uploaderName, setUploaderName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (id) {
+    if (!authLoading && !user) {
+      navigate(`/auth?redirect=/paper/${id}`, { replace: true });
+    }
+  }, [authLoading, user, id, navigate]);
+
+  useEffect(() => {
+    if (id && user) {
       fetchPaper();
     }
-  }, [id]);
+  }, [id, user]);
 
   const fetchPaper = async () => {
     try {
