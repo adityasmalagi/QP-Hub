@@ -110,13 +110,14 @@ export default function MobileUploadPage() {
   useEffect(() => {
     if (titleManuallyEdited) return;
     
-    if (formData.subject && formData.year) {
+    const effectiveSubject = formData.subject === 'other' ? formData.customSubject : formData.subject;
+    if (effectiveSubject && formData.year) {
       const semester = formData.semester ? parseInt(formData.semester) : null;
       const year = parseInt(formData.year);
-      const autoTitle = formatPaperTitle(formData.subject, semester, year);
+      const autoTitle = formatPaperTitle(effectiveSubject, semester, year);
       setFormData(prev => ({ ...prev, title: autoTitle }));
     }
-  }, [formData.subject, formData.semester, formData.year, titleManuallyEdited]);
+  }, [formData.subject, formData.customSubject, formData.semester, formData.year, titleManuallyEdited]);
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
