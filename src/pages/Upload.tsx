@@ -96,6 +96,8 @@ export default function Upload() {
     semester: '',
     internalNumber: '',
     instituteName: '',
+    customSubject: '',
+    customExamType: '',
   });
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -240,8 +242,29 @@ export default function Upload() {
       return;
     }
     
+    // Resolve custom subject / exam type when "other" is selected
+    const resolvedSubject = formData.subject === 'other'
+      ? formData.customSubject.trim()
+      : formData.subject;
+    const resolvedExamType = formData.examType === 'other'
+      ? formData.customExamType.trim()
+      : formData.examType;
+
+    if (formData.subject === 'other' && !resolvedSubject) {
+      toast({ title: 'Subject required', description: 'Please enter the subject name.', variant: 'destructive' });
+      return;
+    }
+    if (formData.examType === 'other' && !resolvedExamType) {
+      toast({ title: 'Exam type required', description: 'Please enter the exam type.', variant: 'destructive' });
+      return;
+    }
+
     // Validate form using zod schema
-    const validationResult = uploadFormSchema.safeParse(formData);
+    const validationResult = uploadFormSchema.safeParse({
+      ...formData,
+      subject: resolvedSubject,
+      examType: resolvedExamType,
+    });
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0];
       toast({
@@ -619,7 +642,7 @@ export default function Upload() {
                   <Label>Subject *</Label>
                   <Select
                     value={formData.subject}
-                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v }))}
+                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v, customSubject: v === 'other' ? f.customSubject : '' }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select subject" />
@@ -632,6 +655,14 @@ export default function Upload() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {formData.subject === 'other' && (
+                    <Input
+                      placeholder="Enter subject name"
+                      value={formData.customSubject}
+                      onChange={(e) => setFormData(f => ({ ...f, customSubject: e.target.value }))}
+                      maxLength={100}
+                    />
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -661,7 +692,8 @@ export default function Upload() {
                       ...f, 
                       examType: v,
                       semester: '',
-                      internalNumber: ''
+                      internalNumber: '',
+                      customExamType: v === 'other' ? f.customExamType : '',
                     }))}
                   >
                     <SelectTrigger>
@@ -675,6 +707,14 @@ export default function Upload() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {formData.examType === 'other' && (
+                    <Input
+                      placeholder="Enter exam type"
+                      value={formData.customExamType}
+                      onChange={(e) => setFormData(f => ({ ...f, customExamType: e.target.value }))}
+                      maxLength={50}
+                    />
+                  )}
                 </div>
 
                 {/* Conditional Semester Field */}

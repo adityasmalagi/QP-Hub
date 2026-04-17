@@ -45,6 +45,8 @@ export default function MobileUploadPage() {
     semester: '',
     internalNumber: '',
     instituteName: '',
+    customSubject: '',
+    customExamType: '',
   });
   
   const [files, setFiles] = useState<UploadedFile[]>([]);
@@ -108,13 +110,14 @@ export default function MobileUploadPage() {
   useEffect(() => {
     if (titleManuallyEdited) return;
     
-    if (formData.subject && formData.year) {
+    const effectiveSubject = formData.subject === 'other' ? formData.customSubject : formData.subject;
+    if (effectiveSubject && formData.year) {
       const semester = formData.semester ? parseInt(formData.semester) : null;
       const year = parseInt(formData.year);
-      const autoTitle = formatPaperTitle(formData.subject, semester, year);
+      const autoTitle = formatPaperTitle(effectiveSubject, semester, year);
       setFormData(prev => ({ ...prev, title: autoTitle }));
     }
-  }, [formData.subject, formData.semester, formData.year, titleManuallyEdited]);
+  }, [formData.subject, formData.customSubject, formData.semester, formData.year, titleManuallyEdited]);
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -187,8 +190,29 @@ export default function MobileUploadPage() {
       return;
     }
     
+    // Resolve custom subject / exam type when "other" is selected
+    const resolvedSubject = formData.subject === 'other'
+      ? formData.customSubject.trim()
+      : formData.subject;
+    const resolvedExamType = formData.examType === 'other'
+      ? formData.customExamType.trim()
+      : formData.examType;
+
+    if (formData.subject === 'other' && !resolvedSubject) {
+      toast({ title: 'Subject required', description: 'Please enter the subject name.', variant: 'destructive' });
+      return;
+    }
+    if (formData.examType === 'other' && !resolvedExamType) {
+      toast({ title: 'Exam type required', description: 'Please enter the exam type.', variant: 'destructive' });
+      return;
+    }
+
     // Validate form
-    const validationResult = uploadFormSchema.safeParse(formData);
+    const validationResult = uploadFormSchema.safeParse({
+      ...formData,
+      subject: resolvedSubject,
+      examType: resolvedExamType,
+    });
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0];
       toast({
@@ -570,11 +594,20 @@ export default function MobileUploadPage() {
                   <Label>Subject *</Label>
                   <SearchableSelect
                     value={formData.subject}
-                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v }))}
+                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v, customSubject: v === 'other' ? f.customSubject : '' }))}
                     options={SUBJECTS}
                     placeholder="Select subject"
                     searchPlaceholder="Search subjects..."
                   />
+                  {formData.subject === 'other' && (
+                    <Input
+                      placeholder="Enter subject name"
+                      value={formData.customSubject}
+                      onChange={(e) => setFormData(f => ({ ...f, customSubject: e.target.value }))}
+                      maxLength={100}
+                      disabled={uploading}
+                    />
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -592,11 +625,20 @@ export default function MobileUploadPage() {
                   <Label>Exam Type *</Label>
                   <SearchableSelect
                     value={formData.examType}
-                    onValueChange={(v) => setFormData(f => ({ ...f, examType: v, semester: '', internalNumber: '' }))}
+                    onValueChange={(v) => setFormData(f => ({ ...f, examType: v, semester: '', internalNumber: '', customExamType: v === 'other' ? f.customExamType : '' }))}
                     options={EXAM_TYPES}
                     placeholder="Select exam type"
                     searchPlaceholder="Search exam type..."
                   />
+                  {formData.examType === 'other' && (
+                    <Input
+                      placeholder="Enter exam type"
+                      value={formData.customExamType}
+                      onChange={(e) => setFormData(f => ({ ...f, customExamType: e.target.value }))}
+                      maxLength={50}
+                      disabled={uploading}
+                    />
+                  )}
                 </div>
 
                 {requiresSemester && (
