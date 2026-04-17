@@ -125,8 +125,6 @@ export const SUBJECTS = [
   { value: "political_science", label: "Political Science" },
   { value: "sociology", label: "Sociology" },
   { value: "psychology", label: "Psychology" },
-
-  { value: "other", label: "Other" },
 ] as const;
 
 export const EXAM_TYPES = [
