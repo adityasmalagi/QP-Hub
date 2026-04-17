@@ -594,11 +594,20 @@ export default function MobileUploadPage() {
                   <Label>Subject *</Label>
                   <SearchableSelect
                     value={formData.subject}
-                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v }))}
+                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v, customSubject: v === 'other' ? f.customSubject : '' }))}
                     options={SUBJECTS}
                     placeholder="Select subject"
                     searchPlaceholder="Search subjects..."
                   />
+                  {formData.subject === 'other' && (
+                    <Input
+                      placeholder="Enter subject name"
+                      value={formData.customSubject}
+                      onChange={(e) => setFormData(f => ({ ...f, customSubject: e.target.value }))}
+                      maxLength={100}
+                      disabled={uploading}
+                    />
+                  )}
                 </div>
 
                 <div className="space-y-2">
