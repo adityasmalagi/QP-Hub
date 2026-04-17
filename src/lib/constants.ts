@@ -44,6 +44,7 @@ export const ENGINEERING_BRANCHES = [
 ];
 
 export const SUBJECTS = [
+  { value: "other", label: "Other" },
   // General Subjects
   { value: "mathematics", label: "Mathematics" },
   { value: "physics", label: "Physics" },
