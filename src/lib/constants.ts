@@ -139,6 +139,7 @@ export const EXAM_TYPES = [
   { value: "sample_paper", label: "Sample Paper" },
   { value: "practice", label: "Practice Paper" },
   { value: "entrance", label: "Entrance Exam" },
+  { value: "other", label: "Other" },
 ] as const;
 
 export const SEMESTERS = [
