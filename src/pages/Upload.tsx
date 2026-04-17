@@ -692,7 +692,8 @@ export default function Upload() {
                       ...f, 
                       examType: v,
                       semester: '',
-                      internalNumber: ''
+                      internalNumber: '',
+                      customExamType: v === 'other' ? f.customExamType : '',
                     }))}
                   >
                     <SelectTrigger>
@@ -706,6 +707,14 @@ export default function Upload() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {formData.examType === 'other' && (
+                    <Input
+                      placeholder="Enter exam type"
+                      value={formData.customExamType}
+                      onChange={(e) => setFormData(f => ({ ...f, customExamType: e.target.value }))}
+                      maxLength={50}
+                    />
+                  )}
                 </div>
 
                 {/* Conditional Semester Field */}
