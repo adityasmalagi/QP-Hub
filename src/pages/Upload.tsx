@@ -242,8 +242,29 @@ export default function Upload() {
       return;
     }
     
+    // Resolve custom subject / exam type when "other" is selected
+    const resolvedSubject = formData.subject === 'other'
+      ? formData.customSubject.trim()
+      : formData.subject;
+    const resolvedExamType = formData.examType === 'other'
+      ? formData.customExamType.trim()
+      : formData.examType;
+
+    if (formData.subject === 'other' && !resolvedSubject) {
+      toast({ title: 'Subject required', description: 'Please enter the subject name.', variant: 'destructive' });
+      return;
+    }
+    if (formData.examType === 'other' && !resolvedExamType) {
+      toast({ title: 'Exam type required', description: 'Please enter the exam type.', variant: 'destructive' });
+      return;
+    }
+
     // Validate form using zod schema
-    const validationResult = uploadFormSchema.safeParse(formData);
+    const validationResult = uploadFormSchema.safeParse({
+      ...formData,
+      subject: resolvedSubject,
+      examType: resolvedExamType,
+    });
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0];
       toast({
