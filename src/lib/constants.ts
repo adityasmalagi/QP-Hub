@@ -44,6 +44,7 @@ export const ENGINEERING_BRANCHES = [
 ];
 
 export const SUBJECTS = [
+  { value: "other", label: "Other" },
   // General Subjects
   { value: "mathematics", label: "Mathematics" },
   { value: "physics", label: "Physics" },
@@ -124,8 +125,6 @@ export const SUBJECTS = [
   { value: "political_science", label: "Political Science" },
   { value: "sociology", label: "Sociology" },
   { value: "psychology", label: "Psychology" },
-
-  { value: "other", label: "Other" },
 ] as const;
 
 export const EXAM_TYPES = [
