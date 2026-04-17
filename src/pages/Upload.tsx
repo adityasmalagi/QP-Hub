@@ -96,6 +96,8 @@ export default function Upload() {
     semester: '',
     internalNumber: '',
     instituteName: '',
+    customSubject: '',
+    customExamType: '',
   });
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
