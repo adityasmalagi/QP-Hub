@@ -625,11 +625,20 @@ export default function MobileUploadPage() {
                   <Label>Exam Type *</Label>
                   <SearchableSelect
                     value={formData.examType}
-                    onValueChange={(v) => setFormData(f => ({ ...f, examType: v, semester: '', internalNumber: '' }))}
+                    onValueChange={(v) => setFormData(f => ({ ...f, examType: v, semester: '', internalNumber: '', customExamType: v === 'other' ? f.customExamType : '' }))}
                     options={EXAM_TYPES}
                     placeholder="Select exam type"
                     searchPlaceholder="Search exam type..."
                   />
+                  {formData.examType === 'other' && (
+                    <Input
+                      placeholder="Enter exam type"
+                      value={formData.customExamType}
+                      onChange={(e) => setFormData(f => ({ ...f, customExamType: e.target.value }))}
+                      maxLength={50}
+                      disabled={uploading}
+                    />
+                  )}
                 </div>
 
                 {requiresSemester && (
