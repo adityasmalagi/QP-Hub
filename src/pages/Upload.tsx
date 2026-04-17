@@ -642,7 +642,7 @@ export default function Upload() {
                   <Label>Subject *</Label>
                   <Select
                     value={formData.subject}
-                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v }))}
+                    onValueChange={(v) => setFormData(f => ({ ...f, subject: v, customSubject: v === 'other' ? f.customSubject : '' }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select subject" />
@@ -655,6 +655,14 @@ export default function Upload() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {formData.subject === 'other' && (
+                    <Input
+                      placeholder="Enter subject name"
+                      value={formData.customSubject}
+                      onChange={(e) => setFormData(f => ({ ...f, customSubject: e.target.value }))}
+                      maxLength={100}
+                    />
+                  )}
                 </div>
 
                 <div className="space-y-2">
