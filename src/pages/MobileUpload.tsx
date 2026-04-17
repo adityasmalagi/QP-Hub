@@ -45,6 +45,8 @@ export default function MobileUploadPage() {
     semester: '',
     internalNumber: '',
     instituteName: '',
+    customSubject: '',
+    customExamType: '',
   });
   
   const [files, setFiles] = useState<UploadedFile[]>([]);
