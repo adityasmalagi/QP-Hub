@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface TrendingPaper {
   id: string;
@@ -27,6 +28,7 @@ interface TrendingPaper {
 type TimeFrame = 'daily' | 'weekly' | 'monthly';
 
 export function useTrendingPapers(timeFrame: TimeFrame = 'weekly', limit = 8) {
+  const { user, loading: authLoading } = useAuth();
   const [papers, setPapers] = useState<TrendingPaper[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -36,6 +38,22 @@ export function useTrendingPapers(timeFrame: TimeFrame = 'weekly', limit = 8) {
     setError(null);
 
     try {
+      if (!user) {
+        const { data: publicPapers, error: publicError } = await (supabase as any)
+          .rpc('get_public_trending_papers', { _limit: limit });
+
+        if (publicError) throw publicError;
+
+        setPapers((publicPapers || []).map((paper: TrendingPaper) => ({
+          ...paper,
+          user_id: '',
+          uploaderName: null,
+          uploaderAvatar: null,
+          uploaderPaperCount: null,
+        })));
+        return;
+      }
+
       // Calculate date range based on timeframe
       const now = new Date();
       let startDate: Date;
@@ -121,11 +139,13 @@ export function useTrendingPapers(timeFrame: TimeFrame = 'weekly', limit = 8) {
     } finally {
       setLoading(false);
     }
-  }, [timeFrame, limit]);
+  }, [timeFrame, limit, user]);
 
   useEffect(() => {
-    fetchTrendingPapers();
-  }, [fetchTrendingPapers]);
+    if (!authLoading) {
+      fetchTrendingPapers();
+    }
+  }, [authLoading, fetchTrendingPapers]);
 
   return { papers, loading, error, refetch: fetchTrendingPapers };
 }
