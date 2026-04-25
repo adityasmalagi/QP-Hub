@@ -186,12 +186,14 @@ export default function Index() {
           className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,_hsl(var(--primary)/0.15)_0%,_transparent_40%)] transition-transform duration-100 ease-out"
           style={{ transform: `translateY(${scrollY * 0.15}px)` }}
         />
+        <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 animate-float-slow md:block" />
+        <div className="absolute bottom-10 left-0 right-0 hidden h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent animate-soft-glow md:block" />
         
         <div className="container relative mx-auto px-4 pb-20 pt-24 text-center">
           <div className="mx-auto max-w-4xl">
             <ScrollAnimation animation="fade-up" delay={0}>
-              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-primary" />
+              <div className="mb-8 inline-flex animate-float items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm shadow-glow">
+                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                 <span className="text-sm font-medium text-muted-foreground">
                   Your Academic Success Partner
                 </span>
@@ -217,9 +219,9 @@ export default function Index() {
             <ScrollAnimation animation="fade-up" delay={300}>
               <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
+                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
                     Browse Papers
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </Link>
                 
@@ -227,7 +229,7 @@ export default function Index() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
-                        <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
+                        <Button size="lg" className="gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
                           <Upload className="mr-2 h-5 w-5" />
                           Upload Paper
                         </Button>
@@ -359,9 +361,9 @@ export default function Index() {
                 animation="fade-up"
                 delay={index * 100}
               >
-                <Card className="h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                   <CardContent className="p-6">
-                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
                       {index + 1}
                     </div>
                     <h3 className="mb-2 font-semibold text-foreground">{tip.title}</h3>
@@ -391,8 +393,8 @@ export default function Index() {
                 
                 <div className="mb-8 space-y-4">
                   {uploadFeatures.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                    <div key={index} className="group flex items-start gap-3 rounded-lg p-2 transition-all duration-300 hover:bg-secondary/40">
+                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary transition-transform duration-300 group-hover:scale-110" />
                       <div>
                         <h4 className="font-semibold text-foreground">{feature.title}</h4>
                         <p className="text-sm text-muted-foreground">{feature.description}</p>
@@ -402,7 +404,7 @@ export default function Index() {
                 </div>
                 
                 <Link to={user ? "/upload" : "/auth?redirect=/upload"}>
-                  <Button size="lg" className="gradient-primary glow-purple">
+                  <Button size="lg" className="gradient-primary shine-sweep hover-lift glow-purple">
                     <Upload className="mr-2 h-5 w-5" />
                     Start Uploading
                   </Button>
@@ -418,13 +420,13 @@ export default function Index() {
                     {uploadSteps.map((item, index) => (
                       <div 
                         key={index} 
-                        className={`rounded-xl border p-4 transition-all ${
+                        className={`group rounded-xl border p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-card ${
                           index === 3 
                             ? 'border-primary/50 bg-gradient-to-r from-primary/10 to-accent/10' 
                             : 'border-border/50 bg-secondary/30'
                         }`}
                       >
-                        <div className="mb-1 text-xs font-medium text-primary">Step {item.step}</div>
+                        <div className="mb-1 text-xs font-medium text-primary transition-transform duration-300 group-hover:translate-x-1">Step {item.step}</div>
                         <div className="font-semibold text-foreground">{item.title}</div>
                         <div className="text-sm text-muted-foreground">{item.description}</div>
                       </div>
@@ -451,10 +453,10 @@ export default function Index() {
           
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
             <ScrollAnimation animation="scale-in" delay={0}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                    <Search className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
+                    <Search className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-foreground">Advanced Filters</h3>
                   <p className="text-sm text-muted-foreground">
@@ -465,10 +467,10 @@ export default function Index() {
             </ScrollAnimation>
             
             <ScrollAnimation animation="scale-in" delay={100}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                    <Upload className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
+                    <Upload className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-foreground">Easy Uploads</h3>
                   <p className="text-sm text-muted-foreground">
@@ -479,10 +481,10 @@ export default function Index() {
             </ScrollAnimation>
             
             <ScrollAnimation animation="scale-in" delay={200}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                    <BookOpen className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
+                    <BookOpen className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-foreground">Academic Success</h3>
                   <p className="text-sm text-muted-foreground">
@@ -499,7 +501,7 @@ export default function Index() {
       <footer className="border-t border-border bg-card/50 py-8">
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain" />
+            <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain animate-float" />
             <span className="text-lg font-bold text-foreground">QP Hub</span>
           </div>
           <p className="text-sm text-muted-foreground">
