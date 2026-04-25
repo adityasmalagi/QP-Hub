@@ -186,12 +186,14 @@ export default function Index() {
           className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,_hsl(var(--primary)/0.15)_0%,_transparent_40%)] transition-transform duration-100 ease-out"
           style={{ transform: `translateY(${scrollY * 0.15}px)` }}
         />
+        <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 animate-float-slow md:block" />
+        <div className="absolute bottom-10 left-0 right-0 hidden h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent animate-soft-glow md:block" />
         
         <div className="container relative mx-auto px-4 pb-20 pt-24 text-center">
           <div className="mx-auto max-w-4xl">
             <ScrollAnimation animation="fade-up" delay={0}>
-              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-primary" />
+              <div className="mb-8 inline-flex animate-float items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm shadow-glow">
+                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                 <span className="text-sm font-medium text-muted-foreground">
                   Your Academic Success Partner
                 </span>
@@ -217,9 +219,9 @@ export default function Index() {
             <ScrollAnimation animation="fade-up" delay={300}>
               <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
+                  <Button size="lg" className="gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
                     Browse Papers
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </Link>
                 
@@ -227,7 +229,7 @@ export default function Index() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
-                        <Button size="lg" className="gradient-primary px-8 py-6 text-lg shadow-glow glow-purple">
+                        <Button size="lg" className="gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
                           <Upload className="mr-2 h-5 w-5" />
                           Upload Paper
                         </Button>
