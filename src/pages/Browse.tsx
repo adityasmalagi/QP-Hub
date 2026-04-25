@@ -374,9 +374,10 @@ export default function Browse() {
               {papers.map((paper, index) => (
                 <ScrollAnimation
                   key={paper.id}
-                  animation="fade-up"
-                  delay={Math.min(index * 50, 300)}
-                  duration={400}
+                  animation="scale-in"
+                  delay={Math.min(index * 70, 420)}
+                  duration={450}
+                  className="hover-lift"
                 >
                   <PaperCard
                     id={paper.id}
