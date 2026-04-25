@@ -453,10 +453,10 @@ export default function Index() {
           
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
             <ScrollAnimation animation="scale-in" delay={0}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                    <Search className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
+                    <Search className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-foreground">Advanced Filters</h3>
                   <p className="text-sm text-muted-foreground">
@@ -467,10 +467,10 @@ export default function Index() {
             </ScrollAnimation>
             
             <ScrollAnimation animation="scale-in" delay={100}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                    <Upload className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
+                    <Upload className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-foreground">Easy Uploads</h3>
                   <p className="text-sm text-muted-foreground">
@@ -481,10 +481,10 @@ export default function Index() {
             </ScrollAnimation>
             
             <ScrollAnimation animation="scale-in" delay={200}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-primary">
-                    <BookOpen className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
+                    <BookOpen className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-foreground">Academic Success</h3>
                   <p className="text-sm text-muted-foreground">
@@ -501,7 +501,7 @@ export default function Index() {
       <footer className="border-t border-border bg-card/50 py-8">
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain" />
+            <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain animate-float" />
             <span className="text-lg font-bold text-foreground">QP Hub</span>
           </div>
           <p className="text-sm text-muted-foreground">
