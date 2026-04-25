@@ -1386,6 +1386,27 @@ export type Database = {
         Args: { p_paper_id: string }
         Returns: number
       }
+      get_public_trending_papers: {
+        Args: { _limit?: number }
+        Returns: {
+          avg_difficulty: string
+          board: string
+          class_level: string
+          created_at: string
+          downloads_count: number
+          exam_type: string
+          id: string
+          institute_name: string
+          internal_number: number
+          ratings_count: number
+          semester: number
+          subject: string
+          title: string
+          trending_score: number
+          views_count: number
+          year: number
+        }[]
+      }
       grant_user_badge: {
         Args: { _badge_id: string; _user_id: string }
         Returns: undefined
