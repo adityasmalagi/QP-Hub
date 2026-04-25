@@ -361,9 +361,9 @@ export default function Index() {
                 animation="fade-up"
                 delay={index * 100}
               >
-                <Card className="h-full border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
                   <CardContent className="p-6">
-                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
                       {index + 1}
                     </div>
                     <h3 className="mb-2 font-semibold text-foreground">{tip.title}</h3>
@@ -393,8 +393,8 @@ export default function Index() {
                 
                 <div className="mb-8 space-y-4">
                   {uploadFeatures.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                    <div key={index} className="group flex items-start gap-3 rounded-lg p-2 transition-all duration-300 hover:bg-secondary/40">
+                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary transition-transform duration-300 group-hover:scale-110" />
                       <div>
                         <h4 className="font-semibold text-foreground">{feature.title}</h4>
                         <p className="text-sm text-muted-foreground">{feature.description}</p>
@@ -404,7 +404,7 @@ export default function Index() {
                 </div>
                 
                 <Link to={user ? "/upload" : "/auth?redirect=/upload"}>
-                  <Button size="lg" className="gradient-primary glow-purple">
+                  <Button size="lg" className="gradient-primary shine-sweep hover-lift glow-purple">
                     <Upload className="mr-2 h-5 w-5" />
                     Start Uploading
                   </Button>
@@ -420,13 +420,13 @@ export default function Index() {
                     {uploadSteps.map((item, index) => (
                       <div 
                         key={index} 
-                        className={`rounded-xl border p-4 transition-all ${
+                        className={`group rounded-xl border p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-card ${
                           index === 3 
                             ? 'border-primary/50 bg-gradient-to-r from-primary/10 to-accent/10' 
                             : 'border-border/50 bg-secondary/30'
                         }`}
                       >
-                        <div className="mb-1 text-xs font-medium text-primary">Step {item.step}</div>
+                        <div className="mb-1 text-xs font-medium text-primary transition-transform duration-300 group-hover:translate-x-1">Step {item.step}</div>
                         <div className="font-semibold text-foreground">{item.title}</div>
                         <div className="text-sm text-muted-foreground">{item.description}</div>
                       </div>
