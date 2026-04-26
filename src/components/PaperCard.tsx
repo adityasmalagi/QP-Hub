@@ -141,12 +141,12 @@ export function PaperCard({
               {year}
             </Badge>
             {examType === 'internals' && internalNumber && (
-              <Badge className="text-xs bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30">
+              <Badge className="text-[11px] bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30 sm:text-xs">
                 Internal {internalNumber}
               </Badge>
             )}
             {examType === 'sem_paper' && semester && (
-              <Badge className="text-xs bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30">
+              <Badge className="text-[11px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 sm:text-xs">
                 Sem {semester}
               </Badge>
             )}
@@ -157,12 +157,12 @@ export function PaperCard({
           </div>
           
           <div className="flex flex-col gap-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-default group/stat">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="flex min-h-8 items-center gap-1 pr-2 hover:text-foreground transition-colors cursor-default group/stat sm:min-h-0 sm:pr-0">
                 <Eye className="h-3.5 w-3.5 group-hover/stat:scale-110 transition-transform" />
                 {viewsCount}
               </span>
-              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-default group/stat">
+              <span className="flex min-h-8 items-center gap-1 pr-2 hover:text-foreground transition-colors cursor-default group/stat sm:min-h-0 sm:pr-0">
                 <Download className="h-3.5 w-3.5 group-hover/stat:scale-110 transition-transform" />
                 {downloadsCount}
               </span>
@@ -172,7 +172,7 @@ export function PaperCard({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div 
-                      className={`flex items-center gap-1.5 group/uploader ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : 'hover:text-foreground transition-colors'}`}
+                      className={`flex min-h-8 min-w-0 items-center gap-1.5 group/uploader sm:min-h-0 ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : 'hover:text-foreground transition-colors'}`}
                       onClick={uploaderId ? handleUploaderClick : undefined}
                     >
                       <Avatar className="h-4 w-4 ring-1 ring-border shrink-0">
