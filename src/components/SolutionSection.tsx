@@ -255,7 +255,7 @@ export function SolutionSection({ paperId, className }: SolutionSectionProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => window.open(solution.solution_file_url, '_blank')}
+                    onClick={() => handleOpenSolution(solution.solution_file_url)}
                   >
                     <ExternalLink className="h-4 w-4" />
                   </Button>
