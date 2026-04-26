@@ -191,8 +191,10 @@ export default function PaperDetail() {
 
   // Get all image URLs for gallery
   const galleryUrls = paper && fileType === 'gallery' 
-    ? [paper.file_url, ...(paper.additional_file_urls || [])]
+    ? signedFileUrls
     : [];
+
+  const primarySignedUrl = signedFileUrls[0] || '';
 
   const getDownloadButtonText = () => {
     if (downloading) return 'Downloading...';
@@ -482,7 +484,13 @@ export default function PaperDetail() {
               {fileType !== 'docx' && (
                 <Button
                   variant="outline"
-                  onClick={() => window.open(paper.file_url, '_blank')}
+                  onClick={async () => {
+                    try {
+                      window.open(await getSignedFileUrl(paper.file_url), '_blank');
+                    } catch {
+                      toast({ title: 'Could not open file', description: 'Please try again.', variant: 'destructive' });
+                    }
+                  }}
                 >
                   <Eye className="mr-2 h-4 w-4" />
                   Open in New Tab
@@ -526,13 +534,13 @@ export default function PaperDetail() {
           />
         ) : fileType === 'image' ? (
           <ImageViewer
-            fileUrl={paper.file_url}
+            fileUrl={primarySignedUrl}
             title={paper.title}
             className="min-h-[600px]"
           />
         ) : fileType === 'docx' ? (
           <DocViewer
-            fileUrl={paper.file_url}
+            fileUrl={primarySignedUrl}
             fileName={paper.file_name}
             title={paper.title}
             className="min-h-[400px]"
@@ -540,7 +548,7 @@ export default function PaperDetail() {
           />
         ) : (
           <PDFViewer
-            fileUrl={paper.file_url}
+            fileUrl={primarySignedUrl}
             title={paper.title}
             className="min-h-[600px]"
           />
