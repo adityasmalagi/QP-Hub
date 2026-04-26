@@ -38,6 +38,7 @@ type FileType = 'pdf' | 'docx' | 'image' | 'unknown';
 
 function detectFileType(bytes: Uint8Array, fileName: string): FileType {
   const ext = fileName.toLowerCase().split('.').pop();
+  if (ext === 'svg') return 'unknown';
   
   // Check magic bytes
   if (bytes.length >= 5 && bytes.slice(0, 5).every((b, i) => b === PDF_MAGIC_BYTES[i])) {
@@ -65,7 +66,7 @@ function detectFileType(bytes: Uint8Array, fileName: string): FileType {
   // Fallback to extension
   if (ext === 'pdf') return 'pdf';
   if (ext === 'docx' || ext === 'doc') return 'docx';
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext || '')) return 'image';
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext || '')) return 'image';
   
   return 'unknown';
 }
@@ -79,7 +80,6 @@ function getContentType(fileType: FileType, ext: string): string {
       if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
       if (ext === 'gif') return 'image/gif';
       if (ext === 'webp') return 'image/webp';
-      if (ext === 'svg') return 'image/svg+xml';
       return 'image/png';
     default: return 'application/octet-stream';
   }
