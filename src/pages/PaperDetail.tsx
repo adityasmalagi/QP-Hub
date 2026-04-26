@@ -97,6 +97,7 @@ export default function PaperDetail() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [paper, setPaper] = useState<Paper | null>(null);
+  const [signedFileUrls, setSignedFileUrls] = useState<string[]>([]);
   const [uploaderName, setUploaderName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -118,6 +119,18 @@ export default function PaperDetail() {
     if (error || !data?.signedUrl) throw error || new Error('Could not access file');
     return data.signedUrl;
   };
+
+  useEffect(() => {
+    if (!paper) {
+      setSignedFileUrls([]);
+      return;
+    }
+
+    const urls = [paper.file_url, ...(paper.additional_file_urls || [])];
+    Promise.all(urls.map(getSignedFileUrl))
+      .then(setSignedFileUrls)
+      .catch(() => setSignedFileUrls([]));
+  }, [paper]);
 
   useEffect(() => {
     if (!authLoading && !user) {
