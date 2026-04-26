@@ -87,7 +87,7 @@ export function useGroupChat(groupId: string | undefined) {
     // Subscribe to real-time messages
     if (groupId) {
       const channel = supabase
-        .channel(`group-chat-${groupId}`)
+        .channel(`group-chat-${groupId}`, { config: { private: true } })
         .on(
           'postgres_changes',
           {
