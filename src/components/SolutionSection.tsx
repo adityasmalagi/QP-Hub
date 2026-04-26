@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SolutionSectionProps {
   paperId: string;
@@ -39,6 +40,21 @@ export function SolutionSection({ paperId, className }: SolutionSectionProps) {
   const [description, setDescription] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const getSignedFileUrl = async (url: string) => {
+    const marker = '/question-papers/';
+    const markerIndex = url.indexOf(marker);
+    const path = markerIndex >= 0
+      ? decodeURIComponent(url.slice(markerIndex + marker.length).split('?')[0])
+      : url.split('?')[0];
+
+    const { data, error } = await supabase.storage
+      .from('question-papers')
+      .createSignedUrl(path, 60 * 10);
+
+    if (error || !data?.signedUrl) throw error || new Error('Could not access file');
+    return data.signedUrl;
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,7 +79,8 @@ export function SolutionSection({ paperId, className }: SolutionSectionProps) {
 
   const handleDownload = async (url: string, fileName: string) => {
     try {
-      const response = await fetch(url);
+      const signedUrl = await getSignedFileUrl(url);
+      const response = await fetch(signedUrl);
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -75,6 +92,14 @@ export function SolutionSection({ paperId, className }: SolutionSectionProps) {
       window.URL.revokeObjectURL(downloadUrl);
     } catch (error) {
       console.error('Download error:', error);
+    }
+  };
+
+  const handleOpenSolution = async (url: string) => {
+    try {
+      window.open(await getSignedFileUrl(url), '_blank');
+    } catch (error) {
+      console.error('Open solution error:', error);
     }
   };
 
