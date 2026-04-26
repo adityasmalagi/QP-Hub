@@ -83,7 +83,7 @@ export function PaperCard({
 
   const showNewAnimation = isNewPaper && !hasBeenClicked;
 
-  const handleCardClick = (e: React.MouseEvent) => {
+  const handleCardClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     if (isNewPaper) {
       markPaperAsClicked(id);
@@ -96,6 +96,12 @@ export function PaperCard({
     }
   };
 
+  const handleCardKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleCardClick(e);
+    }
+  };
+
   const handleUploaderClick = (e: React.MouseEvent) => {
     if (uploaderId) {
       e.preventDefault();
@@ -104,7 +110,7 @@ export function PaperCard({
     }
   };
   return (
-    <div onClick={handleCardClick} className="h-full cursor-pointer touch-manipulation">
+    <div className="h-full touch-manipulation">
       <Card className={`group relative h-full overflow-hidden transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border-border/50 bg-card ${showNewAnimation ? 'animate-pulse-subtle ring-2 ring-primary/20' : ''}`}>
         {showNewAnimation && (
           <div className="absolute -top-2 -right-2 z-10">
@@ -113,46 +119,57 @@ export function PaperCard({
             </Badge>
           </div>
         )}
-        <CardContent className="p-4 sm:p-5">
-          <div className="mb-3 flex items-start justify-between gap-2 sm:gap-3">
+        <CardContent className="relative p-4 sm:p-5">
+          <div className="absolute right-3 top-3 z-10 flex min-h-11 min-w-11 items-center justify-center sm:right-4 sm:top-4 sm:min-h-8 sm:min-w-8">
+            <BookmarkButton paperId={id} variant="icon" className="h-10 w-10 sm:h-8 sm:w-8" />
+          </div>
+          <div
+            role="button"
+            aria-label={`Open ${title}`}
+            tabIndex={0}
+            onClick={handleCardClick}
+            onKeyDown={handleCardKeyDown}
+            className="min-w-0 cursor-pointer rounded-md outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+          <div className="mb-3 flex items-start justify-between gap-2 pr-12 sm:gap-3 sm:pr-11">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary sm:h-10 sm:w-10">
               <FileText className="h-4.5 w-4.5 text-primary sm:h-5 sm:w-5" />
             </div>
             <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-              <Badge variant="secondary" className="max-w-[96px] truncate text-[11px] font-medium sm:max-w-[120px] sm:text-xs">
+              <Badge variant="secondary" className="max-w-[96px] min-w-0 truncate text-[11px] font-medium sm:max-w-[120px] sm:text-xs">
                 {board.toUpperCase()}
               </Badge>
-              <BookmarkButton paperId={id} variant="icon" />
             </div>
           </div>
           
-          <h3 className="mb-2 line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary sm:text-base sm:leading-6">
+          <h3 className="mb-2 line-clamp-2 min-h-[2.5rem] break-words text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary sm:text-base sm:leading-6">
             {title}
           </h3>
           
-          <div className="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
-            <Badge variant="outline" className="max-w-[9.5rem] truncate text-[11px] sm:text-xs">
+          <div className="mb-3 flex min-w-0 flex-wrap gap-1.5 sm:mb-4">
+            <Badge variant="outline" className="max-w-full min-w-0 truncate text-[11px] sm:max-w-[9.5rem] sm:text-xs">
               {subject}
             </Badge>
-            <Badge variant="outline" className="text-[11px] sm:text-xs">
+            <Badge variant="outline" className="max-w-[7rem] min-w-0 truncate text-[11px] sm:text-xs">
               Class {classLevel}
             </Badge>
-            <Badge variant="outline" className="text-[11px] sm:text-xs">
+            <Badge variant="outline" className="max-w-[4rem] min-w-0 truncate text-[11px] sm:text-xs">
               {year}
             </Badge>
             {examType === 'internals' && internalNumber && (
-              <Badge className="text-[11px] bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30 sm:text-xs">
+              <Badge className="max-w-[7.5rem] min-w-0 truncate text-[11px] bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30 sm:text-xs">
                 Internal {internalNumber}
               </Badge>
             )}
             {examType === 'sem_paper' && semester && (
-              <Badge className="text-[11px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 sm:text-xs">
+              <Badge className="max-w-[5rem] min-w-0 truncate text-[11px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 sm:text-xs">
                 Sem {semester}
               </Badge>
             )}
             <DifficultyBadge 
               difficulty={avgDifficulty as 'easy' | 'medium' | 'hard' | null} 
               ratingsCount={ratingsCount ?? 0}
+              className="max-w-[6rem] min-w-0 truncate text-[11px] sm:text-xs"
             />
           </div>
           
@@ -211,6 +228,7 @@ export function PaperCard({
                 <span className="truncate">{instituteName}</span>
               </div>
             )}
+          </div>
           </div>
         </CardContent>
       </Card>
