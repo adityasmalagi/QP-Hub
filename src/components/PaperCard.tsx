@@ -206,7 +206,7 @@ export function PaperCard({
               </TooltipProvider>
             )}
             {instituteName && (
-              <div className="flex items-center gap-1 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors group/inst">
+              <div className="flex min-h-8 min-w-0 items-center gap-1 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors group/inst sm:min-h-0">
                 <Building2 className="h-3.5 w-3.5 group-hover/inst:scale-110 transition-transform" />
                 <span className="truncate">{instituteName}</span>
               </div>
