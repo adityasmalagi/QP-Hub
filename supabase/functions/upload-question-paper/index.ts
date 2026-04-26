@@ -66,6 +66,14 @@ const FILE_TYPES = {
 };
 
 function detectFileType(bytes: Uint8Array, fileName: string, mimeType: string): { type: string; mimeType: string; extension: string } | null {
+  const normalizedName = fileName.toLowerCase();
+  const extension = normalizedName.includes('.') ? normalizedName.substring(normalizedName.lastIndexOf('.')) : '';
+  const allowedImageMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']);
+
+  if (mimeType === 'image/svg+xml' || extension === '.svg') {
+    return null;
+  }
+
   // Check PDF
   if (bytes.length >= 5) {
     const isPDF = FILE_TYPES.pdf.magicBytes.every((byte, i) => bytes[i] === byte);
@@ -109,13 +117,13 @@ function detectFileType(bytes: Uint8Array, fileName: string, mimeType: string): 
 
   // Check HEIC by MIME type or extension (complex magic bytes)
   if (mimeType === 'image/heic' || mimeType === 'image/heif' || 
-      fileName.toLowerCase().endsWith('.heic') || fileName.toLowerCase().endsWith('.heif')) {
+      normalizedName.endsWith('.heic') || normalizedName.endsWith('.heif')) {
     return { type: 'image', mimeType: 'image/heic', extension: '.heic' };
   }
 
-  // Fallback for images based on MIME type
-  if (mimeType.startsWith('image/')) {
-    const ext = fileName.substring(fileName.lastIndexOf('.')).toLowerCase() || '.jpg';
+  // Fallback only for explicitly safe image MIME types
+  if (allowedImageMimeTypes.has(mimeType)) {
+    const ext = extension || '.jpg';
     return { type: 'image', mimeType, extension: ext };
   }
 

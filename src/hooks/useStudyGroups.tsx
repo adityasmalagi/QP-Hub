@@ -372,7 +372,7 @@ export function useGroupDetails(groupId: string | undefined) {
     // Subscribe to member changes
     if (groupId) {
       const channel = supabase
-        .channel(`group-members-${groupId}`)
+        .channel(`group-members-${groupId}`, { config: { private: true } })
         .on(
           'postgres_changes',
           {

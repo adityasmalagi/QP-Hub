@@ -97,9 +97,40 @@ export default function PaperDetail() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [paper, setPaper] = useState<Paper | null>(null);
+  const [signedFileUrls, setSignedFileUrls] = useState<string[]>([]);
   const [uploaderName, setUploaderName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
+  const toStoragePath = (url: string) => {
+    const marker = '/question-papers/';
+    const markerIndex = url.indexOf(marker);
+    if (markerIndex >= 0) {
+      return decodeURIComponent(url.slice(markerIndex + marker.length).split('?')[0]);
+    }
+    return url.split('?')[0];
+  };
+
+  const getSignedFileUrl = async (url: string) => {
+    const { data, error } = await supabase.storage
+      .from('question-papers')
+      .createSignedUrl(toStoragePath(url), 60 * 10);
+
+    if (error || !data?.signedUrl) throw error || new Error('Could not access file');
+    return data.signedUrl;
+  };
+
+  useEffect(() => {
+    if (!paper) {
+      setSignedFileUrls([]);
+      return;
+    }
+
+    const urls = [paper.file_url, ...(paper.additional_file_urls || [])];
+    Promise.all(urls.map(getSignedFileUrl))
+      .then(setSignedFileUrls)
+      .catch(() => setSignedFileUrls([]));
+  }, [paper]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -160,8 +191,10 @@ export default function PaperDetail() {
 
   // Get all image URLs for gallery
   const galleryUrls = paper && fileType === 'gallery' 
-    ? [paper.file_url, ...(paper.additional_file_urls || [])]
+    ? signedFileUrls
     : [];
+
+  const primarySignedUrl = signedFileUrls[0] || '';
 
   const getDownloadButtonText = () => {
     if (downloading) return 'Downloading...';
@@ -192,7 +225,8 @@ export default function PaperDetail() {
       
       for (let i = 0; i < urlsToDownload.length; i++) {
         const url = urlsToDownload[i];
-        const response = await fetch(url);
+        const signedUrl = await getSignedFileUrl(url);
+        const response = await fetch(signedUrl);
         if (!response.ok) throw new Error('Failed to fetch file');
         
         const blob = await response.blob();
@@ -262,7 +296,8 @@ export default function PaperDetail() {
       // Fetch all images and add to zip
       for (let i = 0; i < urlsToDownload.length; i++) {
         const url = urlsToDownload[i];
-        const response = await fetch(url);
+        const signedUrl = await getSignedFileUrl(url);
+        const response = await fetch(signedUrl);
         if (!response.ok) throw new Error(`Failed to fetch page ${i + 1}`);
         
         const blob = await response.blob();
@@ -449,7 +484,13 @@ export default function PaperDetail() {
               {fileType !== 'docx' && (
                 <Button
                   variant="outline"
-                  onClick={() => window.open(paper.file_url, '_blank')}
+                  onClick={async () => {
+                    try {
+                      window.open(await getSignedFileUrl(paper.file_url), '_blank');
+                    } catch {
+                      toast({ title: 'Could not open file', description: 'Please try again.', variant: 'destructive' });
+                    }
+                  }}
                 >
                   <Eye className="mr-2 h-4 w-4" />
                   Open in New Tab
@@ -485,7 +526,13 @@ export default function PaperDetail() {
         </Card>
 
         {/* File Viewer - PDF, Image, Gallery, or Document */}
-        {fileType === 'gallery' ? (
+        {signedFileUrls.length === 0 ? (
+          <Card className="min-h-[400px]">
+            <CardContent className="flex min-h-[400px] items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </CardContent>
+          </Card>
+        ) : fileType === 'gallery' ? (
           <ImageGalleryViewer
             fileUrls={galleryUrls}
             title={paper.title}
@@ -493,13 +540,13 @@ export default function PaperDetail() {
           />
         ) : fileType === 'image' ? (
           <ImageViewer
-            fileUrl={paper.file_url}
+            fileUrl={primarySignedUrl}
             title={paper.title}
             className="min-h-[600px]"
           />
         ) : fileType === 'docx' ? (
           <DocViewer
-            fileUrl={paper.file_url}
+            fileUrl={primarySignedUrl}
             fileName={paper.file_name}
             title={paper.title}
             className="min-h-[400px]"
@@ -507,7 +554,7 @@ export default function PaperDetail() {
           />
         ) : (
           <PDFViewer
-            fileUrl={paper.file_url}
+            fileUrl={primarySignedUrl}
             title={paper.title}
             className="min-h-[600px]"
           />

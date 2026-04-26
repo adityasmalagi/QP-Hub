@@ -54,7 +54,7 @@ export function useNotifications() {
     if (!user) return;
 
     const channel = supabase
-      .channel('notifications-channel')
+      .channel(`notifications-${user.id}`, { config: { private: true } })
       .on(
         'postgres_changes',
         {
