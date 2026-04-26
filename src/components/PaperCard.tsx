@@ -157,18 +157,19 @@ export function PaperCard({
               {year}
             </Badge>
             {examType === 'internals' && internalNumber && (
-              <Badge className="text-[11px] bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30 sm:text-xs">
+              <Badge className="max-w-[7.5rem] min-w-0 truncate text-[11px] bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30 sm:text-xs">
                 Internal {internalNumber}
               </Badge>
             )}
             {examType === 'sem_paper' && semester && (
-              <Badge className="text-[11px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 sm:text-xs">
+              <Badge className="max-w-[5rem] min-w-0 truncate text-[11px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 sm:text-xs">
                 Sem {semester}
               </Badge>
             )}
             <DifficultyBadge 
               difficulty={avgDifficulty as 'easy' | 'medium' | 'hard' | null} 
               ratingsCount={ratingsCount ?? 0}
+              className="max-w-[6rem] min-w-0 truncate text-[11px] sm:text-xs"
             />
           </div>
           
