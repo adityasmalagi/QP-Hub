@@ -122,17 +122,18 @@ export function PaperCard({
         <CardContent className="p-4 sm:p-5">
           <div
             role="button"
+            aria-label={`Open ${title}`}
             tabIndex={0}
             onClick={handleCardClick}
             onKeyDown={handleCardKeyDown}
-            className="cursor-pointer rounded-md outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="min-w-0 cursor-pointer rounded-md outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
           <div className="mb-3 flex items-start justify-between gap-2 sm:gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary sm:h-10 sm:w-10">
               <FileText className="h-4.5 w-4.5 text-primary sm:h-5 sm:w-5" />
             </div>
             <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-              <Badge variant="secondary" className="max-w-[96px] truncate text-[11px] font-medium sm:max-w-[120px] sm:text-xs">
+              <Badge variant="secondary" className="max-w-[96px] min-w-0 truncate text-[11px] font-medium sm:max-w-[120px] sm:text-xs">
                 {board.toUpperCase()}
               </Badge>
               <div className="-mr-1 -mt-1 flex min-h-11 min-w-11 items-center justify-center sm:-mr-0 sm:-mt-0 sm:min-h-8 sm:min-w-8" onClick={(e) => e.stopPropagation()}>
@@ -141,18 +142,18 @@ export function PaperCard({
             </div>
           </div>
           
-          <h3 className="mb-2 line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary sm:text-base sm:leading-6">
+          <h3 className="mb-2 line-clamp-2 min-h-[2.5rem] break-words text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary sm:text-base sm:leading-6">
             {title}
           </h3>
           
-          <div className="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
-            <Badge variant="outline" className="max-w-[9.5rem] truncate text-[11px] sm:text-xs">
+          <div className="mb-3 flex min-w-0 flex-wrap gap-1.5 sm:mb-4">
+            <Badge variant="outline" className="max-w-full min-w-0 truncate text-[11px] sm:max-w-[9.5rem] sm:text-xs">
               {subject}
             </Badge>
-            <Badge variant="outline" className="text-[11px] sm:text-xs">
+            <Badge variant="outline" className="max-w-[7rem] min-w-0 truncate text-[11px] sm:text-xs">
               Class {classLevel}
             </Badge>
-            <Badge variant="outline" className="text-[11px] sm:text-xs">
+            <Badge variant="outline" className="max-w-[4rem] min-w-0 truncate text-[11px] sm:text-xs">
               {year}
             </Badge>
             {examType === 'internals' && internalNumber && (
