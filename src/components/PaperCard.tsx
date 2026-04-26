@@ -228,6 +228,7 @@ export function PaperCard({
               </div>
             )}
           </div>
+          </div>
         </CardContent>
       </Card>
     </div>
