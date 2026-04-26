@@ -101,6 +101,24 @@ export default function PaperDetail() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const toStoragePath = (url: string) => {
+    const marker = '/question-papers/';
+    const markerIndex = url.indexOf(marker);
+    if (markerIndex >= 0) {
+      return decodeURIComponent(url.slice(markerIndex + marker.length).split('?')[0]);
+    }
+    return url.split('?')[0];
+  };
+
+  const getSignedFileUrl = async (url: string) => {
+    const { data, error } = await supabase.storage
+      .from('question-papers')
+      .createSignedUrl(toStoragePath(url), 60 * 10);
+
+    if (error || !data?.signedUrl) throw error || new Error('Could not access file');
+    return data.signedUrl;
+  };
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate(`/auth?redirect=/paper/${id}`, { replace: true });
@@ -192,7 +210,8 @@ export default function PaperDetail() {
       
       for (let i = 0; i < urlsToDownload.length; i++) {
         const url = urlsToDownload[i];
-        const response = await fetch(url);
+        const signedUrl = await getSignedFileUrl(url);
+        const response = await fetch(signedUrl);
         if (!response.ok) throw new Error('Failed to fetch file');
         
         const blob = await response.blob();
@@ -262,7 +281,8 @@ export default function PaperDetail() {
       // Fetch all images and add to zip
       for (let i = 0; i < urlsToDownload.length; i++) {
         const url = urlsToDownload[i];
-        const response = await fetch(url);
+        const signedUrl = await getSignedFileUrl(url);
+        const response = await fetch(signedUrl);
         if (!response.ok) throw new Error(`Failed to fetch page ${i + 1}`);
         
         const blob = await response.blob();
