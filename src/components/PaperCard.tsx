@@ -104,8 +104,8 @@ export function PaperCard({
     }
   };
   return (
-    <div onClick={handleCardClick} className="cursor-pointer">
-      <Card className={`group relative h-full transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border-border/50 bg-card ${showNewAnimation ? 'animate-pulse-subtle ring-2 ring-primary/20' : ''}`}>
+    <div onClick={handleCardClick} className="h-full cursor-pointer touch-manipulation">
+      <Card className={`group relative h-full overflow-hidden transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border-border/50 bg-card ${showNewAnimation ? 'animate-pulse-subtle ring-2 ring-primary/20' : ''}`}>
         {showNewAnimation && (
           <div className="absolute -top-2 -right-2 z-10">
             <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 animate-pulse">
@@ -113,40 +113,40 @@ export function PaperCard({
             </Badge>
           </div>
         )}
-        <CardContent className="p-5">
-          <div className="mb-3 flex items-start justify-between gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
-              <FileText className="h-5 w-5 text-primary" />
+        <CardContent className="p-4 sm:p-5">
+          <div className="mb-3 flex items-start justify-between gap-2 sm:gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary sm:h-10 sm:w-10">
+              <FileText className="h-4.5 w-4.5 text-primary sm:h-5 sm:w-5" />
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-xs font-medium max-w-[120px] truncate">
+            <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+              <Badge variant="secondary" className="max-w-[96px] truncate text-[11px] font-medium sm:max-w-[120px] sm:text-xs">
                 {board.toUpperCase()}
               </Badge>
               <BookmarkButton paperId={id} variant="icon" />
             </div>
           </div>
           
-          <h3 className="mb-2 line-clamp-2 text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+          <h3 className="mb-2 line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary sm:text-base sm:leading-6">
             {title}
           </h3>
           
-          <div className="mb-4 flex flex-wrap gap-1.5">
-            <Badge variant="outline" className="text-xs">
+          <div className="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
+            <Badge variant="outline" className="max-w-[9.5rem] truncate text-[11px] sm:text-xs">
               {subject}
             </Badge>
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-[11px] sm:text-xs">
               Class {classLevel}
             </Badge>
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-[11px] sm:text-xs">
               {year}
             </Badge>
             {examType === 'internals' && internalNumber && (
-              <Badge className="text-xs bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30">
+              <Badge className="text-[11px] bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30 hover:bg-orange-500/30 sm:text-xs">
                 Internal {internalNumber}
               </Badge>
             )}
             {examType === 'sem_paper' && semester && (
-              <Badge className="text-xs bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30">
+              <Badge className="text-[11px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 sm:text-xs">
                 Sem {semester}
               </Badge>
             )}
@@ -157,12 +157,12 @@ export function PaperCard({
           </div>
           
           <div className="flex flex-col gap-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-default group/stat">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="flex min-h-8 items-center gap-1 pr-2 hover:text-foreground transition-colors cursor-default group/stat sm:min-h-0 sm:pr-0">
                 <Eye className="h-3.5 w-3.5 group-hover/stat:scale-110 transition-transform" />
                 {viewsCount}
               </span>
-              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-default group/stat">
+              <span className="flex min-h-8 items-center gap-1 pr-2 hover:text-foreground transition-colors cursor-default group/stat sm:min-h-0 sm:pr-0">
                 <Download className="h-3.5 w-3.5 group-hover/stat:scale-110 transition-transform" />
                 {downloadsCount}
               </span>
@@ -172,7 +172,7 @@ export function PaperCard({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div 
-                      className={`flex items-center gap-1.5 group/uploader ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : 'hover:text-foreground transition-colors'}`}
+                      className={`flex min-h-8 min-w-0 items-center gap-1.5 group/uploader sm:min-h-0 ${uploaderId ? 'cursor-pointer hover:text-primary transition-colors' : 'hover:text-foreground transition-colors'}`}
                       onClick={uploaderId ? handleUploaderClick : undefined}
                     >
                       <Avatar className="h-4 w-4 ring-1 ring-border shrink-0">
@@ -206,7 +206,7 @@ export function PaperCard({
               </TooltipProvider>
             )}
             {instituteName && (
-              <div className="flex items-center gap-1 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors group/inst">
+              <div className="flex min-h-8 min-w-0 items-center gap-1 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors group/inst sm:min-h-0">
                 <Building2 className="h-3.5 w-3.5 group-hover/inst:scale-110 transition-transform" />
                 <span className="truncate">{instituteName}</span>
               </div>
