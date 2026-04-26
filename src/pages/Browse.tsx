@@ -370,14 +370,14 @@ export default function Browse() {
             <p className="mb-4 text-sm text-muted-foreground">
               Total {totalCount} paper{totalCount !== 1 ? 's' : ''}
             </p>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
               {papers.map((paper, index) => (
                 <ScrollAnimation
                   key={paper.id}
                   animation="scale-in"
                   delay={Math.min(index * 70, 420)}
                   duration={450}
-                  className="hover-lift"
+                  className="h-full hover-lift"
                 >
                   <PaperCard
                     id={paper.id}
