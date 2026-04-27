@@ -119,7 +119,7 @@ export function PaperCard({
             </Badge>
           </div>
         )}
-        <CardContent className="relative p-3.5 sm:p-5">
+        <CardContent className="relative p-3 sm:p-5">
           <div className="absolute right-3 top-3 z-10 flex min-h-11 min-w-11 items-center justify-center sm:right-4 sm:top-4 sm:min-h-8 sm:min-w-8">
             <BookmarkButton paperId={id} variant="icon" className="h-10 w-10 sm:h-8 sm:w-8" />
           </div>
@@ -131,7 +131,7 @@ export function PaperCard({
             onKeyDown={handleCardKeyDown}
             className="min-w-0 cursor-pointer rounded-md outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-          <div className="mb-2 flex items-start justify-between gap-2 pr-12 sm:mb-3 sm:gap-3 sm:pr-11">
+          <div className="mb-1.5 flex items-start justify-between gap-1.5 pr-12 sm:mb-3 sm:gap-3 sm:pr-11">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary sm:h-10 sm:w-10">
               <FileText className="h-4.5 w-4.5 text-primary sm:h-5 sm:w-5" />
             </div>
@@ -142,11 +142,11 @@ export function PaperCard({
             </div>
           </div>
           
-          <h3 className="mb-1.5 line-clamp-2 min-h-[2.25rem] break-words text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary sm:mb-2 sm:min-h-[2.5rem] sm:text-base sm:leading-6">
+          <h3 className="mb-1 line-clamp-2 min-h-[2.15rem] break-words text-sm font-semibold leading-[1.15rem] text-foreground transition-colors group-hover:text-primary sm:mb-2 sm:min-h-[2.5rem] sm:text-base sm:leading-6">
             {title}
           </h3>
           
-          <div className="mb-2 flex min-w-0 flex-wrap gap-1 sm:mb-4 sm:gap-1.5">
+          <div className="mb-1.5 flex min-w-0 flex-wrap gap-1 sm:mb-4 sm:gap-1.5">
             <Badge variant="outline" className="max-w-full min-w-0 truncate text-[11px] sm:max-w-[9.5rem] sm:text-xs">
               {subject}
             </Badge>
@@ -173,8 +173,8 @@ export function PaperCard({
             />
           </div>
           
-          <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:gap-2">
-            <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-col gap-0.5 text-xs text-muted-foreground sm:gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-3">
               <span className="flex min-h-6 items-center gap-1 pr-2 hover:text-foreground transition-colors cursor-default group/stat sm:min-h-0 sm:pr-0">
                 <Eye className="h-3.5 w-3.5 group-hover/stat:scale-110 transition-transform" />
                 {viewsCount}
