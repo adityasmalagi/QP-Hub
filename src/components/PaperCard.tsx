@@ -131,12 +131,12 @@ export function PaperCard({
             onKeyDown={handleCardKeyDown}
             className="min-w-0 cursor-pointer rounded-md outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-          <div className="mb-1.5 flex items-start justify-between gap-1.5 pr-12 sm:mb-2 sm:gap-2 sm:pr-11">
+          <div className="mb-1.5 flex min-h-11 items-center justify-between gap-1.5 pr-12 sm:mb-2 sm:min-h-10 sm:gap-2 sm:pr-11">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary sm:h-10 sm:w-10">
               <FileText className="h-4.5 w-4.5 text-primary sm:h-5 sm:w-5" />
             </div>
-            <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-              <Badge variant="secondary" className="max-w-[96px] min-w-0 truncate text-[11px] font-medium sm:max-w-[120px] sm:text-xs">
+            <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5 sm:gap-2">
+              <Badge variant="secondary" className="max-w-[112px] min-w-0 truncate text-[11px] font-medium sm:max-w-[136px] sm:text-xs">
                 {board.toUpperCase()}
               </Badge>
             </div>
