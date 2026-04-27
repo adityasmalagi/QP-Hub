@@ -111,10 +111,10 @@ export function PaperCard({
   };
   return (
     <div className="h-full touch-manipulation">
-      <Card className={`group relative h-full overflow-hidden transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border-border/50 bg-card ${showNewAnimation ? 'animate-pulse-subtle ring-2 ring-primary/20' : ''}`}>
+      <Card className={`group relative h-full overflow-visible transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border-border/50 bg-card ${showNewAnimation ? 'animate-pulse-subtle ring-2 ring-primary/20' : ''}`}>
         {showNewAnimation && (
-          <div className="absolute -top-2 -right-2 z-10">
-            <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 animate-pulse">
+          <div className="absolute -top-1.5 -right-1.5 z-20">
+            <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 shadow-md animate-pulse">
               NEW
             </Badge>
           </div>
@@ -142,7 +142,7 @@ export function PaperCard({
             </div>
           </div>
           
-          <h3 className="mb-1 line-clamp-2 min-h-[2.15rem] break-words text-sm font-semibold leading-[1.15rem] text-foreground transition-colors group-hover:text-primary sm:mb-1.5 sm:min-h-[2.35rem] sm:text-base sm:leading-[1.18rem]">
+          <h3 className="mb-1 line-clamp-2 min-h-[2.3rem] break-words text-[15px] font-semibold leading-[1.2rem] text-foreground transition-colors group-hover:text-primary sm:mb-1.5 sm:min-h-[2.55rem] sm:text-[17px] sm:leading-[1.3rem]">
             {title}
           </h3>
           
