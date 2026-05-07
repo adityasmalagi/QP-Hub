@@ -136,7 +136,7 @@ export function PaperCard({
               <FileText className="h-4.5 w-4.5 text-primary sm:h-5 sm:w-5" />
             </div>
             <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5 sm:gap-2">
-              <Badge variant="secondary" className="min-w-0 max-w-full whitespace-nowrap truncate text-[11px] font-medium sm:text-xs">
+              <Badge variant="secondary" className="max-w-[112px] min-w-0 truncate text-[11px] font-medium sm:max-w-[136px] sm:text-xs">
                 {board.toUpperCase()}
               </Badge>
             </div>
