@@ -195,9 +195,14 @@ export default function Browse() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO
+        title="Browse Question Papers — QP Hub"
+        description="Search and filter past question papers by board, class, subject and year. Free downloads on QP Hub."
+        path="/browse"
+      />
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8 flex-1 animate-fade-in">
+      <main className="container mx-auto px-4 py-8 flex-1 animate-fade-in">
         {/* Header */}
         <div className="mb-8">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
