@@ -613,7 +613,7 @@ export default function PaperDetail() {
           paperOwnerId={paper.user_id}
           className="mt-8"
         />
-      </div>
+      </main>
     </div>
   );
 }
