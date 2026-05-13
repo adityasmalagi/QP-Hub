@@ -387,11 +387,29 @@ export default function PaperDetail() {
     );
   }
 
+  const seoDescription = (paper.description?.slice(0, 155)) ||
+    `${paper.subject} question paper for ${paper.board.toUpperCase()} ${paper.class_level} (${paper.year}). Download free on QP Hub.`;
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO
+        title={`${paper.title} — QP Hub`}
+        description={seoDescription}
+        path={`/paper/${paper.id}`}
+        type="article"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: paper.title,
+          description: seoDescription,
+          datePublished: paper.created_at,
+          author: uploaderName ? { '@type': 'Person', name: uploaderName } : undefined,
+          about: paper.subject,
+        }}
+      />
       <Navbar />
       
-      <div className="container mx-auto max-w-4xl px-4 py-8 pb-12 flex-1 animate-fade-in">
+      <main className="container mx-auto max-w-4xl px-4 py-8 pb-12 flex-1 animate-fade-in">
         {/* Back Button */}
         <Link
           to="/browse"
