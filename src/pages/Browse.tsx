@@ -13,6 +13,7 @@ import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_
 import { Search, Filter, X, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { sanitizeSearchInput, browseFiltersSchema } from '@/lib/validation';
+import { SEO } from '@/components/SEO';
 
 interface QuestionPaper {
   id: string;
