@@ -522,6 +522,7 @@ export default function Index() {
           </p>
         </div>
       </footer>
+      </main>
     </div>
   );
 }
