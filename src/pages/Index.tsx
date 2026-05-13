@@ -13,6 +13,7 @@ import { ScrollAnimation, useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import { TrendingSection } from '@/components/TrendingSection';
+import { SEO } from '@/components/SEO';
 import qphubLogo from '@/assets/qphub-logo.png';
 const uploadSteps = [
   { step: 1, title: 'Select Your Paper', description: 'Choose subject, board, year' },
