@@ -411,7 +411,7 @@ export default function Browse() {
             </div>
           </>
         )}
-      </div>
+      </main>
     </div>
   );
 }
