@@ -13,6 +13,7 @@ import { ScrollAnimation, useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import { TrendingSection } from '@/components/TrendingSection';
+import { SEO } from '@/components/SEO';
 import qphubLogo from '@/assets/qphub-logo.png';
 const uploadSteps = [
   { step: 1, title: 'Select Your Paper', description: 'Choose subject, board, year' },
@@ -170,7 +171,19 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="QP Hub — Access and Share Question Papers"
+        description="Discover, upload and download past question papers across boards, classes and subjects. Built for students and educators."
+        path="/"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'QP Hub',
+          url: 'https://qphub.lovable.app/',
+        }}
+      />
       <Navbar />
+      <main>
       
       {/* Hero Section with Parallax */}
       <section className="relative overflow-hidden">
@@ -496,6 +509,7 @@ export default function Index() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-8">

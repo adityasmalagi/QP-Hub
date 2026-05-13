@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/hooks/useAuth";
 import { AccessibilityProvider } from "@/hooks/useAccessibility";
@@ -29,6 +30,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["light", "dark", "system"]} storageKey="qpaperhub-theme">
       <AccessibilityProvider>
         <AuthProvider>
@@ -61,6 +63,7 @@ const App = () => (
         </AuthProvider>
       </AccessibilityProvider>
     </ThemeProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 
