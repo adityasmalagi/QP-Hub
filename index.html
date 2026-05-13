@@ -3,24 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>QP Hub</title>
+    <title>QP Hub — Access and Share Question Papers</title>
     <meta
       name="description"
-      content="Upload, manage and Get question papers effortlessly with QP Hub. Built for students and educators."
+      content="QP Hub helps students and educators upload, browse and download past question papers across boards, classes and subjects — all in one place."
     />
     <meta name="author" content="Aditya Malagi" />
 
-    <!-- TODO: Update og:title to match your application name -->
-
     <meta property="og:type" content="website" />
+    <meta property="og:title" content="QP Hub — Access and Share Question Papers" />
+    <meta property="og:description" content="Upload, browse and download past question papers across boards, classes and subjects." />
+    <meta property="og:url" content="https://qphub.lovable.app/" />
     <meta
       property="og:image"
       content="https://image2url.com/r2/bucket1/images/1766556033946-b95cbc0e-094e-4a1e-8f64-bbc2733059de.png"
     />
 
-    <meta name="twitter:card" content="QP Hub - For Question Papers" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Lovable" />
+    <meta name="twitter:title" content="QP Hub — Access and Share Question Papers" />
+    <meta name="twitter:description" content="Upload, browse and download past question papers across boards, classes and subjects." />
     <meta
       name="twitter:image"
       content="https://image2url.com/r2/bucket1/images/1766556033946-b95cbc0e-094e-4a1e-8f64-bbc2733059de.png"
@@ -29,16 +31,29 @@
 
     <link rel="icon" href="/qphub-logo.png" type="image/png" />
 
-    <meta property="og:title" content="QP Hub" />
-    <meta name="twitter:title" content="QP Hub" />
-    <meta
-      property="og:description"
-      content="Upload, manage and Get question papers effortlessly with QP Hub. Built for students and educators."
-    />
-    <meta
-      name="twitter:description"
-      content="Upload, manage and Get question papers effortlessly with QP Hub. Built for students and educators."
-    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "QP Hub",
+        "url": "https://qphub.lovable.app/",
+        "description": "Upload, browse and download past question papers across boards, classes and subjects.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://qphub.lovable.app/browse?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "QP Hub",
+        "url": "https://qphub.lovable.app/",
+        "logo": "https://qphub.lovable.app/qphub-logo.png"
+      }
+    </script>
   </head>
 
   <body>
