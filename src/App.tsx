@@ -63,6 +63,7 @@ const App = () => (
         </AuthProvider>
       </AccessibilityProvider>
     </ThemeProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 
