@@ -509,6 +509,7 @@ export default function Index() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-8">
@@ -522,7 +523,6 @@ export default function Index() {
           </p>
         </div>
       </footer>
-      </main>
     </div>
   );
 }
