@@ -25,6 +25,7 @@ import { SocialShareButtons } from '@/components/SocialShareButtons';
 import { SimilarPapers } from '@/components/SimilarPapers';
 import { PaperVoting } from '@/components/PaperVoting';
 import { ReportModal } from '@/components/ReportModal';
+import { SEO } from '@/components/SEO';
 type FileViewType = 'pdf' | 'image' | 'gallery' | 'docx' | 'unknown';
 
 // Helper to detect file type from URL or filename
