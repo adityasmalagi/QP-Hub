@@ -171,7 +171,19 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="QP Hub — Access and Share Question Papers"
+        description="Discover, upload and download past question papers across boards, classes and subjects. Built for students and educators."
+        path="/"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'QP Hub',
+          url: 'https://qphub.lovable.app/',
+        }}
+      />
       <Navbar />
+      <main>
       
       {/* Hero Section with Parallax */}
       <section className="relative overflow-hidden">
