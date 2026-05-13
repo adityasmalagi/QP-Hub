@@ -1,0 +1,17 @@
+# QP Hub
+
+> QP Hub is an educational platform for students and educators to upload, browse and download past question papers across boards, classes and subjects.
+
+## Pages
+
+- [Home](/): Overview of QP Hub with personalized recommendations and trending papers.
+- [Browse](/browse): Search and filter past question papers by board, class, subject, year and exam type.
+- [Upload](/upload): Contribute question papers to the community.
+- [Requests](/requests): Browse and create requests for question papers and answer keys.
+- [Calendar](/calendar): Upcoming exam events and personal study calendar.
+- [Study Groups](/groups): Real-time chat groups with shared paper collections.
+- [Study Plan](/study-plan): Generate a personalized study schedule.
+
+## Optional
+
+- [Sign in](/auth): Account creation and login.
