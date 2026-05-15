@@ -1,32 +1,22 @@
-## Plan: Add polished animations to the homepage
+## Why Google is showing wrong branding
 
-### What will change
-- Add more motion to the home page without changing the layout or breaking existing functionality.
-- Keep animations lightweight and consistent with the current purple/lavender design.
-- Make the page feel more interactive on first load, scroll, and hover.
+Three issues are making Google show stale/wrong branding for `qphub.lovable.app` instead of QP Hub:
 
-### Homepage animation updates
-1. **Hero section**
-   - Add floating decorative orbs/blur shapes in the background.
-   - Add a gentle floating animation to the logo/hero badge area.
-   - Add subtle hover lift/scale to the main Browse Papers and Upload Paper buttons.
+1. **`public/favicon.ico` still exists** — browsers and Google request `/favicon.ico` by default and it overrides the `<link rel="icon" href="/qphub-logo.png">` declared in `index.html`. This is almost certainly the "Lovable logo" you see in the result.
+2. **`og:image` points to an external `image2url.com` URL** — Google and social crawlers prefer images hosted on the same domain. We have `public/qphub-logo.png` already, so we should serve the OG image from `https://qphub.lovable.app/qphub-logo.png`.
+3. **Duplicate `google-site-verification` meta tag** in `index.html` — there are two of them; the second one (`dlZt-...`) is stale and should be removed.
 
-2. **Paper cards and section cards**
-   - Add staggered fade/scale entry animations where cards appear.
-   - Add smoother hover effects for cards: slight lift, glow, and scale.
-   - Keep existing click behavior intact, including redirecting logged-out users to login.
+(Note: "Vercel" isn't actually appearing anywhere in the site — `vercel.json` is just an SPA rewrite config, it doesn't affect what Google shows. If you're literally seeing the word "Vercel" in the result, please share a screenshot — it may be cached from a previous deploy.)
 
-3. **How to Find Papers / Upload sections**
-   - Animate step cards as they enter the viewport.
-   - Add small icon/number hover motion to make each step feel clickable and lively.
+## Changes
 
-4. **Global animation utilities**
-   - Reuse existing Tailwind animations where possible.
-   - Add only a few reusable utilities if needed, such as slow float, shimmer, and hover-lift.
-   - Respect the existing theme tokens and avoid hardcoded component colors.
+1. **Delete `public/favicon.ico`** so the QP Hub logo declared in `index.html` takes over as the favicon.
+2. **Edit `index.html`**:
+   - Replace `og:image` and `twitter:image` URLs with `https://qphub.lovable.app/qphub-logo.png`.
+   - Remove the duplicate `<meta name="google-site-verification" content="dlZt-...">` line, keeping only the active one.
+3. **Publish** the site so the new meta + favicon go live, then **request re-indexing** in Google Search Console (I can trigger a sitemap resubmit once it's published) so Google refreshes the cached snippet faster (typically a few days).
 
-### Technical details
-- Update `src/pages/Index.tsx` for homepage animation classes and section wrappers.
-- Update `src/index.css` and/or `tailwind.config.ts` only if additional reusable animations are needed.
-- No backend or database changes are required.
-- Run a production build after changes to confirm everything compiles.
+## Notes
+
+- The `<title>` and `<meta name="description">` are already correct ("QP Hub — Access and Share Question Papers"), so the text branding will update on the next Google re-crawl.
+- Google can take days to weeks to refresh cached results; the favicon and OG image fixes are what will make the next crawl show correct branding.
