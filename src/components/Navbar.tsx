@@ -235,7 +235,7 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72">
+            <SheetContent side="right" className="w-72 border-white/20 bg-white/10 backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-white/5">
               <div className="flex flex-col gap-4 pt-6">
                 <div className="flex items-center gap-2 pb-4 border-b border-border">
                   <img src={qphubLogo} alt="QP Hub" className="h-9 w-9 rounded-lg object-contain" />
