@@ -106,8 +106,8 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-sm">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <nav className="sticky top-4 z-50 w-full bg-transparent">
+      <div className="container mx-auto flex h-14 items-center justify-between gap-3 rounded-full border border-border/40 bg-card/60 px-4 shadow-lg backdrop-blur-xl supports-[backdrop-filter]:bg-card/40">
         <Link to="/" className="flex items-center gap-2">
           <img src={qphubLogo} alt="QP Hub" className="h-9 w-9 rounded-lg object-contain" />
           <span className="text-xl font-bold text-foreground">QP Hub</span>
