@@ -57,46 +57,35 @@ export function Navbar() {
 
   const NavLinks = ({ mobile = false, onClose }: { mobile?: boolean; onClose?: () => void }) => (
     <>
-      <Link
-        to="/"
-        onClick={onClose}
-        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
-      >
-        Home
-      </Link>
-      <Link
-        to={user ? "/browse" : "/auth?redirect=/browse"}
-        onClick={onClose}
-        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
-      >
-        Browse Papers
-      </Link>
-      <Link
-        to={user ? "/groups" : "/auth?redirect=/groups"}
-        onClick={onClose}
-        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
-      >
-        Study Groups
-      </Link>
-      <Link
-        to={user ? "/requests" : "/auth?redirect=/requests"}
-        onClick={onClose}
-        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
-      >
-        Requests
-      </Link>
-      <Link
-        to={user ? "/study-plan" : "/auth?redirect=/study-plan"}
-        onClick={onClose}
-        className={`text-sm font-medium text-muted-foreground transition-colors hover:text-foreground ${mobile ? "block py-2" : ""}`}
-      >
-        Study Plan
-      </Link>
+      {[
+        { to: "/", label: "Home", gated: false },
+        { to: "/browse", label: "Browse Papers", gated: true },
+        { to: "/groups", label: "Study Groups", gated: true },
+        { to: "/requests", label: "Requests", gated: true },
+        { to: "/study-plan", label: "Study Plan", gated: true },
+      ].map(({ to, label, gated }) => (
+        <Link
+          key={to}
+          to={gated && !user ? `/auth?redirect=${to}` : to}
+          onClick={onClose}
+          className={
+            mobile
+              ? "block rounded-lg px-3 py-2 text-sm font-semibold text-foreground/90 transition-colors hover:bg-foreground/10 hover:text-foreground"
+              : "text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]"
+          }
+        >
+          {label}
+        </Link>
+      ))}
       {isAdmin && (
         <Link
           to="/admin"
           onClick={onClose}
-          className={`flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80 ${mobile ? "py-2" : ""}`}
+          className={
+            mobile
+              ? "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+              : "flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+          }
         >
           <Shield className="h-4 w-4" />
           Admin
