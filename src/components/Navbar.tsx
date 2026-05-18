@@ -103,7 +103,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-6 lg:flex">
           <NavLinks />
         </div>
 
@@ -134,13 +134,13 @@ export function Navbar() {
           {user ? (
             <>
               <NotificationsDropdown />
-              <Link to="/profile?tab=downloads" className="hidden md:block">
+              <Link to="/profile?tab=downloads" className="hidden lg:block">
                 <Button variant="outline" size="sm">
                   <Download className="mr-2 h-4 w-4" />
                   My Downloads
                 </Button>
               </Link>
-              <Link to="/upload" className="hidden md:block">
+              <Link to="/upload" className="hidden lg:block">
                 <Button variant="outline" size="sm">
                   <Upload className="mr-2 h-4 w-4" />
                   Upload
@@ -150,7 +150,7 @@ export function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
-                    <span className="hidden md:inline">Account</span>
+                    <span className="hidden lg:inline">Account</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
@@ -204,12 +204,12 @@ export function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/auth" className="hidden md:block">
+              <Link to="/auth" className="hidden lg:block">
                 <Button variant="ghost" size="sm">
                   Sign In
                 </Button>
               </Link>
-              <Link to="/auth?mode=signup" className="hidden md:block">
+              <Link to="/auth?mode=signup" className="hidden lg:block">
                 <Button size="sm" className="gradient-primary">
                   Get Started
                 </Button>
@@ -220,7 +220,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon" className="lg:hidden">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
