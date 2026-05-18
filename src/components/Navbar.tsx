@@ -96,7 +96,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-3 z-50 w-full bg-transparent px-3 md:top-4 md:px-0">
-      <div className="container mx-auto flex h-14 items-center justify-between gap-2 rounded-full border border-white/20 bg-white/10 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:gap-3 md:px-5">
+      <div className="container mx-auto flex h-14 items-center justify-between gap-2 rounded-full border border-white/20 bg-white/10 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:gap-3 md:px-5 lg:max-w-5xl">
         <Link to="/" className="flex items-center gap-2">
           <img src={qphubLogo} alt="QP Hub" className="h-9 w-9 rounded-lg object-contain" />
           <span className="text-xl font-bold text-foreground">QP Hub</span>
