@@ -96,19 +96,25 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-3 z-50 w-full bg-transparent px-3 md:top-4 md:px-0">
-      <div className="container mx-auto flex h-14 flex-nowrap items-center justify-between gap-2 whitespace-nowrap rounded-full border border-white/20 bg-white/10 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:gap-3 md:px-5 lg:max-w-6xl">
-        <Link to="/" className="flex items-center gap-2">
+      <div className="container mx-auto flex items-center gap-3 lg:max-w-6xl">
+        {/* Logo pill - separated from nav */}
+        <Link
+          to="/"
+          className="flex h-14 flex-shrink-0 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5"
+        >
           <img src={qphubLogo} alt="QP Hub" className="h-9 w-9 rounded-lg object-contain" />
           <span className="text-xl font-bold text-foreground">QP Hub</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
-          <NavLinks />
-        </div>
+        {/* Main nav pill */}
+        <div className="flex h-14 flex-1 flex-nowrap items-center justify-between gap-2 whitespace-nowrap rounded-full border border-white/20 bg-white/10 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:gap-3 md:px-5">
+          {/* Desktop Navigation */}
+          <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
+            <NavLinks />
+          </div>
 
-        <div className="flex items-center gap-3">
-          {/* Theme Toggle Button */}
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle Button */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -318,6 +324,7 @@ export function Navbar() {
               </div>
             </SheetContent>
           </Sheet>
+        </div>
         </div>
       </div>
     </nav>
