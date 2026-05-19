@@ -95,19 +95,19 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky top-3 z-50 w-full bg-transparent px-3 md:top-4 md:px-0">
-      <div className="container mx-auto flex items-center gap-3 lg:max-w-6xl">
+    <nav className="sticky top-3 z-50 w-full bg-transparent px-2 md:top-4 md:px-0">
+      <div className="container mx-auto flex items-center gap-2 px-0 md:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
           to="/"
-          className="flex h-14 flex-shrink-0 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:px-4"
+          className="flex h-14 flex-shrink-0 items-center gap-2 rounded-full border border-white/20 bg-white/10 pl-2 pr-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:pl-3 md:pr-4"
         >
           <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain md:h-9 md:w-9" />
           <span className="text-base font-bold text-foreground md:text-xl">QP Hub</span>
         </Link>
 
         {/* Main nav pill */}
-        <div className="flex h-14 flex-1 flex-nowrap items-center justify-end gap-2 whitespace-nowrap rounded-full border border-white/20 bg-white/10 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:gap-3 md:px-5 lg:justify-between">
+        <div className="flex h-14 flex-1 flex-nowrap items-center justify-end gap-1 whitespace-nowrap rounded-full border border-white/20 bg-white/10 px-2 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:gap-3 md:px-5 lg:justify-between">
           {/* Desktop Navigation */}
           <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
             <NavLinks />
