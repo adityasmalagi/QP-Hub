@@ -95,7 +95,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky top-3 z-50 w-full bg-transparent px-2 md:top-4 md:px-0">
+    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/60 px-2 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.08)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-background/40 dark:border-white/5 dark:bg-background/50 md:px-4 md:py-3">
       <div className="container mx-auto flex items-center gap-2 px-0 md:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
