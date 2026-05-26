@@ -1,67 +1,59 @@
-# Welcome to your Lovable project
+# QPaperHub
 
-## Project info
+A question paper hub web application built with React, TypeScript, and Tailwind CSS.
 
-**URL**: https://qpaperhub.vercel.app
+🔗 **Live Site:** [qpaperhub.vercel.app](https://qpaperhub.vercel.app)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use your preferred IDE**
+- [Vite](https://vitejs.dev/)
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Getting Started
 
-Follow these steps:
+Make sure you have [Node.js & npm](https://github.com/nvm-sh/nvm#installing-and-updating) installed, then:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate into the project
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Other Ways to Edit
 
-**Use GitHub Codespaces**
+**GitHub** — Navigate to any file, click the pencil icon, make your changes, and commit.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**GitHub Codespaces** — Open the repo, click **Code → Codespaces → New codespace**, and edit directly in the browser.
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+This project is deployed on [Vercel](https://vercel.com). Any push to the main branch triggers a new deployment automatically.
 
-## How can I deploy this project?
+To deploy via Lovable, open the project and go to **Share → Publish**.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## Custom Domain
 
-Yes, you can!
+To connect a custom domain, go to **Project → Settings → Domains → Connect Domain**.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+More info: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
