@@ -75,6 +75,7 @@ export default function GroupDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
+      <div className="h-16 sm:h-20" aria-hidden="true" />
         <div className="flex items-center justify-center py-32">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -86,6 +87,7 @@ export default function GroupDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
+      <div className="h-16 sm:h-20" aria-hidden="true" />
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Group not found</h1>
           <p className="text-muted-foreground mb-4">
@@ -105,6 +107,7 @@ export default function GroupDetail() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <div className="h-16 sm:h-20" aria-hidden="true" />
 
       <main className="container mx-auto px-4 py-8">
         <Link

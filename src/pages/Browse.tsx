@@ -201,6 +201,7 @@ export default function Browse() {
         path="/browse"
       />
       <Navbar />
+      <div className="h-16 sm:h-20" aria-hidden="true" />
       
       <main className="container mx-auto px-4 py-8 flex-1 animate-fade-in">
         {/* Header */}

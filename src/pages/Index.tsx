@@ -183,6 +183,7 @@ export default function Index() {
         }}
       />
       <Navbar />
+      <div className="h-16 sm:h-20" aria-hidden="true" />
       <main>
       
       {/* Hero Section with Parallax */}
