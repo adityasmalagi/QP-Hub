@@ -95,19 +95,20 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-transparent px-2 py-2 md:px-4 md:py-3">
-      <div className="container mx-auto flex items-center gap-2 px-0 md:gap-3 lg:max-w-6xl">
+    <nav className="sticky top-0 z-50 w-full bg-gradient-to-b from-background/70 via-background/40 to-background/10 px-3 py-2.5 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.18)] [backdrop-filter:blur(28px)_saturate(180%)] supports-[backdrop-filter]:from-background/50 supports-[backdrop-filter]:via-background/25 supports-[backdrop-filter]:to-background/5 md:px-6 md:py-3">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent dark:via-white/10" />
+      <div className="container relative mx-auto flex items-center gap-2 px-0 sm:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
           to="/"
-          className="flex h-14 flex-shrink-0 items-center gap-2 rounded-full border border-white/20 bg-white/10 pl-2 pr-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:pl-3 md:pr-4"
+          className="flex h-12 flex-shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/15 pl-2 pr-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)] transition-all hover:bg-white/20 [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:h-14 md:pl-3 md:pr-4"
         >
-          <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain md:h-9 md:w-9" />
-          <span className="text-base font-bold text-foreground md:text-xl">QP Hub</span>
+          <img src={qphubLogo} alt="QP Hub" className="h-7 w-7 rounded-lg object-contain sm:h-8 sm:w-8 md:h-9 md:w-9" />
+          <span className="text-sm font-bold text-foreground sm:text-base md:text-xl">QP Hub</span>
         </Link>
 
         {/* Main nav pill */}
-        <div className="flex h-14 flex-1 flex-nowrap items-center justify-end gap-1 whitespace-nowrap rounded-full border border-white/20 bg-white/10 px-2 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 md:gap-3 md:px-5 lg:justify-between">
+        <div className="flex h-12 flex-1 min-w-0 flex-nowrap items-center justify-end gap-1 whitespace-nowrap rounded-full border border-white/25 bg-white/15 px-2 shadow-[0_8px_32px_rgba(0,0,0,0.18)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 sm:h-14 sm:gap-2 sm:px-3 md:gap-3 md:px-5 lg:justify-between">
           {/* Desktop Navigation */}
           <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
             <NavLinks />
