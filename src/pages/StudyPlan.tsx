@@ -226,7 +226,6 @@ export default function StudyPlanPage() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
         <div className="container mx-auto px-4 py-16 text-center">
           <BookOpen className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
           <h1 className="mb-2 text-2xl font-bold">Sign in to create study plans</h1>
@@ -244,7 +243,6 @@ export default function StudyPlanPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
       <div className="container mx-auto px-4 py-8">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
           <ArrowLeft className="h-4 w-4" />

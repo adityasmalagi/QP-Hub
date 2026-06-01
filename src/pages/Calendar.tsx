@@ -5,7 +5,6 @@ export default function Calendar() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">

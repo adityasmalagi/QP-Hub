@@ -20,7 +20,6 @@ export default function Requests() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
       
       <main className="container mx-auto px-4 py-8">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">

@@ -362,7 +362,6 @@ export default function PaperDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
         <div className="flex items-center justify-center py-20">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -374,7 +373,6 @@ export default function PaperDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
         <div className="container mx-auto px-4 py-16 text-center">
           <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
           <h1 className="mb-2 text-2xl font-bold text-foreground">Paper not found</h1>
@@ -410,7 +408,6 @@ export default function PaperDetail() {
         }}
       />
       <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
       
       <main className="container mx-auto max-w-4xl px-4 py-8 pb-12 flex-1 animate-fade-in">
         {/* Back Button */}

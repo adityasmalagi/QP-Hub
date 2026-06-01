@@ -254,7 +254,6 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
         <div className="container mx-auto px-4 py-8">
           <p className="text-center text-muted-foreground">Loading...</p>
         </div>
@@ -279,7 +278,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
       <div className="container mx-auto px-4 py-8">
         <h1 className="mb-8 text-3xl font-bold text-foreground">Admin Dashboard</h1>
 

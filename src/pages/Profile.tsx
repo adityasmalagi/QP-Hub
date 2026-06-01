@@ -635,7 +635,6 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
         <div className="container mx-auto flex items-center justify-center px-4 py-16">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -648,7 +647,6 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="h-16 sm:h-20" aria-hidden="true" />
       <div className="container mx-auto px-4 py-8">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
           <ArrowLeft className="h-4 w-4" />
