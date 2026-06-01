@@ -227,11 +227,11 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
+              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 lg:hidden">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72 border-border/60 bg-background/70 [backdrop-filter:blur(40px)_saturate(200%)] dark:bg-background/60">
+            <SheetContent side="top" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-md rounded-3xl border border-white/25 bg-white/15 p-5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)] [backdrop-filter:blur(40px)_saturate(200%)] supports-[backdrop-filter]:bg-white/10 dark:border-white/10 dark:bg-white/5 sm:mt-3">
               <div className="flex flex-col gap-4 pt-6">
                 <div className="flex items-center gap-2 pb-4 border-b border-border">
                   <img src={qphubLogo} alt="QP Hub" className="h-9 w-9 rounded-lg object-contain" />
