@@ -183,10 +183,10 @@ export default function Index() {
         }}
       />
       <Navbar />
-      <main>
+      <main className="-mt-[72px] md:-mt-[80px]">
       
       {/* Hero Section with Parallax */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden pt-[72px] md:pt-[80px]">
         <div 
           className="absolute inset-0 gradient-hero-dark transition-transform duration-100 ease-out"
           style={{ transform: `translateY(${scrollY * 0.3}px)` }}

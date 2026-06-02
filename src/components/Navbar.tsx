@@ -95,8 +95,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 isolate w-full overflow-hidden px-3 py-2.5 md:px-6 md:py-3">
-      <div className="navbar-glass-veil pointer-events-none absolute inset-0 -z-10" />
+    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-2.5 md:px-6 md:py-3">
       <div className="container relative mx-auto flex items-center gap-2 px-0 sm:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
