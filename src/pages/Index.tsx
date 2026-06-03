@@ -4,7 +4,7 @@ import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter, RefreshCw } from 'lucide-react';
+import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter, RefreshCw, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { PaperCard } from '@/components/PaperCard';
@@ -60,16 +60,8 @@ export default function Index() {
   const [recommendations, setRecommendations] = useState<RecommendedPaper[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
 
-  // Parallax scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
 
   useEffect(() => {
     if (user) {
@@ -185,64 +177,62 @@ export default function Index() {
       <Navbar />
       <main className="-mt-[72px] md:-mt-[80px]">
       
-      {/* Hero Section with Parallax */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden pt-[72px] md:pt-[80px]">
-        <div 
-          className="absolute inset-0 gradient-hero-dark transition-transform duration-100 ease-out"
-          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
-        />
-        <div 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(280,50%,20%,0.3)_0%,_transparent_50%)] transition-transform duration-100 ease-out"
-          style={{ transform: `translateY(${scrollY * 0.2}px) scale(${1 + scrollY * 0.0005})` }}
-        />
-        <div 
-          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,_hsl(var(--primary)/0.15)_0%,_transparent_40%)] transition-transform duration-100 ease-out"
-          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-        />
-        <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 animate-float-slow md:block" />
-        <div className="absolute bottom-10 left-0 right-0 hidden h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent animate-soft-glow md:block" />
-        
-        <div className="container relative mx-auto px-4 pb-20 pt-24 text-center">
+        {/* Animated mesh gradient backdrop */}
+        <div className="absolute inset-0 gradient-hero-dark" />
+        <div className="mesh-gradient" aria-hidden="true">
+          <span className="mesh-blob" />
+        </div>
+        <div className="absolute inset-0 dot-grid opacity-60" aria-hidden="true" />
+        <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/40 to-primary/0 animate-float-slow md:block" />
+
+        <div className="container relative mx-auto px-4 pb-24 pt-24 text-center md:pb-32">
           <div className="mx-auto max-w-4xl">
             <ScrollAnimation animation="fade-up" delay={0}>
-              <div className="mb-8 inline-flex animate-float items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm shadow-glow">
-                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                <span className="text-sm font-medium text-muted-foreground">
-                  Your Academic Success Partner
+              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                </span>
+                <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                  Your academic success partner
                 </span>
               </div>
             </ScrollAnimation>
-            
+
             <ScrollAnimation animation="fade-up" delay={100}>
-              <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="mb-6 font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:text-[5.5rem] lg:leading-[1.05]">
                 Access Question Papers{' '}
-                <span className="text-gradient">
-                  From Anywhere
-                </span>
+                <span className="aurora-text">From Anywhere</span>
               </h1>
             </ScrollAnimation>
-            
+
             <ScrollAnimation animation="fade-up" delay={200}>
               <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                The ultimate platform for students to discover, download, and share academic question papers. 
+                The ultimate platform for students to discover, download, and share academic question papers.
                 Prepare smarter with our vast collection spanning multiple boards and years.
               </p>
             </ScrollAnimation>
-            
+
             <ScrollAnimation animation="fade-up" delay={300}>
-              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
+                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-8 py-6 text-base font-semibold shadow-glow glow-purple">
                     Browse Papers
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </Link>
-                
+
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
-                        <Button size="lg" className="gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="hover-lift border-foreground/15 bg-background/30 px-8 py-6 text-base font-semibold backdrop-blur-md hover:bg-background/50 hover:border-primary/40"
+                        >
                           <Upload className="mr-2 h-5 w-5" />
                           Upload Paper
                         </Button>
@@ -255,9 +245,15 @@ export default function Index() {
                 </TooltipProvider>
               </div>
             </ScrollAnimation>
+
+            {/* Scroll cue */}
+            <div className="mt-20 hidden justify-center md:flex">
+              <ChevronDown className="h-6 w-6 text-muted-foreground animate-scroll-bounce" />
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* Recommended Papers Section - Only for logged in users */}
       {user && (loadingRecs || recommendations.length > 0) && (
