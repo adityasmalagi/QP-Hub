@@ -257,15 +257,17 @@ export default function Index() {
 
       {/* Recommended Papers Section - Only for logged in users */}
       {user && (loadingRecs || recommendations.length > 0) && (
-        <section className="border-t border-border bg-card/30 py-12">
+        <section className="relative bg-secondary/30 py-16">
+          <div className="divider-fade absolute inset-x-0 top-0" />
           <div className="container mx-auto px-4">
             <ScrollAnimation animation="fade-up">
               <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                  <span className="accent-bar mb-3" />
+                  <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
                     Recommended For You
                   </h2>
-                  <p className="mt-1 text-muted-foreground">
+                  <p className="mt-2 text-muted-foreground">
                     Based on your profile preferences
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground sm:hidden">
@@ -347,22 +349,22 @@ export default function Index() {
       {/* Trending Papers Section */}
       <TrendingSection />
 
-      {/* How to Find Papers Section */}
-      <section className="border-t border-border bg-card/30 py-20">
+      <section className="relative py-24">
+        <div className="divider-fade absolute inset-x-0 top-0" />
         <div className="container mx-auto px-4">
-          <ScrollAnimation animation="fade-up" className="mb-12 text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-secondary/50 px-4 py-2">
-              <Filter className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">Finding Papers Made Easy</span>
+          <ScrollAnimation animation="fade-up" className="mb-14 text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-secondary/40 px-4 py-1.5 backdrop-blur-sm">
+              <Filter className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium tracking-wide uppercase text-muted-foreground">Finding Papers Made Easy</span>
             </div>
-            <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">
-              How to Find the <span className="text-gradient">Right Paper</span>
+            <h2 className="mb-4 font-display text-4xl font-bold text-foreground md:text-5xl">
+              How to Find the <span className="aurora-text">Right Paper</span>
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
               Use our powerful filters to quickly find exactly what you need
             </p>
           </ScrollAnimation>
-          
+
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-4">
             {filterTips.map((tip, index) => (
               <ScrollAnimation
@@ -370,15 +372,13 @@ export default function Index() {
                 animation="fade-up"
                 delay={index * 100}
               >
-                <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                  <CardContent className="p-6">
-                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
-                      {index + 1}
-                    </div>
-                    <h3 className="mb-2 font-semibold text-foreground">{tip.title}</h3>
-                    <p className="text-sm text-muted-foreground">{tip.description}</p>
-                  </CardContent>
-                </Card>
+                <div className="card-premium group h-full p-6">
+                  <div className="number-badge mb-4 flex h-10 w-10 items-center justify-center rounded-xl font-bold transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    {index + 1}
+                  </div>
+                  <h3 className="mb-2 font-display font-semibold text-foreground">{tip.title}</h3>
+                  <p className="text-sm text-muted-foreground">{tip.description}</p>
+                </div>
               </ScrollAnimation>
             ))}
           </div>
