@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -119,6 +120,19 @@ export default {
           "0%, 100%": { opacity: "1", boxShadow: "0 0 0 0 hsl(var(--primary) / 0.4)" },
           "50%": { opacity: "0.9", boxShadow: "0 0 20px 5px hsl(var(--primary) / 0.2)" },
         },
+        "mesh-drift": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(4%, -3%) scale(1.05)" },
+          "66%": { transform: "translate(-3%, 4%) scale(0.95)" },
+        },
+        "aurora-shift": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        "scroll-bounce": {
+          "0%, 100%": { transform: "translateY(0)", opacity: "0.4" },
+          "50%": { transform: "translateY(8px)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -132,6 +146,9 @@ export default {
         "shimmer": "shimmer 2.8s ease-in-out infinite",
         "soft-glow": "soft-glow 3.5s ease-in-out infinite",
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
+        "mesh-drift": "mesh-drift 18s ease-in-out infinite",
+        "aurora-shift": "aurora-shift 6s ease-in-out infinite",
+        "scroll-bounce": "scroll-bounce 2s ease-in-out infinite",
       },
     },
   },
