@@ -2,9 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Sparkles, Filter, RefreshCw } from 'lucide-react';
+import { Search, Upload, BookOpen, ArrowRight, CheckCircle, Filter, RefreshCw, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { PaperCard } from '@/components/PaperCard';
@@ -60,16 +59,8 @@ export default function Index() {
   const [recommendations, setRecommendations] = useState<RecommendedPaper[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
 
-  // Parallax scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
 
   useEffect(() => {
     if (user) {
@@ -185,64 +176,62 @@ export default function Index() {
       <Navbar />
       <main className="-mt-[72px] md:-mt-[80px]">
       
-      {/* Hero Section with Parallax */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden pt-[72px] md:pt-[80px]">
-        <div 
-          className="absolute inset-0 gradient-hero-dark transition-transform duration-100 ease-out"
-          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
-        />
-        <div 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(280,50%,20%,0.3)_0%,_transparent_50%)] transition-transform duration-100 ease-out"
-          style={{ transform: `translateY(${scrollY * 0.2}px) scale(${1 + scrollY * 0.0005})` }}
-        />
-        <div 
-          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,_hsl(var(--primary)/0.15)_0%,_transparent_40%)] transition-transform duration-100 ease-out"
-          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-        />
-        <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 animate-float-slow md:block" />
-        <div className="absolute bottom-10 left-0 right-0 hidden h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent animate-soft-glow md:block" />
-        
-        <div className="container relative mx-auto px-4 pb-20 pt-24 text-center">
+        {/* Animated mesh gradient backdrop */}
+        <div className="absolute inset-0 gradient-hero-dark" />
+        <div className="mesh-gradient" aria-hidden="true">
+          <span className="mesh-blob" />
+        </div>
+        <div className="absolute inset-0 dot-grid opacity-60" aria-hidden="true" />
+        <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/40 to-primary/0 animate-float-slow md:block" />
+
+        <div className="container relative mx-auto px-4 pb-24 pt-24 text-center md:pb-32">
           <div className="mx-auto max-w-4xl">
             <ScrollAnimation animation="fade-up" delay={0}>
-              <div className="mb-8 inline-flex animate-float items-center gap-2 rounded-full border border-border/50 bg-secondary/50 px-4 py-2 backdrop-blur-sm shadow-glow">
-                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                <span className="text-sm font-medium text-muted-foreground">
-                  Your Academic Success Partner
+              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                </span>
+                <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                  Your academic success partner
                 </span>
               </div>
             </ScrollAnimation>
-            
+
             <ScrollAnimation animation="fade-up" delay={100}>
-              <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="mb-6 font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:text-[5.5rem] lg:leading-[1.05]">
                 Access Question Papers{' '}
-                <span className="text-gradient">
-                  From Anywhere
-                </span>
+                <span className="aurora-text">From Anywhere</span>
               </h1>
             </ScrollAnimation>
-            
+
             <ScrollAnimation animation="fade-up" delay={200}>
               <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                The ultimate platform for students to discover, download, and share academic question papers. 
+                The ultimate platform for students to discover, download, and share academic question papers.
                 Prepare smarter with our vast collection spanning multiple boards and years.
               </p>
             </ScrollAnimation>
-            
+
             <ScrollAnimation animation="fade-up" delay={300}>
-              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
+                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-8 py-6 text-base font-semibold shadow-glow glow-purple">
                     Browse Papers
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </Link>
-                
+
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link to={user ? "/upload-mobile" : "/auth?redirect=/upload-mobile"}>
-                        <Button size="lg" className="gradient-primary shine-sweep hover-lift px-8 py-6 text-lg shadow-glow glow-purple">
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="hover-lift border-foreground/15 bg-background/30 px-8 py-6 text-base font-semibold backdrop-blur-md hover:bg-background/50 hover:border-primary/40"
+                        >
                           <Upload className="mr-2 h-5 w-5" />
                           Upload Paper
                         </Button>
@@ -255,21 +244,29 @@ export default function Index() {
                 </TooltipProvider>
               </div>
             </ScrollAnimation>
+
+            {/* Scroll cue */}
+            <div className="mt-20 hidden justify-center md:flex">
+              <ChevronDown className="h-6 w-6 text-muted-foreground animate-scroll-bounce" />
+            </div>
           </div>
         </div>
       </section>
 
+
       {/* Recommended Papers Section - Only for logged in users */}
       {user && (loadingRecs || recommendations.length > 0) && (
-        <section className="border-t border-border bg-card/30 py-12">
+        <section className="relative bg-secondary/30 py-16">
+          <div className="divider-fade absolute inset-x-0 top-0" />
           <div className="container mx-auto px-4">
             <ScrollAnimation animation="fade-up">
               <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                  <span className="accent-bar mb-3" />
+                  <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
                     Recommended For You
                   </h2>
-                  <p className="mt-1 text-muted-foreground">
+                  <p className="mt-2 text-muted-foreground">
                     Based on your profile preferences
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground sm:hidden">
@@ -351,22 +348,22 @@ export default function Index() {
       {/* Trending Papers Section */}
       <TrendingSection />
 
-      {/* How to Find Papers Section */}
-      <section className="border-t border-border bg-card/30 py-20">
+      <section className="relative py-24">
+        <div className="divider-fade absolute inset-x-0 top-0" />
         <div className="container mx-auto px-4">
-          <ScrollAnimation animation="fade-up" className="mb-12 text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-secondary/50 px-4 py-2">
-              <Filter className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">Finding Papers Made Easy</span>
+          <ScrollAnimation animation="fade-up" className="mb-14 text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-secondary/40 px-4 py-1.5 backdrop-blur-sm">
+              <Filter className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium tracking-wide uppercase text-muted-foreground">Finding Papers Made Easy</span>
             </div>
-            <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">
-              How to Find the <span className="text-gradient">Right Paper</span>
+            <h2 className="mb-4 font-display text-4xl font-bold text-foreground md:text-5xl">
+              How to Find the <span className="aurora-text">Right Paper</span>
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
               Use our powerful filters to quickly find exactly what you need
             </p>
           </ScrollAnimation>
-          
+
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-4">
             {filterTips.map((tip, index) => (
               <ScrollAnimation
@@ -374,15 +371,13 @@ export default function Index() {
                 animation="fade-up"
                 delay={index * 100}
               >
-                <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                  <CardContent className="p-6">
-                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
-                      {index + 1}
-                    </div>
-                    <h3 className="mb-2 font-semibold text-foreground">{tip.title}</h3>
-                    <p className="text-sm text-muted-foreground">{tip.description}</p>
-                  </CardContent>
-                </Card>
+                <div className="card-premium group h-full p-6">
+                  <div className="number-badge mb-4 flex h-10 w-10 items-center justify-center rounded-xl font-bold transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    {index + 1}
+                  </div>
+                  <h3 className="mb-2 font-display font-semibold text-foreground">{tip.title}</h3>
+                  <p className="text-sm text-muted-foreground">{tip.description}</p>
+                </div>
               </ScrollAnimation>
             ))}
           </div>
@@ -390,14 +385,16 @@ export default function Index() {
       </section>
 
       {/* Share Your Knowledge Section */}
-      <section className="border-t border-border py-20">
+      <section className="relative bg-secondary/30 py-24">
+        <div className="divider-fade absolute inset-x-0 top-0" />
         <div className="container mx-auto px-4">
           <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
             {/* Left Content */}
             <ScrollAnimation animation="slide-right">
               <div>
-                <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">
-                  Share Your <span className="text-gradient">Knowledge</span>
+                <span className="accent-bar mb-4" />
+                <h2 className="mb-6 font-display text-4xl font-bold text-foreground md:text-5xl">
+                  Share Your <span className="aurora-text">Knowledge</span>
                 </h2>
                 <p className="mb-8 text-lg text-muted-foreground">
                   Help fellow students by uploading question papers from your exams. 
@@ -453,11 +450,13 @@ export default function Index() {
       </section>
 
       {/* Features Section */}
-      <section className="border-t border-border bg-card/30 py-20">
+      <section className="relative py-24">
+        <div className="divider-fade absolute inset-x-0 top-0" />
         <div className="container mx-auto px-4">
-          <ScrollAnimation animation="fade-up" className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">
-              Why Choose <span className="text-gradient">QP Hub</span>?
+          <ScrollAnimation animation="fade-up" className="mb-14 text-center">
+            <span className="accent-bar mb-4" />
+            <h2 className="mb-4 font-display text-4xl font-bold text-foreground md:text-5xl">
+              Why Choose <span className="aurora-text">QP Hub</span>?
             </h2>
             <p className="text-muted-foreground">
               Everything you need to excel in your exams, all in one place.
@@ -465,47 +464,21 @@ export default function Index() {
           </ScrollAnimation>
           
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
-            <ScrollAnimation animation="scale-in" delay={0}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
-                    <Search className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
+            {[
+              { Icon: Search, title: 'Advanced Filters', desc: 'Find exactly what you need with powerful search and filtering by board, class, subject, and year.' },
+              { Icon: Upload, title: 'Easy Uploads', desc: 'Share your question papers effortlessly. Drag, drop, and help fellow students succeed.' },
+              { Icon: BookOpen, title: 'Academic Success', desc: 'Access thousands of past papers from Indian and International boards to ace your exams.' },
+            ].map(({ Icon, title, desc }, i) => (
+              <ScrollAnimation key={title} animation="scale-in" delay={i * 100}>
+                <div className="card-premium group h-full p-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:from-primary group-hover:to-primary">
+                    <Icon className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold text-foreground">Advanced Filters</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Find exactly what you need with powerful search and filtering by board, class, subject, and year.
-                  </p>
-                </CardContent>
-              </Card>
-            </ScrollAnimation>
-            
-            <ScrollAnimation animation="scale-in" delay={100}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
-                    <Upload className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-foreground">Easy Uploads</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Share your question papers effortlessly. Drag, drop, and help fellow students succeed.
-                  </p>
-                </CardContent>
-              </Card>
-            </ScrollAnimation>
-            
-            <ScrollAnimation animation="scale-in" delay={200}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
-                    <BookOpen className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-foreground">Academic Success</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Access thousands of past papers from Indian and International boards to ace your exams.
-                  </p>
-                </CardContent>
-              </Card>
-            </ScrollAnimation>
+                  <h3 className="mb-2 font-display text-lg font-semibold text-foreground">{title}</h3>
+                  <p className="text-sm text-muted-foreground">{desc}</p>
+                </div>
+              </ScrollAnimation>
+            ))}
           </div>
         </div>
       </section>
