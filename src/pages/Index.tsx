@@ -465,47 +465,21 @@ export default function Index() {
           </ScrollAnimation>
           
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
-            <ScrollAnimation animation="scale-in" delay={0}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
-                    <Search className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
+            {[
+              { Icon: Search, title: 'Advanced Filters', desc: 'Find exactly what you need with powerful search and filtering by board, class, subject, and year.' },
+              { Icon: Upload, title: 'Easy Uploads', desc: 'Share your question papers effortlessly. Drag, drop, and help fellow students succeed.' },
+              { Icon: BookOpen, title: 'Academic Success', desc: 'Access thousands of past papers from Indian and International boards to ace your exams.' },
+            ].map(({ Icon, title, desc }, i) => (
+              <ScrollAnimation key={title} animation="scale-in" delay={i * 100}>
+                <div className="card-premium group h-full p-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:from-primary group-hover:to-primary">
+                    <Icon className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold text-foreground">Advanced Filters</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Find exactly what you need with powerful search and filtering by board, class, subject, and year.
-                  </p>
-                </CardContent>
-              </Card>
-            </ScrollAnimation>
-            
-            <ScrollAnimation animation="scale-in" delay={100}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
-                    <Upload className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-foreground">Easy Uploads</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Share your question papers effortlessly. Drag, drop, and help fellow students succeed.
-                  </p>
-                </CardContent>
-              </Card>
-            </ScrollAnimation>
-            
-            <ScrollAnimation animation="scale-in" delay={200}>
-              <Card className="group h-full border-border/50 bg-card/80 backdrop-blur-sm hover-lift hover:shadow-glow">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-primary">
-                    <BookOpen className="h-6 w-6 text-primary transition-colors group-hover:text-primary-foreground" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-foreground">Academic Success</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Access thousands of past papers from Indian and International boards to ace your exams.
-                  </p>
-                </CardContent>
-              </Card>
-            </ScrollAnimation>
+                  <h3 className="mb-2 font-display text-lg font-semibold text-foreground">{title}</h3>
+                  <p className="text-sm text-muted-foreground">{desc}</p>
+                </div>
+              </ScrollAnimation>
+            ))}
           </div>
         </div>
       </section>
