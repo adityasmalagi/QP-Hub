@@ -386,14 +386,16 @@ export default function Index() {
       </section>
 
       {/* Share Your Knowledge Section */}
-      <section className="border-t border-border py-20">
+      <section className="relative bg-secondary/30 py-24">
+        <div className="divider-fade absolute inset-x-0 top-0" />
         <div className="container mx-auto px-4">
           <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
             {/* Left Content */}
             <ScrollAnimation animation="slide-right">
               <div>
-                <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">
-                  Share Your <span className="text-gradient">Knowledge</span>
+                <span className="accent-bar mb-4" />
+                <h2 className="mb-6 font-display text-4xl font-bold text-foreground md:text-5xl">
+                  Share Your <span className="aurora-text">Knowledge</span>
                 </h2>
                 <p className="mb-8 text-lg text-muted-foreground">
                   Help fellow students by uploading question papers from your exams. 
@@ -449,11 +451,13 @@ export default function Index() {
       </section>
 
       {/* Features Section */}
-      <section className="border-t border-border bg-card/30 py-20">
+      <section className="relative py-24">
+        <div className="divider-fade absolute inset-x-0 top-0" />
         <div className="container mx-auto px-4">
-          <ScrollAnimation animation="fade-up" className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">
-              Why Choose <span className="text-gradient">QP Hub</span>?
+          <ScrollAnimation animation="fade-up" className="mb-14 text-center">
+            <span className="accent-bar mb-4" />
+            <h2 className="mb-4 font-display text-4xl font-bold text-foreground md:text-5xl">
+              Why Choose <span className="aurora-text">QP Hub</span>?
             </h2>
             <p className="text-muted-foreground">
               Everything you need to excel in your exams, all in one place.
