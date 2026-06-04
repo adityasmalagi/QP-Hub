@@ -201,7 +201,7 @@ export default function Index() {
             </ScrollAnimation>
 
             <ScrollAnimation animation="fade-up" delay={100}>
-              <h1 className="mb-4 font-display text-[1.65rem] font-bold leading-[1.15] tracking-tight text-foreground xs:text-[1.9rem] sm:mb-5 sm:text-5xl sm:leading-tight md:text-6xl lg:text-[4rem] lg:leading-[1.05]">
+              <h1 className="mb-4 font-display text-[1.7rem] font-bold leading-[1.15] tracking-tight text-foreground [@media(min-width:380px)]:text-[2rem] sm:mb-5 sm:text-5xl sm:leading-tight md:text-6xl lg:text-[4rem] lg:leading-[1.05]">
                 Access Question Papers{' '}
                 <span className="aurora-text">From Anywhere</span>
               </h1>
