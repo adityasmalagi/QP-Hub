@@ -217,7 +217,7 @@ export default function Index() {
             <ScrollAnimation animation="fade-up" delay={300}>
               <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-7 py-5 text-base font-semibold shadow-glow glow-purple">
+                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift w-full px-6 py-4 text-sm font-semibold shadow-glow glow-purple sm:w-auto sm:px-7 sm:py-5 sm:text-base">
                     Browse Papers
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
