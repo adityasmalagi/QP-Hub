@@ -208,7 +208,7 @@ export default function Index() {
             </ScrollAnimation>
 
             <ScrollAnimation animation="fade-up" delay={200}>
-              <p className="mx-auto mb-6 max-w-2xl text-sm text-muted-foreground sm:mb-8 sm:text-base md:text-lg">
+              <p className="mx-auto mb-6 max-w-2xl text-[13px] leading-relaxed text-muted-foreground sm:mb-8 sm:text-base md:text-lg">
                 The ultimate platform for students to discover, download, and share academic question papers.
                 Prepare smarter with our vast collection spanning multiple boards and years.
               </p>
