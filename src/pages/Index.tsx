@@ -246,7 +246,7 @@ export default function Index() {
             </ScrollAnimation>
 
             {/* Scroll cue */}
-            <div className="mt-20 hidden justify-center md:flex">
+            <div className="mt-12 hidden justify-center md:flex">
               <ChevronDown className="h-6 w-6 text-muted-foreground animate-scroll-bounce" />
             </div>
           </div>
