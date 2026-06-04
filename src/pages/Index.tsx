@@ -186,7 +186,7 @@ export default function Index() {
         <div className="absolute inset-0 dot-grid opacity-60" aria-hidden="true" />
         <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/40 to-primary/0 animate-float-slow md:block" />
 
-        <div className="container relative mx-auto px-4 pb-24 pt-24 text-center md:pb-32">
+        <div className="container relative mx-auto px-4 pb-16 pt-14 text-center md:pb-20 md:pt-16">
           <div className="mx-auto max-w-4xl">
             <ScrollAnimation animation="fade-up" delay={0}>
               <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 backdrop-blur-md">
@@ -201,14 +201,14 @@ export default function Index() {
             </ScrollAnimation>
 
             <ScrollAnimation animation="fade-up" delay={100}>
-              <h1 className="mb-6 font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:text-[5.5rem] lg:leading-[1.05]">
+              <h1 className="mb-5 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-[4rem] lg:leading-[1.05]">
                 Access Question Papers{' '}
                 <span className="aurora-text">From Anywhere</span>
               </h1>
             </ScrollAnimation>
 
             <ScrollAnimation animation="fade-up" delay={200}>
-              <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl">
+              <p className="mx-auto mb-8 max-w-2xl text-base text-muted-foreground md:text-lg">
                 The ultimate platform for students to discover, download, and share academic question papers.
                 Prepare smarter with our vast collection spanning multiple boards and years.
               </p>
@@ -217,7 +217,7 @@ export default function Index() {
             <ScrollAnimation animation="fade-up" delay={300}>
               <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-8 py-6 text-base font-semibold shadow-glow glow-purple">
+                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift px-7 py-5 text-base font-semibold shadow-glow glow-purple">
                     Browse Papers
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
@@ -230,7 +230,7 @@ export default function Index() {
                         <Button
                           size="lg"
                           variant="outline"
-                          className="hover-lift border-foreground/15 bg-background/30 px-8 py-6 text-base font-semibold backdrop-blur-md hover:bg-background/50 hover:border-primary/40"
+                          className="hover-lift border-foreground/15 bg-background/30 px-7 py-5 text-base font-semibold backdrop-blur-md hover:bg-background/50 hover:border-primary/40"
                         >
                           <Upload className="mr-2 h-5 w-5" />
                           Upload Paper
@@ -246,7 +246,7 @@ export default function Index() {
             </ScrollAnimation>
 
             {/* Scroll cue */}
-            <div className="mt-20 hidden justify-center md:flex">
+            <div className="mt-12 hidden justify-center md:flex">
               <ChevronDown className="h-6 w-6 text-muted-foreground animate-scroll-bounce" />
             </div>
           </div>
