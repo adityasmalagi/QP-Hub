@@ -186,7 +186,7 @@ export default function Index() {
         <div className="absolute inset-0 dot-grid opacity-60" aria-hidden="true" />
         <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/40 to-primary/0 animate-float-slow md:block" />
 
-        <div className="container relative mx-auto px-4 pb-24 pt-24 text-center md:pb-32">
+        <div className="container relative mx-auto px-4 pb-16 pt-14 text-center md:pb-20 md:pt-16">
           <div className="mx-auto max-w-4xl">
             <ScrollAnimation animation="fade-up" delay={0}>
               <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 backdrop-blur-md">
