@@ -186,29 +186,29 @@ export default function Index() {
         <div className="absolute inset-0 dot-grid opacity-60" aria-hidden="true" />
         <div className="absolute left-1/2 top-10 hidden h-28 w-px -translate-x-1/2 bg-gradient-to-b from-primary/0 via-primary/40 to-primary/0 animate-float-slow md:block" />
 
-        <div className="container relative mx-auto px-4 pb-16 pt-14 text-center md:pb-20 md:pt-16">
+        <div className="container relative mx-auto px-4 pb-12 pt-10 text-center sm:pb-16 sm:pt-14 md:pb-20 md:pt-16">
           <div className="mx-auto max-w-4xl">
             <ScrollAnimation animation="fade-up" delay={0}>
-              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-4 py-1.5 backdrop-blur-md">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-3 py-1 backdrop-blur-md sm:mb-8 sm:px-4 sm:py-1.5">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </span>
-                <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                <span className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase sm:text-xs">
                   Your academic success partner
                 </span>
               </div>
             </ScrollAnimation>
 
             <ScrollAnimation animation="fade-up" delay={100}>
-              <h1 className="mb-5 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-[4rem] lg:leading-[1.05]">
+              <h1 className="mb-4 font-display text-[2rem] font-bold leading-[1.1] tracking-tight text-foreground sm:mb-5 sm:text-5xl md:text-6xl lg:text-[4rem] lg:leading-[1.05]">
                 Access Question Papers{' '}
                 <span className="aurora-text">From Anywhere</span>
               </h1>
             </ScrollAnimation>
 
             <ScrollAnimation animation="fade-up" delay={200}>
-              <p className="mx-auto mb-8 max-w-2xl text-base text-muted-foreground md:text-lg">
+              <p className="mx-auto mb-6 max-w-2xl text-sm text-muted-foreground sm:mb-8 sm:text-base md:text-lg">
                 The ultimate platform for students to discover, download, and share academic question papers.
                 Prepare smarter with our vast collection spanning multiple boards and years.
               </p>
