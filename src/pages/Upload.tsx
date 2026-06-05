@@ -774,13 +774,53 @@ export default function Upload() {
 
               {/* Upload Progress */}
               {uploading && (
-                <div className="space-y-2">
+                <div className="space-y-2 animate-fade-in">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Uploading...</span>
+                    <span className="text-muted-foreground">
+                      {retryAttempt > 0 ? `Retrying upload (attempt ${retryAttempt + 1})...` : 'Uploading...'}
+                    </span>
                     <span className="font-medium text-foreground">{uploadProgress}%</span>
                   </div>
                   <Progress value={uploadProgress} className="h-2" />
                 </div>
+              )}
+
+              {/* Error Recovery */}
+              {uploadError && !uploading && (
+                <Alert variant="destructive" className="animate-fade-in">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Upload failed</AlertTitle>
+                  <AlertDescription className="space-y-3">
+                    <p>{uploadError.message}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {uploadError.retryable && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={handleManualRetry}
+                          className="gap-2"
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                          Retry upload
+                        </Button>
+                      )}
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleCancelUpload}
+                      >
+                        Dismiss
+                      </Button>
+                    </div>
+                    {!uploadError.retryable && (
+                      <p className="text-xs opacity-80">
+                        This error can't be auto-retried. Please review the details above and try again.
+                      </p>
+                    )}
+                  </AlertDescription>
+                </Alert>
               )}
 
               <Button
