@@ -16,8 +16,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BOARDS, CLASS_LEVELS, SUBJECTS, EXAM_TYPES, YEARS, SEMESTERS, INTERNAL_NUMBERS } from '@/lib/constants';
-import { Upload as UploadIcon, FileText, X, Loader2, Image, Images, GripVertical } from 'lucide-react';
+import { Upload as UploadIcon, FileText, X, Loader2, Image, Images, GripVertical, AlertCircle, RefreshCw } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFormSchema } from '@/lib/validation';
 import { Badge } from '@/components/ui/badge';
@@ -105,6 +106,9 @@ export default function Upload() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const [detectedFileType, setDetectedFileType] = useState<FileType | null>(null);
+  const [uploadError, setUploadError] = useState<{ message: string; retryable: boolean } | null>(null);
+  const [retryAttempt, setRetryAttempt] = useState(0);
+  const cancelRetryRef = useRef(false);
   
   // Drag-and-drop reordering state
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -226,29 +230,131 @@ export default function Upload() {
   const requiresSemester = formData.examType === 'sem_paper' || formData.examType === 'internals';
   const requiresInternalNumber = formData.examType === 'internals';
 
+  const performUpload = async (validatedData: any, attempt: number): Promise<void> => {
+    const MAX_AUTO_RETRIES = 2;
+    setUploading(true);
+    setUploadProgress(0);
+    setRetryAttempt(attempt);
+    setUploadError(null);
+
+    try {
+      const formDataUpload = new FormData();
+      files.forEach(f => formDataUpload.append('files', f));
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      if (!accessToken) throw Object.assign(new Error('Not authenticated. Please sign in again.'), { retryable: false });
+
+      const uploadResult = await new Promise<{
+        success: boolean; primaryUrl?: string;
+        files?: Array<{ url: string; type: string; name: string }>;
+        fileType?: string; isMultiImage?: boolean; error?: string;
+      }>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            setUploadProgress(Math.round((event.loaded / event.total) * 100));
+          }
+        });
+        xhr.addEventListener('load', () => {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            if (xhr.status >= 500) {
+              reject(Object.assign(new Error(response.error || 'Server error. Please try again.'), { retryable: true }));
+            } else if (xhr.status >= 400) {
+              reject(Object.assign(new Error(response.error || `Upload rejected (${xhr.status}).`), { retryable: false }));
+            } else {
+              resolve(response);
+            }
+          } catch {
+            reject(Object.assign(new Error('Invalid response from server'), { retryable: true }));
+          }
+        });
+        xhr.addEventListener('error', () => {
+          reject(Object.assign(new Error('Network error. Please check your connection.'), { retryable: true }));
+        });
+        xhr.addEventListener('timeout', () => {
+          reject(Object.assign(new Error('Upload timed out.'), { retryable: true }));
+        });
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        xhr.open('POST', `${supabaseUrl}/functions/v1/upload-files`);
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+        xhr.send(formDataUpload);
+      });
+
+      if (!uploadResult.success || !uploadResult.primaryUrl) {
+        throw Object.assign(new Error(uploadResult.error || 'Upload validation failed'), { retryable: false });
+      }
+
+      const primaryUrl = uploadResult.primaryUrl;
+      const additionalUrls = uploadResult.files?.slice(1).map(f => f.url) || [];
+      const fileType = uploadResult.isMultiImage ? 'gallery' : (uploadResult.fileType || 'pdf');
+
+      const { error: insertError } = await supabase.from('question_papers').insert({
+        user_id: user!.id,
+        title: validatedData.title,
+        description: validatedData.description || null,
+        class_level: validatedData.classLevel,
+        board: validatedData.board,
+        subject: validatedData.subject,
+        year: parseInt(validatedData.year),
+        exam_type: validatedData.examType,
+        file_url: primaryUrl,
+        file_name: files[0].name,
+        status: 'approved',
+        semester: requiresSemester && validatedData.semester ? parseInt(validatedData.semester) : null,
+        internal_number: requiresInternalNumber && validatedData.internalNumber ? parseInt(validatedData.internalNumber) : null,
+        institute_name: validatedData.instituteName || null,
+        file_type: fileType,
+        additional_file_urls: additionalUrls,
+      });
+
+      if (insertError) throw Object.assign(new Error(insertError.message), { retryable: false });
+
+      toast({ title: 'Upload successful!', description: 'Your question paper has been uploaded and is now visible.' });
+      navigate('/browse');
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      const retryable = error?.retryable === true;
+      const message = error?.message || 'There was an error uploading your file.';
+
+      if (retryable && attempt < MAX_AUTO_RETRIES && !cancelRetryRef.current) {
+        const delay = 1500 * Math.pow(2, attempt);
+        toast({
+          title: `Upload failed — retrying (${attempt + 1}/${MAX_AUTO_RETRIES})`,
+          description: `${message} Retrying in ${delay / 1000}s...`,
+        });
+        await new Promise(res => setTimeout(res, delay));
+        if (cancelRetryRef.current) {
+          cancelRetryRef.current = false;
+          setUploading(false);
+          setUploadProgress(0);
+          return;
+        }
+        return performUpload(validatedData, attempt + 1);
+      }
+
+      setUploadError({ message, retryable });
+      toast({ title: 'Upload failed', description: message, variant: 'destructive' });
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const lastValidatedRef = useRef<any>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (files.length === 0 || !user) return;
-    
-    // Final file validation before upload
+
     const fileValidation = validateFiles(files);
     if (!fileValidation.valid) {
-      toast({
-        title: 'Invalid file',
-        description: fileValidation.error,
-        variant: 'destructive',
-      });
+      toast({ title: 'Invalid file', description: fileValidation.error, variant: 'destructive' });
       return;
     }
-    
-    // Resolve custom subject / exam type when "other" is selected
-    const resolvedSubject = formData.subject === 'other'
-      ? formData.customSubject.trim()
-      : formData.subject;
-    const resolvedExamType = formData.examType === 'other'
-      ? formData.customExamType.trim()
-      : formData.examType;
+
+    const resolvedSubject = formData.subject === 'other' ? formData.customSubject.trim() : formData.subject;
+    const resolvedExamType = formData.examType === 'other' ? formData.customExamType.trim() : formData.examType;
 
     if (formData.subject === 'other' && !resolvedSubject) {
       toast({ title: 'Subject required', description: 'Please enter the subject name.', variant: 'destructive' });
@@ -259,146 +365,38 @@ export default function Upload() {
       return;
     }
 
-    // Validate form using zod schema
-    const validationResult = uploadFormSchema.safeParse({
-      ...formData,
-      subject: resolvedSubject,
-      examType: resolvedExamType,
-    });
+    const validationResult = uploadFormSchema.safeParse({ ...formData, subject: resolvedSubject, examType: resolvedExamType });
     if (!validationResult.success) {
-      const firstError = validationResult.error.errors[0];
-      toast({
-        title: 'Validation error',
-        description: firstError.message,
-        variant: 'destructive',
-      });
+      toast({ title: 'Validation error', description: validationResult.error.errors[0].message, variant: 'destructive' });
       return;
     }
 
     const validatedData = validationResult.data;
 
-    // Validate semester for SEM/Internals papers
     if (requiresSemester && !validatedData.semester) {
-      toast({
-        title: 'Missing semester',
-        description: 'Please select a semester for this exam type',
-        variant: 'destructive',
-      });
+      toast({ title: 'Missing semester', description: 'Please select a semester for this exam type', variant: 'destructive' });
       return;
     }
-
-    // Validate internal number for Internals papers
     if (requiresInternalNumber && !validatedData.internalNumber) {
-      toast({
-        title: 'Missing internal number',
-        description: 'Please select the internal number (1, 2, or 3)',
-        variant: 'destructive',
-      });
+      toast({ title: 'Missing internal number', description: 'Please select the internal number (1, 2, or 3)', variant: 'destructive' });
       return;
     }
 
-    setUploading(true);
-    setUploadProgress(0);
-    
-    try {
-      // Upload files via edge function with progress tracking
-      const formDataUpload = new FormData();
-      files.forEach(f => formDataUpload.append('files', f));
-      
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData?.session?.access_token;
-      
-      if (!accessToken) {
-        throw new Error('Not authenticated');
-      }
+    lastValidatedRef.current = validatedData;
+    cancelRetryRef.current = false;
+    await performUpload(validatedData, 0);
+  };
 
-      // Use XMLHttpRequest for progress tracking
-      const uploadResult = await new Promise<{ 
-        success: boolean; 
-        primaryUrl?: string; 
-        files?: Array<{ url: string; type: string; name: string }>;
-        fileType?: string;
-        isMultiImage?: boolean;
-        error?: string;
-      }>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        
-        xhr.upload.addEventListener('progress', (event) => {
-          if (event.lengthComputable) {
-            const progress = Math.round((event.loaded / event.total) * 100);
-            setUploadProgress(progress);
-          }
-        });
-        
-        xhr.addEventListener('load', () => {
-          try {
-            const response = JSON.parse(xhr.responseText);
-            resolve(response);
-          } catch {
-            reject(new Error('Invalid response from server'));
-          }
-        });
-        
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload failed. Please check your connection and try again.'));
-        });
-        
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        xhr.open('POST', `${supabaseUrl}/functions/v1/upload-files`);
-        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-        xhr.send(formDataUpload);
-      });
+  const handleManualRetry = async () => {
+    if (!lastValidatedRef.current) return;
+    cancelRetryRef.current = false;
+    await performUpload(lastValidatedRef.current, 0);
+  };
 
-      if (!uploadResult.success || !uploadResult.primaryUrl) {
-        throw new Error(uploadResult.error || 'Upload validation failed');
-      }
-
-      const primaryUrl = uploadResult.primaryUrl;
-      const additionalUrls = uploadResult.files?.slice(1).map(f => f.url) || [];
-      const fileType = uploadResult.isMultiImage ? 'gallery' : (uploadResult.fileType || 'pdf');
-
-      // Insert paper record with validated data
-      const { error: insertError } = await supabase
-        .from('question_papers')
-        .insert({
-          user_id: user.id,
-          title: validatedData.title,
-          description: validatedData.description || null,
-          class_level: validatedData.classLevel,
-          board: validatedData.board,
-          subject: validatedData.subject,
-          year: parseInt(validatedData.year),
-          exam_type: validatedData.examType,
-          file_url: primaryUrl,
-          file_name: files[0].name,
-          status: 'approved',
-          semester: requiresSemester && validatedData.semester ? parseInt(validatedData.semester) : null,
-          internal_number: requiresInternalNumber && validatedData.internalNumber ? parseInt(validatedData.internalNumber) : null,
-          institute_name: validatedData.instituteName || null,
-          file_type: fileType,
-          additional_file_urls: additionalUrls,
-        });
-
-      if (insertError) throw insertError;
-
-      toast({
-        title: 'Upload successful!',
-        description: 'Your question paper has been uploaded and is now visible.',
-      });
-      
-      navigate('/browse');
-    } catch (error: any) {
-      console.error('Upload error:', error);
-      const errorMessage = error?.message || 'There was an error uploading your file. Please try again.';
-      toast({
-        title: 'Upload failed',
-        description: errorMessage,
-        variant: 'destructive',
-      });
-    } finally {
-      setUploading(false);
-      setUploadProgress(0);
-    }
+  const handleCancelUpload = () => {
+    cancelRetryRef.current = true;
+    setUploadError(null);
+    setRetryAttempt(0);
   };
 
   if (authLoading) {
@@ -776,13 +774,53 @@ export default function Upload() {
 
               {/* Upload Progress */}
               {uploading && (
-                <div className="space-y-2">
+                <div className="space-y-2 animate-fade-in">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Uploading...</span>
+                    <span className="text-muted-foreground">
+                      {retryAttempt > 0 ? `Retrying upload (attempt ${retryAttempt + 1})...` : 'Uploading...'}
+                    </span>
                     <span className="font-medium text-foreground">{uploadProgress}%</span>
                   </div>
                   <Progress value={uploadProgress} className="h-2" />
                 </div>
+              )}
+
+              {/* Error Recovery */}
+              {uploadError && !uploading && (
+                <Alert variant="destructive" className="animate-fade-in">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Upload failed</AlertTitle>
+                  <AlertDescription className="space-y-3">
+                    <p>{uploadError.message}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {uploadError.retryable && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={handleManualRetry}
+                          className="gap-2"
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                          Retry upload
+                        </Button>
+                      )}
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleCancelUpload}
+                      >
+                        Dismiss
+                      </Button>
+                    </div>
+                    {!uploadError.retryable && (
+                      <p className="text-xs opacity-80">
+                        This error can't be auto-retried. Please review the details above and try again.
+                      </p>
+                    )}
+                  </AlertDescription>
+                </Alert>
               )}
 
               <Button
