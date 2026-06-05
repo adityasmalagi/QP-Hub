@@ -106,6 +106,9 @@ export default function Upload() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const [detectedFileType, setDetectedFileType] = useState<FileType | null>(null);
+  const [uploadError, setUploadError] = useState<{ message: string; retryable: boolean } | null>(null);
+  const [retryAttempt, setRetryAttempt] = useState(0);
+  const cancelRetryRef = useRef(false);
   
   // Drag-and-drop reordering state
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
