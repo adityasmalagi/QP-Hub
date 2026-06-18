@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
+import { SEO } from '@/components/SEO';
 import { useStudyGroups } from '@/hooks/useStudyGroups';
 import { GroupCard } from '@/components/GroupCard';
 import { CreateGroupModal } from '@/components/CreateGroupModal';
@@ -35,6 +36,11 @@ export default function StudyGroups() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Study Groups | QP Hub"
+        description="Join or create study groups, chat in real time, and share question paper collections with classmates on QP Hub."
+        path="/groups"
+      />
       <Navbar />
 
       <main className="container mx-auto px-4 py-8">

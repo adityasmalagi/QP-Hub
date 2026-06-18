@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
+import { SEO } from '@/components/SEO';
 import { usePaperRequests } from '@/hooks/usePaperRequests';
 import { PaperRequestCard } from '@/components/PaperRequestCard';
 import { CreateRequestModal } from '@/components/CreateRequestModal';
@@ -19,6 +20,11 @@ export default function Requests() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Paper Requests | QP Hub"
+        description="Request question papers you can't find and help fulfill open requests from the QP Hub community."
+        path="/requests"
+      />
       <Navbar />
       
       <main className="container mx-auto px-4 py-8">

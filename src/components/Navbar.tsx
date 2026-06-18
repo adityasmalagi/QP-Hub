@@ -117,7 +117,7 @@ export function Navbar() {
             {/* Theme Toggle Button */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
+              <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Toggle theme">
                 {getThemeIcon()}
               </Button>
             </DropdownMenuTrigger>
@@ -226,7 +226,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 lg:hidden">
+              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 lg:hidden" aria-label="Open menu">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>

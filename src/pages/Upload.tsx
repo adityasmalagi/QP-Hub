@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -409,6 +410,11 @@ export default function Upload() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Upload Question Paper | QP Hub"
+        description="Share past question papers with the QP Hub community. Upload PDFs or images and help students prepare for exams."
+        path="/upload"
+      />
       <Navbar />
       
       <div className="container mx-auto max-w-2xl px-4 py-8">
