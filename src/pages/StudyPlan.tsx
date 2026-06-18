@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -242,6 +243,11 @@ export default function StudyPlanPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Study Plan | QP Hub"
+        description="Build a personalized exam study plan with goals, schedules, and progress tracking on QP Hub."
+        path="/study-plan"
+      />
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">

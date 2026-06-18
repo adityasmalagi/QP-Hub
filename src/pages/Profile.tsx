@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -646,6 +647,11 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="My Profile | QP Hub"
+        description="Manage your QP Hub account, uploaded papers, bookmarks, downloads, collections, and analytics."
+        path="/profile"
+      />
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
