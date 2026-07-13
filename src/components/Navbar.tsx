@@ -117,7 +117,7 @@ export function Navbar() {
             {/* Theme Toggle Button */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Toggle theme">
+              <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Toggle theme">
                 {getThemeIcon()}
               </Button>
             </DropdownMenuTrigger>
@@ -141,20 +141,20 @@ export function Navbar() {
             <>
               <NotificationsDropdown />
               <Link to="/profile?tab=downloads" className="hidden lg:block">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="default">
                   <Download className="mr-2 h-4 w-4" />
                   My Downloads
                 </Button>
               </Link>
               <Link to="/upload" className="hidden lg:block">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="default">
                   <Upload className="mr-2 h-4 w-4" />
                   Upload
                 </Button>
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <Button variant="ghost" size="default" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span className="hidden lg:inline">Account</span>
                   </Button>
@@ -211,12 +211,12 @@ export function Navbar() {
           ) : (
             <>
               <Link to="/auth" className="hidden lg:block">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="default">
                   Sign In
                 </Button>
               </Link>
               <Link to="/auth?mode=signup" className="hidden lg:block">
-                <Button size="sm" className="gradient-primary">
+                <Button size="default" className="gradient-primary">
                   Get Started
                 </Button>
               </Link>
@@ -226,7 +226,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 lg:hidden" aria-label="Open menu">
+              <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 lg:hidden" aria-label="Open menu">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
