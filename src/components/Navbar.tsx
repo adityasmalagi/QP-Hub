@@ -70,8 +70,8 @@ export function Navbar() {
           onClick={onClose}
           className={
             mobile
-              ? "block rounded-lg px-3 py-2 text-sm font-semibold text-foreground/90 transition-colors hover:bg-foreground/10 hover:text-foreground"
-              : "text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]"
+              ? "block rounded-lg px-4 py-3 text-base font-semibold text-foreground/90 transition-colors hover:bg-foreground/10 hover:text-foreground"
+              : "text-base font-semibold text-foreground/80 transition-colors hover:text-foreground [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]"
           }
         >
           {label}
@@ -83,11 +83,11 @@ export function Navbar() {
           onClick={onClose}
           className={
             mobile
-              ? "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
-              : "flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+              ? "flex items-center gap-2 rounded-lg px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary/10"
+              : "flex items-center gap-2 text-base font-semibold text-primary transition-colors hover:text-primary/80"
           }
         >
-          <Shield className="h-4 w-4" />
+          <Shield className="h-5 w-5" />
           Admin
         </Link>
       )}
@@ -95,19 +95,19 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-2.5 md:px-6 md:py-3">
+    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-3 md:px-6 md:py-4">
       <div className="container relative mx-auto flex items-center gap-2 px-0 sm:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
           to="/"
-          className="navbar-glass-pill flex h-12 flex-shrink-0 items-center gap-2 rounded-full pl-2 pr-3 transition-all duration-300 hover:-translate-y-0.5 sm:h-14 md:pl-3 md:pr-4"
+          className="navbar-glass-pill flex h-14 flex-shrink-0 items-center gap-2 rounded-full pl-2 pr-3 transition-all duration-300 hover:-translate-y-0.5 sm:h-16 md:pl-3 md:pr-4"
         >
-          <img src={qphubLogo} alt="QP Hub" className="h-7 w-7 rounded-lg object-contain sm:h-8 sm:w-8 md:h-9 md:w-9" />
-          <span className="text-sm font-bold text-foreground sm:text-base md:text-xl">QP Hub</span>
+          <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain sm:h-9 sm:w-9 md:h-10 md:w-10" />
+          <span className="text-base font-bold text-foreground sm:text-lg md:text-xl">QP Hub</span>
         </Link>
 
         {/* Main nav pill */}
-        <div className="navbar-glass-pill flex h-12 min-w-0 flex-1 flex-nowrap items-center justify-end gap-1 whitespace-nowrap rounded-full px-2 sm:h-14 sm:gap-2 sm:px-3 md:gap-3 md:px-5 lg:justify-between">
+        <div className="navbar-glass-pill flex h-14 min-w-0 flex-1 flex-nowrap items-center justify-end gap-1 whitespace-nowrap rounded-full px-2 sm:h-16 sm:gap-2 sm:px-3 md:gap-3 md:px-5 lg:justify-between">
           {/* Desktop Navigation */}
           <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
             <NavLinks />
@@ -117,7 +117,7 @@ export function Navbar() {
             {/* Theme Toggle Button */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Toggle theme">
+              <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Toggle theme">
                 {getThemeIcon()}
               </Button>
             </DropdownMenuTrigger>
@@ -141,20 +141,20 @@ export function Navbar() {
             <>
               <NotificationsDropdown />
               <Link to="/profile?tab=downloads" className="hidden lg:block">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="default">
                   <Download className="mr-2 h-4 w-4" />
                   My Downloads
                 </Button>
               </Link>
               <Link to="/upload" className="hidden lg:block">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="default">
                   <Upload className="mr-2 h-4 w-4" />
                   Upload
                 </Button>
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <Button variant="ghost" size="default" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span className="hidden lg:inline">Account</span>
                   </Button>
@@ -211,12 +211,12 @@ export function Navbar() {
           ) : (
             <>
               <Link to="/auth" className="hidden lg:block">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="default">
                   Sign In
                 </Button>
               </Link>
               <Link to="/auth?mode=signup" className="hidden lg:block">
-                <Button size="sm" className="gradient-primary">
+                <Button size="default" className="gradient-primary">
                   Get Started
                 </Button>
               </Link>
@@ -226,7 +226,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 lg:hidden" aria-label="Open menu">
+              <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 lg:hidden" aria-label="Open menu">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
@@ -246,61 +246,62 @@ export function Navbar() {
                     <div className="flex flex-col gap-2">
                       <SheetClose asChild>
                         <Link to="/profile">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <User className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <User className="mr-3 h-5 w-5" />
                             Profile
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=bookmarks">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <Heart className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <Heart className="mr-3 h-5 w-5" />
                             Bookmarks
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=downloads">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <Download className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <Download className="mr-3 h-5 w-5" />
                             Downloads
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=analytics">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <BarChart3 className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <BarChart3 className="mr-3 h-5 w-5" />
                             Analytics
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=following">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <Users className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <Users className="mr-3 h-5 w-5" />
                             Following
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/upload-mobile">
-                          <Button variant="outline" className="w-full justify-start">
-                            <Upload className="mr-2 h-4 w-4" />
+                          <Button variant="outline" size="lg" className="w-full justify-start">
+                            <Upload className="mr-3 h-5 w-5" />
                             Upload
                           </Button>
                         </Link>
                       </SheetClose>
                       <Button
                         variant="ghost"
+                        size="lg"
                         className="w-full justify-start text-destructive"
                         onClick={() => {
                           handleSignOut();
                           setMobileMenuOpen(false);
                         }}
                       >
-                        <LogOut className="mr-2 h-4 w-4" />
+                        <LogOut className="mr-3 h-5 w-5" />
                         Sign Out
                       </Button>
                     </div>
@@ -308,14 +309,14 @@ export function Navbar() {
                     <div className="flex flex-col gap-2">
                       <SheetClose asChild>
                         <Link to="/auth">
-                          <Button variant="ghost" className="w-full">
+                          <Button variant="ghost" size="lg" className="w-full">
                             Sign In
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/auth?mode=signup">
-                          <Button className="w-full gradient-primary">Get Started</Button>
+                          <Button size="lg" className="w-full gradient-primary">Get Started</Button>
                         </Link>
                       </SheetClose>
                     </div>
