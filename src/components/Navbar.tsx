@@ -70,8 +70,8 @@ export function Navbar() {
           onClick={onClose}
           className={
             mobile
-              ? "block rounded-lg px-3 py-2 text-sm font-semibold text-foreground/90 transition-colors hover:bg-foreground/10 hover:text-foreground"
-              : "text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]"
+              ? "block rounded-lg px-4 py-3 text-base font-semibold text-foreground/90 transition-colors hover:bg-foreground/10 hover:text-foreground"
+              : "text-base font-semibold text-foreground/80 transition-colors hover:text-foreground [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]"
           }
         >
           {label}
@@ -83,11 +83,11 @@ export function Navbar() {
           onClick={onClose}
           className={
             mobile
-              ? "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
-              : "flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+              ? "flex items-center gap-2 rounded-lg px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary/10"
+              : "flex items-center gap-2 text-base font-semibold text-primary transition-colors hover:text-primary/80"
           }
         >
-          <Shield className="h-4 w-4" />
+          <Shield className="h-5 w-5" />
           Admin
         </Link>
       )}
