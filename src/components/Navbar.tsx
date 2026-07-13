@@ -71,7 +71,7 @@ export function Navbar() {
           className={
             mobile
               ? "block rounded-lg px-4 py-3 text-base font-semibold text-foreground/90 transition-colors hover:bg-foreground/10 hover:text-foreground"
-              : "text-base font-semibold text-foreground/80 transition-colors hover:text-foreground [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]"
+              : "text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]"
           }
         >
           {label}
@@ -84,10 +84,10 @@ export function Navbar() {
           className={
             mobile
               ? "flex items-center gap-2 rounded-lg px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary/10"
-              : "flex items-center gap-2 text-base font-semibold text-primary transition-colors hover:text-primary/80"
+              : "flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
           }
         >
-          <Shield className="h-5 w-5" />
+          <Shield className="h-4 w-4" />
           Admin
         </Link>
       )}
@@ -141,20 +141,20 @@ export function Navbar() {
             <>
               <NotificationsDropdown />
               <Link to="/profile?tab=downloads" className="hidden lg:block">
-                <Button variant="outline" size="default">
+                <Button variant="outline" size="sm">
                   <Download className="mr-2 h-4 w-4" />
                   My Downloads
                 </Button>
               </Link>
               <Link to="/upload" className="hidden lg:block">
-                <Button variant="outline" size="default">
+                <Button variant="outline" size="sm">
                   <Upload className="mr-2 h-4 w-4" />
                   Upload
                 </Button>
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="default" className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span className="hidden lg:inline">Account</span>
                   </Button>
@@ -211,12 +211,12 @@ export function Navbar() {
           ) : (
             <>
               <Link to="/auth" className="hidden lg:block">
-                <Button variant="ghost" size="default">
+                <Button variant="ghost" size="sm">
                   Sign In
                 </Button>
               </Link>
               <Link to="/auth?mode=signup" className="hidden lg:block">
-                <Button size="default" className="gradient-primary">
+                <Button size="sm" className="gradient-primary">
                   Get Started
                 </Button>
               </Link>
