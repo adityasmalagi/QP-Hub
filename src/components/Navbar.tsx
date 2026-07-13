@@ -95,19 +95,19 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-3 md:px-6 md:py-4">
+    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-3 md:px-6 md:py-3">
       <div className="container relative mx-auto flex items-center gap-2 px-0 sm:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
           to="/"
-          className="navbar-glass-pill flex h-14 flex-shrink-0 items-center gap-2 rounded-full pl-2 pr-3 transition-all duration-300 hover:-translate-y-0.5 sm:h-16 md:pl-3 md:pr-4"
+          className="navbar-glass-pill flex h-14 flex-shrink-0 items-center gap-2 rounded-full pl-2 pr-3 transition-all duration-300 hover:-translate-y-0.5 sm:h-14 md:pl-3 md:pr-4"
         >
-          <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain sm:h-9 sm:w-9 md:h-10 md:w-10" />
-          <span className="text-base font-bold text-foreground sm:text-lg md:text-xl">QP Hub</span>
+          <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain sm:h-8 sm:w-8 md:h-9 md:w-9" />
+          <span className="text-base font-bold text-foreground sm:text-base md:text-xl">QP Hub</span>
         </Link>
 
         {/* Main nav pill */}
-        <div className="navbar-glass-pill flex h-14 min-w-0 flex-1 flex-nowrap items-center justify-end gap-1 whitespace-nowrap rounded-full px-2 sm:h-16 sm:gap-2 sm:px-3 md:gap-3 md:px-5 lg:justify-between">
+        <div className="navbar-glass-pill flex h-14 min-w-0 flex-1 flex-nowrap items-center justify-end gap-1 whitespace-nowrap rounded-full px-2 sm:h-14 sm:gap-2 sm:px-3 md:gap-3 md:px-5 lg:justify-between">
           {/* Desktop Navigation */}
           <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
             <NavLinks />
@@ -117,7 +117,7 @@ export function Navbar() {
             {/* Theme Toggle Button */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Toggle theme">
+              <Button variant="ghost" size="icon" className="h-10 w-10 md:h-9 md:w-9" aria-label="Toggle theme">
                 {getThemeIcon()}
               </Button>
             </DropdownMenuTrigger>
