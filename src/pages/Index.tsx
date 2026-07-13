@@ -217,9 +217,9 @@ export default function Index() {
             <ScrollAnimation animation="fade-up" delay={300}>
               <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift w-full px-6 py-4 text-sm font-semibold shadow-glow glow-purple sm:w-auto sm:px-7 sm:py-5 sm:text-base">
+                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift w-full px-7 py-5 text-base font-semibold shadow-glow glow-purple sm:w-auto sm:px-8 sm:py-6 sm:text-lg">
                     Browse Papers
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 sm:h-6 sm:w-6" />
                   </Button>
                 </Link>
 
@@ -230,9 +230,9 @@ export default function Index() {
                         <Button
                           size="lg"
                           variant="outline"
-                          className="hover-lift w-full border-foreground/15 bg-background/30 px-6 py-4 text-sm font-semibold text-foreground backdrop-blur-md hover:bg-background/50 hover:text-foreground hover:border-primary/40 dark:hover:text-foreground sm:w-auto sm:px-7 sm:py-5 sm:text-base"
+                          className="hover-lift w-full border-foreground/15 bg-background/30 px-7 py-5 text-base font-semibold text-foreground backdrop-blur-md hover:bg-background/50 hover:text-foreground hover:border-primary/40 dark:hover:text-foreground sm:w-auto sm:px-8 sm:py-6 sm:text-lg"
                         >
-                          <Upload className="mr-2 h-5 w-5" />
+                          <Upload className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
                           Upload Paper
                         </Button>
                       </Link>
