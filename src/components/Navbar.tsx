@@ -246,61 +246,62 @@ export function Navbar() {
                     <div className="flex flex-col gap-2">
                       <SheetClose asChild>
                         <Link to="/profile">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <User className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <User className="mr-3 h-5 w-5" />
                             Profile
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=bookmarks">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <Heart className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <Heart className="mr-3 h-5 w-5" />
                             Bookmarks
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=downloads">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <Download className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <Download className="mr-3 h-5 w-5" />
                             Downloads
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=analytics">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <BarChart3 className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <BarChart3 className="mr-3 h-5 w-5" />
                             Analytics
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/profile?tab=following">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <Users className="mr-2 h-4 w-4" />
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <Users className="mr-3 h-5 w-5" />
                             Following
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/upload-mobile">
-                          <Button variant="outline" className="w-full justify-start">
-                            <Upload className="mr-2 h-4 w-4" />
+                          <Button variant="outline" size="lg" className="w-full justify-start">
+                            <Upload className="mr-3 h-5 w-5" />
                             Upload
                           </Button>
                         </Link>
                       </SheetClose>
                       <Button
                         variant="ghost"
+                        size="lg"
                         className="w-full justify-start text-destructive"
                         onClick={() => {
                           handleSignOut();
                           setMobileMenuOpen(false);
                         }}
                       >
-                        <LogOut className="mr-2 h-4 w-4" />
+                        <LogOut className="mr-3 h-5 w-5" />
                         Sign Out
                       </Button>
                     </div>
@@ -308,14 +309,14 @@ export function Navbar() {
                     <div className="flex flex-col gap-2">
                       <SheetClose asChild>
                         <Link to="/auth">
-                          <Button variant="ghost" className="w-full">
+                          <Button variant="ghost" size="lg" className="w-full">
                             Sign In
                           </Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>
                         <Link to="/auth?mode=signup">
-                          <Button className="w-full gradient-primary">Get Started</Button>
+                          <Button size="lg" className="w-full gradient-primary">Get Started</Button>
                         </Link>
                       </SheetClose>
                     </div>
