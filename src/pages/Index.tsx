@@ -174,10 +174,10 @@ export default function Index() {
         }}
       />
       <Navbar />
-      <main className="-mt-[80px] md:-mt-[96px]">
+      <main className="-mt-[80px] md:-mt-[80px]">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-[80px] md:pt-[96px]">
+      <section className="relative overflow-hidden pt-[80px] md:pt-[80px]">
         {/* Animated mesh gradient backdrop */}
         <div className="absolute inset-0 gradient-hero-dark" />
         <div className="mesh-gradient" aria-hidden="true">
@@ -217,9 +217,9 @@ export default function Index() {
             <ScrollAnimation animation="fade-up" delay={300}>
               <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
                 <Link to={user ? "/browse" : "/auth?redirect=/browse"}>
-                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift w-full px-7 py-5 text-base font-semibold shadow-glow glow-purple sm:w-auto sm:px-8 sm:py-6 sm:text-lg">
+                  <Button size="lg" className="group gradient-primary shine-sweep hover-lift w-full px-7 py-5 text-base font-semibold shadow-glow glow-purple sm:w-auto sm:px-7 sm:py-5 sm:text-base">
                     Browse Papers
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 sm:h-6 sm:w-6" />
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </Link>
 
@@ -230,9 +230,9 @@ export default function Index() {
                         <Button
                           size="lg"
                           variant="outline"
-                          className="hover-lift w-full border-foreground/15 bg-background/30 px-7 py-5 text-base font-semibold text-foreground backdrop-blur-md hover:bg-background/50 hover:text-foreground hover:border-primary/40 dark:hover:text-foreground sm:w-auto sm:px-8 sm:py-6 sm:text-lg"
+                          className="hover-lift w-full border-foreground/15 bg-background/30 px-7 py-5 text-base font-semibold text-foreground backdrop-blur-md hover:bg-background/50 hover:text-foreground hover:border-primary/40 dark:hover:text-foreground sm:w-auto sm:px-7 sm:py-5 sm:text-base"
                         >
-                          <Upload className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
+                          <Upload className="mr-2 h-5 w-5" />
                           Upload Paper
                         </Button>
                       </Link>
