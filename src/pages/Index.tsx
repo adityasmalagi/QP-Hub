@@ -174,10 +174,10 @@ export default function Index() {
         }}
       />
       <Navbar />
-      <main className="-mt-[72px] md:-mt-[80px]">
+      <main className="-mt-[80px] md:-mt-[96px]">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-[72px] md:pt-[80px]">
+      <section className="relative overflow-hidden pt-[80px] md:pt-[96px]">
         {/* Animated mesh gradient backdrop */}
         <div className="absolute inset-0 gradient-hero-dark" />
         <div className="mesh-gradient" aria-hidden="true">
