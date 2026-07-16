@@ -230,7 +230,7 @@ export default function Index() {
                         <Button
                           size="lg"
                           variant="outline"
-                          className="hover-lift w-full border-foreground/15 bg-background/30 px-7 py-5 text-base font-semibold text-foreground backdrop-blur-md hover:bg-background/50 hover:text-foreground hover:border-primary/40 dark:hover:text-foreground sm:w-auto sm:px-7 sm:py-5 sm:text-base"
+                          className="hover-lift w-full rounded-full border-foreground/15 bg-background/30 px-7 py-5 text-base font-semibold text-foreground backdrop-blur-md hover:bg-background/50 hover:text-foreground hover:border-primary/40 dark:hover:text-foreground sm:w-auto sm:rounded-md sm:px-7 sm:py-5 sm:text-base"
                         >
                           <Upload className="mr-2 h-5 w-5" />
                           Upload Paper
