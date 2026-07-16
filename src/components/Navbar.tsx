@@ -95,7 +95,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-3 md:px-6 md:py-3">
+    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] md:px-6 md:py-3 md:pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <div className="container relative mx-auto flex items-center gap-2 px-0 sm:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
