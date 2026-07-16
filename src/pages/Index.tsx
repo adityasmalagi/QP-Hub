@@ -174,10 +174,10 @@ export default function Index() {
         }}
       />
       <Navbar />
-      <main className="-mt-[80px] md:-mt-[80px]">
+      <main className="-mt-[calc(80px+env(safe-area-inset-top))] md:-mt-[80px]">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-[80px] md:pt-[80px]">
+      <section className="relative overflow-hidden pt-[calc(80px+env(safe-area-inset-top))] md:pt-[80px]">
         {/* Animated mesh gradient backdrop */}
         <div className="absolute inset-0 gradient-hero-dark" />
         <div className="mesh-gradient" aria-hidden="true">
@@ -485,7 +485,7 @@ export default function Index() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/50 py-8">
+      <footer className="border-t border-border bg-card/50 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))]">
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain animate-float" />

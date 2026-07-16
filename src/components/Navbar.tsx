@@ -95,7 +95,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-3 md:px-6 md:py-3">
+    <nav className="sticky inset-x-0 top-0 z-50 w-full bg-transparent px-3 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] md:px-6 md:py-3 md:pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <div className="container relative mx-auto flex items-center gap-2 px-0 sm:gap-3 lg:max-w-6xl">
         {/* Logo pill - separated from nav */}
         <Link
@@ -230,7 +230,7 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="top" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-md rounded-3xl border border-border bg-popover p-5 text-popover-foreground shadow-xl sm:mt-3">
+            <SheetContent side="top" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-md rounded-3xl border border-border bg-popover p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-popover-foreground shadow-xl sm:mt-3">
               <div className="flex flex-col gap-4 pt-6">
                 <div className="flex items-center gap-2 pb-4 border-b border-border">
                   <img src={qphubLogo} alt="QP Hub" className="h-9 w-9 rounded-lg object-contain" />
