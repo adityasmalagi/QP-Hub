@@ -485,7 +485,7 @@ export default function Index() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/50 py-8">
+      <footer className="border-t border-border bg-card/50 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))]">
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <img src={qphubLogo} alt="QP Hub" className="h-8 w-8 rounded-lg object-contain animate-float" />

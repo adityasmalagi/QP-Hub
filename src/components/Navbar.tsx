@@ -230,7 +230,7 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="top" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-md rounded-3xl border border-border bg-popover p-5 text-popover-foreground shadow-xl sm:mt-3">
+            <SheetContent side="top" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-md rounded-3xl border border-border bg-popover p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-popover-foreground shadow-xl sm:mt-3">
               <div className="flex flex-col gap-4 pt-6">
                 <div className="flex items-center gap-2 pb-4 border-b border-border">
                   <img src={qphubLogo} alt="QP Hub" className="h-9 w-9 rounded-lg object-contain" />
