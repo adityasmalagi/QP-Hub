@@ -174,10 +174,10 @@ export default function Index() {
         }}
       />
       <Navbar />
-      <main className="-mt-[80px] md:-mt-[80px]">
+      <main className="-mt-[calc(80px+env(safe-area-inset-top))] md:-mt-[80px]">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-[80px] md:pt-[80px]">
+      <section className="relative overflow-hidden pt-[calc(80px+env(safe-area-inset-top))] md:pt-[80px]">
         {/* Animated mesh gradient backdrop */}
         <div className="absolute inset-0 gradient-hero-dark" />
         <div className="mesh-gradient" aria-hidden="true">
